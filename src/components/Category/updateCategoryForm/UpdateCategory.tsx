@@ -39,10 +39,10 @@ interface IFormInput {
 function UpdateCategoryForm({
   handleClose,
   initialData,
-  refetch,
+
 }: {
   handleClose: () => void;
-  refetch: () => void;
+  
   initialData?: null | ICategory
 }) {
   const { register, setValue, handleSubmit, watch , formState: { errors },} = useForm<IFormInput>();
@@ -133,7 +133,6 @@ function UpdateCategoryForm({
       const response = await updateCategory({id,formData})
 
       toast.success(t('Category updated successfully'));
-      refetch();
       handleClose();
     } catch (err) {
       // console.error('Error updating category:', err);

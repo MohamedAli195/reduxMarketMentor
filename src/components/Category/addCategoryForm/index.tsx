@@ -39,7 +39,7 @@ interface IFormInput {
   image: FileList;
 }
 
-function AddCategoryForm({ handleClose, refetch }: { handleClose: () => void; refetch: () => void }) {
+function AddCategoryForm({ handleClose }: { handleClose: () => void; }) {
   const {
     register,
     handleSubmit,
@@ -86,7 +86,6 @@ const [createCategory] = useCreateCategoryMutation()
       // (response.data);
       toast.success('Category added successfully');
       handleClose();
-      refetch();
     } catch (err) {
       // console.error('Error:', err);
       toast.error('Failed to add category, please check your input.');

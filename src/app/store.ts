@@ -13,6 +13,7 @@ import {
 } from "redux-persist";
 import cookieStorage from "./services/cookieStorage";
 import { categoriesApi } from "./features/Categories/CategoriesSlice";
+import { profileApi } from "./features/profileSlice/profileSlice";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -33,6 +34,7 @@ export const store = configureStore({
     auth: persistedAuthReducer, // use persisted version
     [authApi.reducerPath]: authApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -43,6 +45,7 @@ export const store = configureStore({
     }).concat(
       authApi.middleware,
       categoriesApi.middleware,
+      profileApi.middleware,
       
 
     ),

@@ -10,6 +10,7 @@ import { checkPermissions, parsedData } from 'functions';
 import imgNotFound from './../../../public/images/No_Image_Available.jpg';
 import { useSelector } from 'react-redux';
 import { RootState } from 'app/store';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 interface IProps {
   handleEditOpen: (val: ICategory) => void;
@@ -20,7 +21,10 @@ interface IProps {
 const useCategoryTable = ({handleEditOpen, setTempId, handleOpend}:IProps) => {
      const navigate = useNavigate();
       // const permissions = useSelector(((state:RootState)=>state.auth.authData.user?.permissions))
-  const columns: GridColDef[] = [
+    const {data,error} = useGetProfileQuery()
+const permissions = data?.data.permissions
+
+      const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
     {
       field: 'name',
@@ -54,7 +58,7 @@ const useCategoryTable = ({handleEditOpen, setTempId, handleOpend}:IProps) => {
       flex: 1,
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
-          {/* {checkPermissions(permissions, 'delete-category') && ( */}
+          {checkPermissions(permissions, 'delete-category') && (
             <Button
               variant="contained"
               color="error"
@@ -65,9 +69,9 @@ const useCategoryTable = ({handleEditOpen, setTempId, handleOpend}:IProps) => {
             >
               <Trash2 />
             </Button>
-          {/* )} */}
+           )} 
 
-          {/* {checkPermissions(permissions, 'show-categories') && ( */}
+         {checkPermissions(permissions, 'show-categories') && (
             <Button
               variant="contained"
               color="info"
@@ -75,13 +79,13 @@ const useCategoryTable = ({handleEditOpen, setTempId, handleOpend}:IProps) => {
             >
               <Eye />
             </Button>
-          {/* )} */}
+           )} 
 
-          {/* {checkPermissions(permissions, 'edit-category') && ( */}
+         {checkPermissions(permissions, 'edit-category') && ( 
             <Button variant="contained" color="primary" onClick={() => handleEditOpen(params.row)}>
               <Pencil />
             </Button>
-          {/* )} */}
+           )} 
         </Stack>
       ),
     },

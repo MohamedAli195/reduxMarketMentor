@@ -9,10 +9,10 @@ interface IProps {
     opend:boolean;
     handleClosed:()=>void;
     tempId:number;
-    refetch:()=>void;
-    deleteFunc:(val1:number,val2:()=>void)=>void
+  
+    deleteFunc:(val1:number)=>void
 }
-function DeleteModal({opend,handleClosed,refetch,tempId,deleteFunc}:IProps) {
+function DeleteModal({opend,handleClosed,tempId,deleteFunc}:IProps) {
   return (
     <BasicModal open={opend} handleClose={handleClosed} isDeleteModal={true}>
         <Box>
@@ -30,7 +30,7 @@ function DeleteModal({opend,handleClosed,refetch,tempId,deleteFunc}:IProps) {
           </Button>
           <Button variant="contained" color="error" onClick={() => {
             
-            deleteFunc(tempId, refetch)
+            deleteFunc(tempId)
             handleClosed()
             
             }}>

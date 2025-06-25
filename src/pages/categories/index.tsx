@@ -27,6 +27,7 @@ import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 // Fetch packages function
 interface IProps {
@@ -40,11 +41,12 @@ function CategoriesPage({isDashBoard}:IProps) {
   const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const { data: CategoriesFromRTK, error: errorRTk, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+  const { data: CategoriesFromRTK,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
   useGetCategoriesQuery({ page, perPage, search ,sort_direction: sort });
 
   const [deleteCategory] =useDeleteCategoryMutation()
-
+    const {data} = useGetProfileQuery()
+const permissions = data?.data.permissions
 
   const categories = CategoriesFromRTK?.data?.data || [];
   const totalItems = CategoriesFromRTK?.data?.total || 0
@@ -77,14 +79,14 @@ console.log(totalItems)
     handleOpenU(); // Open the update modal
   };
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`packages-${page}-${perPage}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, perPage, search,sort,'','categories'),
-  });
+  // // Fetch packages using React Query
+  // const { data, error, isLoading, isError, refetch } = useQuery({
+  //   queryKey: [`packages-${page}-${perPage}-${search}-${sort}`],
+  //   queryFn: () => fetchAllData(page, perPage, search,sort,'','categories'),
+  // });
 
   // if (isLoading) return <SkeletonTables />
-  if (isError) return <p>Error: {error.message}</p>;
+  // if (isError) return <p>Error: {error}</p>;
 
  
       // const totalItems = data?.data?.total
@@ -96,12 +98,12 @@ console.log(totalItems)
           {t('categories')}
         </Typography>
 
-        {/* {
-          checkPermissions(parsedData,'add-category') &&  */}
+        {
+          checkPermissions(permissions,'add-category') &&  
           <Button variant="contained" color="info" onClick={handleOpen}>
           {t('AddCategory')}
         </Button>
-        {/* } */}
+         } 
 
       </Stack>
 }
@@ -138,17 +140,17 @@ console.log(totalItems)
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('AddCategory')}</h2>
 
-        <AddCategoryForm handleClose={handleClose} refetch={refetch} />
+        <AddCategoryForm handleClose={handleClose} />
       </BasicModal>
 
-      <DeleteModal handleClosed={handleClosed}  opend={opend} refetch={refetch} tempId={tempId} deleteFunc={async()=>{await deleteCategory(tempId)}}/>
+      <DeleteModal handleClosed={handleClosed}  opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCategory(tempId)}}/>
       {/* update modal */}
       <BasicModal open={openU} handleClose={handleCloseU}>
         <h2>{t('updateCategory')}</h2>
         <UpdateCategoryForm
           handleClose={handleCloseU}
           initialData={selectedCategory}
-          refetch={refetch}
+      
         />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />
