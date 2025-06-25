@@ -8,6 +8,8 @@ import { styled } from '@mui/material/styles';
 import { CloudUpload } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchOne } from 'functions';
+import { useUpdatePackageMutation } from 'app/features/packages/packages';
+import { IPackage, IPackage2, IPackageSelected } from 'interfaces';
 // import { fetchPackage } from 'pages/packages/packagesFunct';
 
 const VisuallyHiddenInput = styled('input')({
@@ -34,26 +36,21 @@ interface IFormInput {
 
 function UpdatePackageForm({
   handleClose,
-  refetch,
-  id,
+
+  tempIdUpdate,
 }: {
   handleClose: () => void;
-  refetch: () => void;
 
-  id: number;
+
+  tempIdUpdate: IPackage2;
 }) {
   const { register, setValue, handleSubmit, watch } = useForm<IFormInput>();
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
   // Fetch packages using React Query
-  const { data, error, isLoading, isError } = useQuery({
-    queryKey: [`packages-${id}`],
-    queryFn: () => fetchOne(id,'packages'),
-  });
-
-  // const [previewImage, setPreviewImage] = useState<string | null>(data?.data?.image|| null);
-  // const selectedImage = watch('image');
-  const ImageFromApi = data?.data?.image;
+  const [updatePackage] = useUpdatePackageMutation()
+const id = tempIdUpdate.id
+  const ImageFromApi = tempIdUpdate.image;
   // console.log(ImageFromApi);
   const [preview, setPreview] = useState<string | undefined | null>(ImageFromApi);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,13 +70,13 @@ function UpdatePackageForm({
   // console.log(data.data.image)
 
   useEffect(() => {
-    if (data) {
-      setValue('name.en', data?.data?.name.en);
-      setValue('name.ar', data?.data?.name.ar);
-      setValue('name.fr', data?.data?.name.fr);
-      setValue('price', data?.data?.price);
+    if (tempIdUpdate) {
+      setValue('name.en', tempIdUpdate.name.en);
+      setValue('name.ar', tempIdUpdate.name.ar);
+      setValue('name.fr', tempIdUpdate.name.fr);
+      setValue('price', tempIdUpdate.price);
     }
-  }, [data?.data, setValue]);
+  }, [tempIdUpdate, setValue]);
 
   // useEffect(() => {
   //   if (selectedImage && selectedImage.length > 0) {
@@ -105,14 +102,10 @@ function UpdatePackageForm({
         'Content-Type': 'multipart/form-data',
       };
 
-      const response = await axios.post(
-        `${url}/admin/packages/${id}/update`,
-        formData,
-        { headers },
-      );
+      const response = await updatePackage({id , formData})
 
       toast.success(t('Package updated successfully'));
-      refetch();
+
       handleClose();
     } catch (err) {
       // console.error('Error updating package:', err);

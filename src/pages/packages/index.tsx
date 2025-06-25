@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { IPackageSelected } from 'interfaces';
+import { IPackage2, IPackageSelected } from 'interfaces';
 import PaginationComponent from 'components/Shared/pagination';
 import SearchForm from 'components/Shared/searchForm';
 import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
@@ -14,6 +14,8 @@ import SelectSort from 'components/Shared/selectSort';
 import SkeletonTables from 'components/Shared/skelton';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import Modals from './Modals';
+import { useGetPackagesQuery } from 'app/features/packages/packages';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 // Fetch packages function
 interface IProps {
   isDashBoard: boolean;
@@ -30,13 +32,21 @@ function PackagesPage({ isDashBoard }: IProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [tempId, setTempId] = useState(1);
-  const [tempIdUpdate, setTempIdUpdate] = useState(1);
+  const [tempIdUpdate, setTempIdUpdate] = useState<IPackage2>();
   const { t } = useTranslation();
 
-  // const navigate = useNavigate();
+  const { data: packagesFromRTK, isLoading:isLoadingRTK, } =useGetPackagesQuery({ page, perPage, search ,sort_direction: sort })
+    const {data:profile} = useGetProfileQuery()
+const permissions = profile?.data.permissions
+
+  const packages = packagesFromRTK?.data?.data || [];
+  const totalItems = packagesFromRTK?.data?.total || 0
+console.log(totalItems)
   // add modal
+
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -53,25 +63,25 @@ function PackagesPage({ isDashBoard }: IProps) {
   // Define a state to store selected package data
   // const [selectedPackage, setSelectedPackage] = useState<null | IPackageSelected>(null);
 
-  const handleEditOpen = (packageData: IPackageSelected) => {
-    setTempIdUpdate(packageData.id); // Set selected package data
+  const handleEditOpen = (packageData: IPackage2) => {
+    setTempIdUpdate(packageData); // Set selected package data
     handleOpenU(); // Open the update modal
   };
 
   // Columns configuration
 
   // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`packages-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'packages'),
-  });
+  // const { data, error, isLoading, isError, refetch } = useQuery({
+  //   queryKey: [`packages-${page}-${perPage}-${search}-${sort}`],
+  //   queryFn: () => fetchAllData(page, perPage, search, sort, '', 'packages'),
+  // });
 
   // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
+  // if (isError) return <p>Error: {error.message}</p>;
 
   // Prepare rows for DataGrid
 
-  const totalItems = data?.data?.total;
+  // const totalItems = data?.data?.total;
   return (
     <>
       {!isDashBoard && (
@@ -87,7 +97,7 @@ function PackagesPage({ isDashBoard }: IProps) {
           </Typography>
 
           {
-          // checkPermissions(parsedData, 'add-package') && 
+          checkPermissions(permissions, 'add-package') && 
           (
             <Button variant="contained" color="info" onClick={handleOpen}>
               {t('addPackage')}
@@ -107,7 +117,7 @@ function PackagesPage({ isDashBoard }: IProps) {
           <SearchForm setsearch={setSearch} isDashBoard={isDashBoard} />
         </Stack>
         <PackagesTable
-          data={data?.data?.data}
+          data={packages}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -120,16 +130,16 @@ function PackagesPage({ isDashBoard }: IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 : Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 : Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
 
 {/* modals components collect all modal in one componnet */}
-<Modals tempId={tempId} handleClose={handleClose} handleCloseU={handleCloseU} handleClosed={handleClosed} open={open}  openU={openU} opend={opend} refetch={refetch} tempIdUpdate={tempIdUpdate}   />
+<Modals tempId={tempId} handleClose={handleClose} handleCloseU={handleCloseU} handleClosed={handleClosed} open={open}  openU={openU} opend={opend} tempIdUpdate={tempIdUpdate as IPackage2}  />
   
     </>
   );

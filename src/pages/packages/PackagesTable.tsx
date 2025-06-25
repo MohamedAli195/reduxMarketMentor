@@ -7,23 +7,30 @@ import { Navigate, useNavigate } from 'react-router-dom';
 // import { ICompany } from 'interfaces';
 import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
-import { IPackage, IPackageSelected, ITempPermissions } from 'interfaces';
+import { IPackage, IPackage2, IPackageSelected, ITempPermissions } from 'interfaces';
 import { checkPermissions, parsedData } from 'functions';
 import SwitchStatus from 'components/Shared/switch';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 interface IProps {
-  handleEditOpen:(val:IPackageSelected)=>void
-  handleOpend:()=>void
-  setTempId:(val:number)=>void
+  handleEditOpen: (val: IPackage2) => void;
+  handleOpend: () => void;
+  setTempId: (val: number) => void;
   data: IPackage[];
 }
-function PackagesTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
+function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
+  const { data: profile } = useGetProfileQuery();
+  const permissions = profile?.data.permissions;
 
   const navigate = useNavigate();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
-    { field: 'name',   headerName: i18n.language === 'ar' ? 'الاسم':"name",flex: 1, renderCell:(params)=> i18n.language === 'ar' ?  params.row.name.ar : params.row.name.en },
+    {
+      field: 'name',
+      headerName: i18n.language === 'ar' ? 'الاسم' : 'name',
+      flex: 1,
+      renderCell: (params) => (i18n.language === 'ar' ? params.row.name.ar : params.row.name.en),
+    },
 
-    
     { field: 'price', headerName: i18n.language === 'ar' ? 'السعر' : 'price' },
     {
       field: 'image',
@@ -39,57 +46,55 @@ function PackagesTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
           </Typography>
         ),
     },
-    { field: 'status', headerName: i18n.language === 'ar' ? 'الحالة' : 'status', width: 130 ,renderCell: (params) => (
-          <SwitchStatus id={params.row.id} url={"packages"} apiStatus={params.row.status} />
-         
-        ), },
+    {
+      field: 'status',
+      headerName: i18n.language === 'ar' ? 'الحالة' : 'status',
+      width: 130,
+      renderCell: (params) => (
+        <SwitchStatus id={params.row.id} url={'packages'} apiStatus={params.row.status} />
+      ),
+    },
     {
       field: 'actions',
       headerName: i18n.language === 'ar' ? 'العمليات' : 'actions',
       flex: 1,
       renderCell: (params) => (
         <Stack direction="row" gap={1}>
-          {
-            // checkPermissions(parsedData,'delete-package') && 
+          {checkPermissions(permissions, 'delete-package') && (
             <Button
-            variant="contained"
-            color="error"
-            
-            onClick={
-              ()=>{
-              handleOpend()
-              setTempId(params.row.id)
-            }
-          }
-          >
-            {/* {t('delete')} */}
-            <Trash2 />
-          </Button>
-          }
-          {
-            // checkPermissions(parsedData,'show-packages') &&     
+              variant="contained"
+              color="error"
+              onClick={() => {
+                handleOpend();
+                setTempId(params.row.id);
+              }}
+            >
+              {/* {t('delete')} */}
+              <Trash2 />
+            </Button>
+          )}
+          {checkPermissions(permissions, 'show-packages') && (
             <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate(`${paths.packages}/${params.row.id}`)}
-          >
-            {/* {t('view')} */}
-            <Eye />
-          </Button>
-          }
-        {
-          // checkPermissions(parsedData,'edit-package') && 
-          <Button variant="contained" color="info" onClick={() => handleEditOpen(params.row)}>
-          {/* {t('edit')} */}
-          <Pencil />
-        </Button>
-        }
+              variant="contained"
+              color="primary"
+              onClick={() => navigate(`${paths.packages}/${params.row.id}`)}
+            >
+              {/* {t('view')} */}
+              <Eye />
+            </Button>
+          )}
+          {
+             checkPermissions(permissions,'edit-package') &&
+            (            <Button variant="contained" color="info" onClick={() => handleEditOpen(params.row)}>
+              {/* {t('edit')} */}
+              <Pencil />
+            </Button>)
 
+          }
         </Stack>
       ),
     },
   ];
-
 
   const rows =
     data?.length > 0
@@ -98,19 +103,19 @@ function PackagesTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
         }))
       : [];
   return (
-<DataGrid
-    rows={rows}
-    columns={columns}
-    sx={{ border: 0 }}
-    autoHeight
-    getRowHeight={() => 200} // Set each row's height to 200px
-    getRowClassName={(params: GridRowClassNameParams) =>
-      params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-    }
-    disableRowSelectionOnClick
-    disableMultipleRowSelection
-    hideFooterPagination={true}
-  />
+    <DataGrid
+      rows={rows}
+      columns={columns}
+      sx={{ border: 0 }}
+      autoHeight
+      getRowHeight={() => 200} // Set each row's height to 200px
+      getRowClassName={(params: GridRowClassNameParams) =>
+        params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+      }
+      disableRowSelectionOnClick
+      disableMultipleRowSelection
+      hideFooterPagination={true}
+    />
   );
 }
 

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 
 import { CloudUpload } from 'lucide-react';
+import { useCreatePackageMutation } from 'app/features/packages/packages';
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -28,10 +29,10 @@ interface IFormInput {
   price: string;
 }
 
-function AddPackageForm({ handleClose, refetch }: { handleClose: () => void; refetch: () => void }) {
+function AddPackageForm({ handleClose }: { handleClose: () => void;}) {
   const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
   const { t } = useTranslation();
-
+const [createPackage] = useCreatePackageMutation()
   const {
     register,
     handleSubmit,
@@ -70,15 +71,10 @@ function AddPackageForm({ handleClose, refetch }: { handleClose: () => void; ref
         'Content-Type': 'multipart/form-data',
       };
 
-      const response = await axios.post(
-        `${url}/admin/packages`,
-        formData,
-        { headers }
-      );
+      const response = await createPackage(formData)
 
       toast.success('Package added successfully');
       handleClose();
-      refetch();
     } catch (err) {
       // console.error('Error signing in:', err);
       toast.error('Failed to add package, please check your input.');
