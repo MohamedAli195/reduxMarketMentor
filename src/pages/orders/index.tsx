@@ -25,6 +25,8 @@ import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import OrdersTable from './OrdersTable';
+import { useGetOrdersQuery } from 'app/features/Orders/ordersSlice';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 
 // Fetch packages function
@@ -33,10 +35,19 @@ interface IProps {
 }
 function OrdersPage({isDashBoard}:IProps) {
   const [page, setPage] = useState(1);
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [typeFilter, setTypeFilter] = useState('course');
+
+    const { data: CategoriesFromRTK,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+    useGetOrdersQuery({ page, perPage, search ,sort_direction: sort });
+  
+      const {data} = useGetProfileQuery()
+  const permissions = data?.data.permissions
+  
+    const orders = CategoriesFromRTK?.data?.data || [];
+    const totalItems = CategoriesFromRTK?.data?.total || 0
   const { t, i18n } = useTranslation();
   const [tempId, setTempId] = useState(1);
   // delete modal
@@ -70,17 +81,10 @@ function OrdersPage({isDashBoard}:IProps) {
     handleOpenU(); // Open the update modal
   };
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`orders-${page}-${per}-${search}-${sort}-${typeFilter}`],
-    queryFn: () => fetchAllData(page, per, search, sort,typeFilter,'orders'),
-  });
-
-  // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
 
 
-  const totalItems = data?.data?.total;
+
+
   return (
     <>
 
@@ -115,7 +119,7 @@ function OrdersPage({isDashBoard}:IProps) {
           </Stack>
         }
         <OrdersTable
-          data={data?.data?.data}
+          data={orders}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -129,19 +133,15 @@ function OrdersPage({isDashBoard}:IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 : Math.round(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 : Math.round(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
       {/* add modal */}
-      <BasicModal open={open} handleClose={handleClose}>
-        <h2>{t('Addcustomers')}</h2>
 
-        <AddCustomer handleClose={handleClose} refetch={refetch} />
-      </BasicModal>
 
 
       
@@ -152,7 +152,6 @@ function OrdersPage({isDashBoard}:IProps) {
         <UpdateOrderForm
           handleClose={handleCloseU}
           initialData={selectedPackage}
-          refetch={refetch}
         />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />

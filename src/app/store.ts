@@ -15,6 +15,10 @@ import cookieStorage from "./services/cookieStorage";
 import { categoriesApi } from "./features/Categories/CategoriesSlice";
 import { profileApi } from "./features/profileSlice/profileSlice";
 import { packagesApi } from "./features/packages/packages";
+import { customersApi } from "./features/Users/usersSlice";
+import { ordersApi } from "./features/Orders/ordersSlice";
+import { subAdminApi } from "./features/subAdmins/subAdmins";
+import { recommendationsApi } from "./features/Recommendations/RecommendationsSlice";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -37,6 +41,10 @@ export const store = configureStore({
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     [packagesApi.reducerPath]: packagesApi.reducer,
+    [customersApi.reducerPath]: customersApi.reducer,
+    [ordersApi.reducerPath]: ordersApi.reducer,
+    [subAdminApi.reducerPath]: subAdminApi.reducer,
+    [recommendationsApi.reducerPath]: recommendationsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -49,6 +57,10 @@ export const store = configureStore({
       categoriesApi.middleware,
       profileApi.middleware,
       packagesApi.middleware,
+      customersApi.middleware,
+      ordersApi.middleware,
+      subAdminApi.middleware,
+      recommendationsApi.middleware,
       
 
     ),

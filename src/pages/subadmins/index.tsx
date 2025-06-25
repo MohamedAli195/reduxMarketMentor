@@ -26,6 +26,8 @@ import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import SubAdminTable from './SubAdminTable';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+import { useDeleteSubAdminMutation, useGetSubAdminsQuery } from 'app/features/subAdmins/subAdmins';
 
 // Fetch packages function
 interface IProps {
@@ -38,7 +40,22 @@ function SubAdminsPage({ isDashBoard }: IProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
+  const { data,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+  useGetSubAdminsQuery({ page, perPage, search ,sort_direction: sort });
+
+  const [deleteSubAdmin] =useDeleteSubAdminMutation()
+    const {data:profile} = useGetProfileQuery()
+const permissions = profile?.data?.permissions
+  console.log(data)
+  const subAdmins = data?.data?.data || [];
+  const totalItems = data?.data?.total || 0
+
+
+
+
+
+
   const [tempId, setTempId] = useState(1);
   const [tempIdUpdate, setTempIdUpdate] = useState(1);
   const { t, i18n } = useTranslation();
@@ -59,7 +76,7 @@ function SubAdminsPage({ isDashBoard }: IProps) {
   const handleOpenU = () => setOpenU(true);
   const handleCloseU = () => setOpenU(false);
   // Define a state to store selected package data
-  const [selectedPackage, setSelectedPackage] = useState<null | ISubADmin>(null);
+  // const [selectedPackage, setSelectedPackage] = useState<null | ISubADmin>(null);
 
   const handleEditOpen = (subAdmin: ISubADmin) => {
     setTempIdUpdate(subAdmin.id); // Set selected package data
@@ -69,19 +86,7 @@ function SubAdminsPage({ isDashBoard }: IProps) {
   // Columns configuration
 
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`sub-admins-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'sub-admins'),
-  });
 
-  console.log(data)
-  if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
-  // console.log(data);
-  // Prepare rows for DataGrid
-  
-  const totalItems = data?.data?.total;
   return (
     <>
       {!isDashBoard && (
@@ -113,7 +118,7 @@ function SubAdminsPage({ isDashBoard }: IProps) {
           <SearchForm setsearch={setSearch} isDashBoard={isDashBoard} />
         </Stack>
         <SubAdminTable 
-          data={data?.data?.data}
+          data={subAdmins}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -126,33 +131,32 @@ function SubAdminsPage({ isDashBoard }: IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 : Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 : Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
       {/* add modal */}
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('addPermissions')}</h2>
-        <AddSubAdminForm handleClose={handleClose} refetch={refetch} />
+        <AddSubAdminForm handleClose={handleClose} />
       </BasicModal>
 
       <DeleteModal
         handleClosed={handleClosed}
         opend={opend}
-        refetch={refetch}
         tempId={tempId}
-        deleteFunc={() => {
-          deleteAnyThing(tempId, refetch, 'sub-admins');
+        deleteFunc={async() => {
+          deleteSubAdmin(tempId);
         }}
       />
 
       {/* update modal */}
       <BasicModal open={openU} handleClose={handleCloseU}>
         <h2>{t('editPackage')}</h2>
-        <UpdateSubAdminForm handleClose={handleCloseU} refetch={refetch} id={tempIdUpdate} />
+        <UpdateSubAdminForm handleClose={handleCloseU} id={tempIdUpdate} />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

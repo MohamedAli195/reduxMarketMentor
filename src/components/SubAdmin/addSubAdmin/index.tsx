@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllData } from 'functions';
+import { useCreateSubAdminMutation } from 'app/features/subAdmins/subAdmins';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -20,7 +21,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-interface IFormInput {
+export interface IFormInputSubAdmin {
   name: string;
   email:string
   password: string;
@@ -46,14 +47,14 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function AddSubAdminForm({ handleClose, refetch }: { handleClose: () => void; refetch: () => void }) {
+function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputSubAdmin>();
 
   const [personName, setPersonName] = useState<string[]>([]);
   const [page, setPage] = useState(1);
@@ -63,24 +64,27 @@ function AddSubAdminForm({ handleClose, refetch }: { handleClose: () => void; re
 
   const url = import.meta.env.VITE_API_URL;
 
-  const { data: apiRoles, error, isLoading, isError } = useQuery({
+  const [createSubAdmin ,{error}] = useCreateSubAdminMutation()
+  console.log(error)
+  const { data: apiRoles, isLoading, isError } = useQuery({
     queryKey: [`roles-${page}-${per}-${search}-${sort}`],
     queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
   });
 
-  // console.log(apiRoles?.data?.data)
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+
+  const onSubmit: SubmitHandler<IFormInputSubAdmin> = async (data) => {
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data',
       };
   
-      await axios.post(`${url}/admin/sub-admins`, data, { headers });
-      toast.success(t('roles added successfully'));
-      handleClose();
-      refetch();
+      // await axios.post(`${url}/admin/sub-admins`, data, { headers });
+      // toast.success(t('roles added successfully'));
+      // handleClose();
+
+      await createSubAdmin(data)
     } catch (err) {
     //   console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));

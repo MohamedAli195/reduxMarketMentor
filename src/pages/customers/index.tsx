@@ -14,7 +14,7 @@ import { Eye, Trash2, Pencil } from 'lucide-react';
 import PaginationComponent from 'components/Shared/pagination';
 
 import SearchForm from 'components/Shared/searchForm';
-import { ICustomer } from 'interfaces';
+import { ICustomer, IUser } from 'interfaces';
 
 import DeleteModal from 'components/deleteModal';
 import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
@@ -22,6 +22,8 @@ import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import CustomersTable from './CustomerTable';
+import { useDeleteCustomerMutation, useGetCustomersQuery } from 'app/features/Users/usersSlice';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 
 // Fetch packages function
@@ -30,9 +32,22 @@ interface IProps {
 }
 function CustomersPage({isDashBoard}:IProps) {
   const [page, setPage] = useState(1);
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
+ 
+    const { data: CategoriesFromRTK, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+    useGetCustomersQuery({ page, perPage, search ,sort_direction: sort });
+  
+    const [deleteCustomer] =useDeleteCustomerMutation()
+      const {data:profile} = useGetProfileQuery()
+  const permissions = profile?.data.permissions
+  
+    const categories = CategoriesFromRTK?.data?.data || [];
+    const totalItems = CategoriesFromRTK?.data?.total || 0
+  
+  
+  
   const { t, i18n } = useTranslation();
   const [tempId, setTempId] = useState(1);
   // delete modal
@@ -40,7 +55,7 @@ function CustomersPage({isDashBoard}:IProps) {
   const handleOpend = () => setOpend(true);
   const handleClosed = () => setOpend(false);
   // states
-  const navigate = useNavigate();
+
   // add modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -51,44 +66,16 @@ function CustomersPage({isDashBoard}:IProps) {
   const handleOpenU = () => setOpenU(true);
   const handleCloseU = () => setOpenU(false);
   // Define a state to store selected package data
-  const [selectedPackage, setSelectedPackage] = useState<null | ICustomer>(null);
+  const [selectedPackage, setSelectedPackage] = useState<null | IUser>(null);
 
-  const handleEditOpen = (packageData: ICustomer) => {
+  const handleEditOpen = (packageData: IUser) => {
     setSelectedPackage(packageData); // Set selected package data
     handleOpenU(); // Open the update modal
   };
 
-  // fetch from api
-  // fetchCustomers();
-
-  // Columns configuration
 
 
-  // Pagination settings
-  // const paginationModel = { page: 0, pageSize: 5 };
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`customers-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort,'','customers'),
-  });
-
-  // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
-
-  // Prepare rows for DataGrid
-  // console.log(data.data?.total);
-  const rows =
-    data?.data?.data?.length > 0
-      ? data?.data?.data?.map((packageItem: ICustomer) => ({
-          id:packageItem.id,
-          name: packageItem.name,
-          email: packageItem.email,
-          phone: packageItem.phone,
-          partner_code: packageItem.partner_code,
-        }))
-      : [];
-  const totalItems = data?.data?.total;
   return (
     <>
 
@@ -105,7 +92,7 @@ function CustomersPage({isDashBoard}:IProps) {
       </Typography>
 
       {
-        checkPermissions(parsedData,'add-customer') && <Button variant="contained" color="info" onClick={handleOpen}>
+        checkPermissions(permissions,'add-customer') && <Button variant="contained" color="info" onClick={handleOpen}>
         {t('Addcustomers')}
       </Button>
       }
@@ -129,27 +116,13 @@ function CustomersPage({isDashBoard}:IProps) {
           </Stack>
         }
            <CustomersTable
-          data={data?.data?.data}
+          data={categories}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
           isDashBoard={isDashBoard}
         />
-        {/* <DataGrid
-          rows={rows}
-          columns={columns}
-          // initialState={{ pagination: { paginationModel } }}
-          // pageSizeOptions={[5, 10]}
-          sx={{ border: 0 }}
-          autoHeight
-          // getRowHeight={() => !isDashBoard ? 200: 'auto'} 
-          getRowClassName={(params: GridRowClassNameParams) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-          }
-          disableRowSelectionOnClick
-          disableMultipleRowSelection
-          hideFooterPagination={true}
-        /> */}
+
         <Stack
           direction={'row'}
           justifyContent={'space-between'}
@@ -158,10 +131,10 @@ function CustomersPage({isDashBoard}:IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 :  Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 :  Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
@@ -169,34 +142,12 @@ function CustomersPage({isDashBoard}:IProps) {
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('Addcustomers')}</h2>
 
-        <AddCustomer handleClose={handleClose} refetch={refetch} />
+        <AddCustomer handleClose={handleClose} />
       </BasicModal>
 
 
-            {/* delete modal */}
-            {/* <BasicModal open={opend} handleClose={handleClosed}>
-      <Typography variant="h6" component="h2" gutterBottom>
-          Delete
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Are you sure you want to delete this Customer?
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
-          <Button variant="outlined" onClick={handleClosed}>
-            Close
-          </Button>
-          <Button variant="contained" color="error" onClick={() => {
-            
-            deleteCustomer(tempId, refetch)
-            handleClosed()
-            
-            }}>
-            Delete 
-          </Button>
-        </Box>
-       
-      </BasicModal> */}
-      <DeleteModal handleClosed={handleClosed}  opend={opend} refetch={refetch} tempId={tempId} deleteFunc={()=>{deleteAnyThing(tempId,refetch,'customers')}}/>
+          
+      <DeleteModal handleClosed={handleClosed}  opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCustomer(tempId)}}/>
 
 
       {/* update modal */}
@@ -205,7 +156,7 @@ function CustomersPage({isDashBoard}:IProps) {
         <UpdateCustomerForm
           handleClose={handleCloseU}
           initialData={selectedPackage}
-          refetch={refetch}
+    
         />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />

@@ -70,11 +70,6 @@ const [createCategory] = useCreateCategoryMutation()
       formData.append('description[fr]', data.description.fr);
       formData.append('image', data.image[0]);
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-
       // const response = await axios.post(
       //   `${url}/admin/categories`,
       //   formData,

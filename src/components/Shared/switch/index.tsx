@@ -5,20 +5,24 @@ import Switch from '@mui/material/Switch';
 // import { updateStatus } from 'pages/courses/coursesFunct';
 import { t } from 'i18next';
 import { updateStatus } from 'functions';
+import { useUpdateRecommendationStatusMutation } from 'app/features/Recommendations/RecommendationsSlice';
 
 interface IProps {
   id: number;
   url: string;
   apiStatus: 'inactive' | 'active';
+  updateStatus?:()=>void
 }
 
-export default function SwitchStatus({ id, url, apiStatus }: IProps) {
+export default function SwitchStatus({ id, url, apiStatus , updateStatus}: IProps) {
   const [status, setStatus] = React.useState(apiStatus);
-
+const [updateRecommendationStatus ,{error}] = useUpdateRecommendationStatusMutation()
+console.log(error)
   const handleChange = () => {
     const newStatus = status === 'active' ? 'inactive' : 'active';
+console.log(newStatus)
     setStatus(newStatus);
-    updateStatus(id, url, newStatus); // Use the updated value
+    updateRecommendationStatus({id,newStatus})
   };
 
   return (

@@ -5,21 +5,23 @@ import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
-import { ICustomer } from 'interfaces';
+import { ICustomer, IUser } from 'interfaces';
 import { checkPermissions, parsedData } from 'functions';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 interface IProps {
   handleEditOpen: (val: ICustomer) => void;
   handleOpend: () => void;
   setTempId: (val: number) => void;
-  data: ICustomer[];
+  data: IUser[];
   isDashBoard: boolean;
 }
 
 function CustomersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBoard }: IProps) {
   const navigate = useNavigate();
   const isArabic = i18n.language === 'ar';
-
+      const {data:profile} = useGetProfileQuery()
+  const permissions = profile?.data.permissions
   const commonColumns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     i18n.language === 'ar'
@@ -53,7 +55,7 @@ function CustomersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBo
             width: '100%',
           }}
         >
-          {checkPermissions(parsedData, 'delete-customer') && (
+          {checkPermissions(permissions, 'delete-customer') && (
             <Button
               variant="contained"
               color="error"
@@ -66,7 +68,7 @@ function CustomersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBo
               <Trash2 size={16} />
             </Button>
           )}
-          {checkPermissions(parsedData, 'show-customers') && (
+          {checkPermissions(permissions, 'show-customers') && (
             <Button
               variant="contained"
               color="info"
@@ -76,7 +78,7 @@ function CustomersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBo
               <Eye size={16} />
             </Button>
           )}
-          {checkPermissions(parsedData, 'edit-customer') && (
+          {checkPermissions(permissions, 'edit-customer') && (
             <Button
               variant="contained"
               color="primary"

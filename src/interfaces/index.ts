@@ -206,6 +206,16 @@ export interface IOrder  {
     }
 }
 
+
 export interface Ipermisson {
   id:number,name:string,display_name:string
+}
+
+export interface IUser {
+          id?: number;
+        name: string;
+        email: string;
+        phone: string;
+        password?:string;
+        partner_code?:string
 }

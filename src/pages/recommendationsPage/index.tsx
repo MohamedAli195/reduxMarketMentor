@@ -26,6 +26,8 @@ import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import RecommendationsTable from './RecommendationsTable';
+import { useDeleteRecommendationMutation, useGetRecommendationsQuery } from 'app/features/Recommendations/RecommendationsSlice';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 
 // Fetch packages function
@@ -37,7 +39,18 @@ function RecommendationsPage({isDashBoard}:IProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
+
+
+    const { data,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+    useGetRecommendationsQuery({ page, perPage, search ,sort_direction: sort });
+  
+    const [deleteRecommendation] =useDeleteRecommendationMutation()
+      const {data:profile} = useGetProfileQuery()
+  const permissions = profile?.data.permissions
+  
+    const recommendations = data?.data?.data || [];
+    const totalItems = data?.data?.total || 0
   const [tempId, setTempId] = useState(1);
   const [tempIdUpdate, setTempIdUpdate] = useState(1);
   const { t, i18n } = useTranslation();
@@ -76,17 +89,7 @@ function RecommendationsPage({isDashBoard}:IProps) {
   // Columns configuration
 
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`recommendations-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort,'','recommendations'),
-  });
 
-  // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
-// console.log(data)
-
-  const totalItems = data?.data?.total;
   return (
     <>
     {
@@ -120,7 +123,7 @@ function RecommendationsPage({isDashBoard}:IProps) {
           
         </Stack>
         <RecommendationsTable 
-          data={data?.data?.data}
+          data={recommendations}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -133,20 +136,20 @@ function RecommendationsPage({isDashBoard}:IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 :  Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 :  Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
       {/* add modal */}
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('add-Recommendations')}</h2>
-        <AddRecommendationsForm handleClose={handleClose} refetch={refetch} />
+        <AddRecommendationsForm handleClose={handleClose} />
       </BasicModal>
 
-      <DeleteModal handleClosed={handleClosed}  opend={opend} refetch={refetch} tempId={tempId} deleteFunc={()=>{deleteAnyThing(tempId,refetch,'recommendations')}}/>
+      <DeleteModal handleClosed={handleClosed}  opend={opend}  tempId={tempId} deleteFunc={async()=>{ await deleteRecommendation(tempId)}}/>
 
       {/* update modal */}
       <BasicModal open={openU} handleClose={handleCloseU}>
@@ -154,8 +157,7 @@ function RecommendationsPage({isDashBoard}:IProps) {
         <UpdateRecommendationsForm
         redData={tempRecommandation}
           handleClose={handleCloseU}
-          refetch={refetch}
-          id={tempIdUpdate}
+
         />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />

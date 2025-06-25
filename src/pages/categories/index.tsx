@@ -50,7 +50,7 @@ const permissions = data?.data.permissions
 
   const categories = CategoriesFromRTK?.data?.data || [];
   const totalItems = CategoriesFromRTK?.data?.total || 0
-console.log(totalItems)
+
 
   // console.log(search)
  

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllData } from 'functions';
+import { useCreateRecommendationMutation } from 'app/features/Recommendations/RecommendationsSlice';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -20,7 +21,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-interface IFormInput {
+export interface IFormInputRecommendations {
   name: string;
   value:string
 }
@@ -44,28 +45,30 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function AddRecommendationsForm({ handleClose, refetch }: { handleClose: () => void; refetch: () => void }) {
+function AddRecommendationsForm({ handleClose }: { handleClose: () => void;  }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputRecommendations>();
   const url = import.meta.env.VITE_API_URL;
 //   console.log(apiRoles.data.data)
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+const [createRecommendation] = useCreateRecommendationMutation()
+  const onSubmit: SubmitHandler<IFormInputRecommendations> = async (data) => {
     try {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
+      // const headers = {
+      //   Authorization: `Bearer ${localStorage.getItem('token')}`,
+      //   'Content-Type': 'multipart/form-data',
+      // };
   
-      await axios.post(`${url}/admin/recommendations`, data, { headers });
+      // await axios.post(`${url}/admin/recommendations`, data, { headers });
+      await createRecommendation(data)
       toast.success(t('recommendations added successfully'));
       handleClose();
-      refetch();
+
     } catch (err) {
     //   console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));

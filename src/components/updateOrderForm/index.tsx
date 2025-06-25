@@ -8,6 +8,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useUpdateOrderStatusMutation } from 'app/features/Orders/ordersSlice';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -21,10 +22,10 @@ interface IFormInput {
 function UpdateOrderForm({
   handleClose,
   initialData,
-  refetch,
+
 }: {
   handleClose: () => void;
-  refetch: () => void;
+
   initialData?: null | {
     id: number;
     //   name: { en: string; ar: string };
@@ -35,6 +36,9 @@ function UpdateOrderForm({
   const { t } = useTranslation();
   const [status, setStats] = useState(initialData?.status);
   const url = import.meta.env.VITE_API_URL;
+
+  const [updateOrderStatus] = useUpdateOrderStatusMutation()
+  const id = initialData?.id
   useEffect(() => {
     // console.log({initialData})
     if (initialData) {
@@ -59,15 +63,16 @@ function UpdateOrderForm({
         'Content-Type': 'multipart/form-data',
       };
 
-      const response = await axios.post(
-        `${url}/admin/orders/${initialData?.id}/change-status`,
-        formData,
-        { headers },
-      );
+      // const response = await axios.post(
+      //   `${url}/admin/orders/${initialData?.id}/change-status`,
+      //   formData,
+      //   { headers },
+      // );
+
+      const response = await updateOrderStatus({id,formData})
 
       // console.log(response.data);
       toast.success('Order Status successfully');
-      refetch();
       handleClose();
     } catch (err) {
       console.error('Error updating order:', err);

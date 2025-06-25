@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { useCreateCustomerMutation } from 'app/features/Users/usersSlice';
 
 interface IFormInput {
     id: number;
@@ -14,7 +15,7 @@ interface IFormInput {
     partner_code:string
 }
 
-function AddCustomer({ handleClose, refetch }: { handleClose: () => void; refetch: () => void }) {
+function AddCustomer({ handleClose }: { handleClose: () => void }) {
   const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
@@ -23,7 +24,8 @@ function AddCustomer({ handleClose, refetch }: { handleClose: () => void; refetc
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
-
+const [createCustomer , {error}] = useCreateCustomerMutation()
+console.log(error)
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       // Create a FormData object and append the data
@@ -34,21 +36,13 @@ function AddCustomer({ handleClose, refetch }: { handleClose: () => void; refetc
       formData.append('password', data.password); // Access the first file in the FileList
       formData.append('partner_code', data.partner_code);
 
-      // Define headers with the token
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
 
-      const response = await axios.post(
-        `${url}admin/customers`,
-        formData,
-        { headers }
-      );
-
+      const response = await createCustomer(formData)
+      if(response.data?.code===200){
       toast.success('customer added successfully');
+
+      }
       handleClose();
-      refetch();
     } catch (err) {
       console.error('Error in adding customer:', err);
       toast.error('Failed to add customer, please check your input.');

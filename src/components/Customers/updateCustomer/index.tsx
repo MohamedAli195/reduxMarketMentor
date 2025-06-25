@@ -4,7 +4,9 @@ import {
     Stack,
     TextField,
   } from '@mui/material';
+import { useUpdateCustomerMutation } from 'app/features/Users/usersSlice';
   import axios from 'axios';
+import { IUser } from 'interfaces';
   import { useEffect } from 'react';
   import { useForm, SubmitHandler } from 'react-hook-form';
   import toast from 'react-hot-toast';
@@ -15,28 +17,24 @@ import { useTranslation } from 'react-i18next';
     name: string;
     email: string;
     phone: string;
-    partner_code:string
+    partner_code:string | undefined
   }
   
   function UpdateCustomerForm({
     handleClose,
     initialData,
-    refetch
+
   }: {
     handleClose: () => void;
-    refetch:()=>void;
-    initialData?: null | {
-      id: number;
-    //   name: { en: string; ar: string };
-    name: string;
-    email: string;
-    phone: string;
-    partner_code:string;
-    };
+
+    initialData?: null | IUser
   }) {
     const { register, setValue, handleSubmit } = useForm<IFormInput>();
     const { t } = useTranslation();
     const url = import.meta.env.VITE_API_URL;
+
+    const [updateCustomer] = useUpdateCustomerMutation()
+    const id = initialData?.id
     useEffect(() => {
         // console.log({initialData})
       if (initialData) {
@@ -59,23 +57,15 @@ import { useTranslation } from 'react-i18next';
         formData.append('name', data.name);
         formData.append('email', data.email);
         formData.append('phone', data.phone); // Access the first file in the FileList
-        formData.append('partner_code', data.partner_code);
-  
+        formData.append('partner_code', String(data.partner_code))
         // Define headers with the token
-        const headers = {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          'Content-Type': 'multipart/form-data',
-        };
+
   
-        const response = await axios.post(
-          `${url}/admin/customers/${initialData?.id}/update`,
-          formData,
-          { headers }
-        );
+        const response = await updateCustomer({id,formData})
   
-        // console.log(response.data);
+        console.log(response);
         toast.success('Package updated successfully');
-        refetch()
+
         handleClose();
   
       } catch (err) {

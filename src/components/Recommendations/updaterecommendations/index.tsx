@@ -5,6 +5,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
+import { useUpdateRecommendationMutation } from 'app/features/Recommendations/RecommendationsSlice';
+import { IFormInputRecommendations } from '../addRecommendations';
 
 
 // import { fetchPackage } from 'pages/packages/packagesFunct';
@@ -21,16 +23,11 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-interface IFormInput {
-  name: string;
-  value:string
-}
 
 function UpdateRecommendationsForm({
   redData,
   handleClose,
-  refetch,
-  id,
+
 }: {
   redData:{
     id:number;
@@ -38,13 +35,14 @@ function UpdateRecommendationsForm({
     value:string
   }
   handleClose: () => void;
-  refetch: () => void;
+ 
 
-  id: number;
 }) {
-  const { register, setValue, handleSubmit, watch } = useForm<IFormInput>();
+  const { register, setValue, handleSubmit, watch } = useForm<IFormInputRecommendations>();
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
+  const id = redData.id
+  const [updateRecommendation] = useUpdateRecommendationMutation()
 
   useEffect(() => {
     if (redData) {
@@ -56,17 +54,16 @@ function UpdateRecommendationsForm({
   }, []);
 
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<IFormInputRecommendations> = async (data) => {
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data',
       };
   
-      await axios.post(`${url}/admin/recommendations/${redData.id}/update`, data, { headers });
+      await updateRecommendation({id,data})
       toast.success(t('recommendations added successfully'));
       handleClose();
-      refetch();
     } catch (err) {
     //   console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));

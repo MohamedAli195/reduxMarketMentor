@@ -9,6 +9,7 @@ import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
 import { IREc, ITempPermissions } from 'interfaces';
 import SwitchStatus from 'components/Shared/switch';
+import { useUpdateRecommendationStatusMutation } from 'app/features/Recommendations/RecommendationsSlice';
 interface IProps {
   handleEditOpen:(val:IREc)=>void
   handleOpend:()=>void
@@ -16,7 +17,7 @@ interface IProps {
   data: IREc[];
 }
 function RecommendationsTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
-
+  console.log(data)
   const navigate = useNavigate();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },

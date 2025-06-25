@@ -57,16 +57,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function UpdateSubAdminForm({
-  handleClose,
-  refetch,
-  id,
-}: {
-  handleClose: () => void;
-  refetch: () => void;
-
-  id: number;
-}) {
+function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: number }) {
   const {
     register,
     setValue,
@@ -75,7 +66,6 @@ function UpdateSubAdminForm({
     control,
     formState: { errors },
   } = useForm<IFormInput>();
-
 
   const theme = useTheme();
   const { t } = useTranslation();
@@ -101,8 +91,6 @@ function UpdateSubAdminForm({
     queryFn: () => fetchOne(id, 'sub-admins'),
   });
 
-
-
   useEffect(() => {
     if (data) {
       setValue('name', data?.data?.name);
@@ -120,23 +108,21 @@ function UpdateSubAdminForm({
   // }, [selectedImage]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data)
+    console.log(data);
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data',
       };
 
-      const response =  await axios.post(`${url}/admin/sub-admins/${id}/update`, data, { headers });
+      const response = await axios.post(`${url}/admin/sub-admins/${id}/update`, data, { headers });
 
-      console.log(response)
+      console.log(response);
 
-      if(response.status===200){
-      toast.success(t('roles updated successfully'));
-      handleClose();
-      refetch();
+      if (response.status === 200) {
+        toast.success(t('roles updated successfully'));
+        handleClose();
       }
-
     } catch (err) {
       //   console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));
@@ -173,13 +159,13 @@ function UpdateSubAdminForm({
             {...control.register('email', { required: t('email') })}
           />
           <TextField
-                      fullWidth
-                      variant="outlined"
-                      id="password"
-                      type="password"
-                      label={t('password')}
-                      {...control.register('password')}
-                    />
+            fullWidth
+            variant="outlined"
+            id="password"
+            type="password"
+            label={t('password')}
+            {...control.register('password')}
+          />
           <FormControl sx={{ m: 1, width: '100%' }}>
             <InputLabel id="permissions-label">{t('Permissions')}</InputLabel>
             <Controller
@@ -238,7 +224,6 @@ function UpdateSubAdminForm({
         {t('UpdateSubAdmin')}
       </Button>
     </Box>
-
   );
 }
 
