@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
 } from '@mui/material';
+import { useCreateLectureMutation } from 'app/features/Lectuers/Lectuers';
 import axios from 'axios';
 import { t } from 'i18next';
 // import { fetchCategories } from 'pages/categories/categoriesFunct';
@@ -17,33 +18,21 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import paths from 'routes/path';
+import { IFormInputLectuers } from '../updateLectuerForm';
 
-interface IFormInput {
-  title: {
-    en: string;
-    ar: string;
-    fr: string;
-  };
-  description: {
-    en: string;
-    ar: string;
-    fr: string;
-  };
-  course_id: string | undefined;
-  video_url: string;
-  duration: string;
-}
 
-function AddCourseLectuerForm({ handleClose, refetch ,vid }: {vid: string | undefined ,handleClose: () => void; refetch: () => void }) {
+
+function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,handleClose: () => void; }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
     watch,
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputLectuers>();
+  const [createLecture] = useCreateLectureMutation()
   const url = import.meta.env.VITE_API_URL;
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<IFormInputLectuers> = async (data) => {
     // console.log(data);
     try {
       const formData = new FormData();
@@ -57,17 +46,11 @@ function AddCourseLectuerForm({ handleClose, refetch ,vid }: {vid: string | unde
       formData.append('duration', data.duration);
       formData.append('course_id', vid || ''); // Ensure course_id is included
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-
-      const response = await axios.post(`${url}/admin/course-lectures`, formData, { headers });
+      await createLecture(data)
 
       // console.log(response.data);
       toast.success('course lectuer added successfully');
          handleClose();
-      refetch();
     } catch (err) {
       // console.error('Error adding course lectuer:', err);
       toast.error('Failed to add course lectuer, please check your input.');

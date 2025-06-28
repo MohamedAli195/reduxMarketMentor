@@ -15,7 +15,6 @@ const CategoriesPage = lazy(() => import('pages/categories'));
 const CustomersPage = lazy(() => import('pages/customers'));
 const OrdersPage = lazy(() => import('pages/orders'));
 const CoursesPage = lazy(() => import('pages/courses'));
-const AddCoursePage = lazy(() => import('pages/courses/AddCoursePage'));
 const PermissionsPage = lazy(() => import('pages/permissions'));
 const RecommendationsPage = lazy(() => import('pages/recommendationsPage'));
 const SubAdminsPage = lazy(() => import('pages/subadmins'));
@@ -25,7 +24,6 @@ const PackagesPage = lazy(() => import('pages/packages'));
 const PackageDetails = lazy(() => import('pages/packages/PackageDetails'));
 const CategoriesDetails = lazy(() => import('pages/categories/CategoriesDetails'));
 const CourseDetails = lazy(() => import('pages/courses/CourseDetails'));
-const CourseUpdate = lazy(() => import('pages/courses/CourseUpdate'));
 const LectuerDetails = lazy(() => import('components/lectuerTable/LectuerDetails'));
 const ViewCustomer = lazy(() => import('components/Customers/ViewCustomer'));
 const RecommendationsDetails = lazy(
@@ -113,17 +111,6 @@ export const routes = [
                 {' '}
                 <ProtectedRoute redirect={paths.login}>
                   <CoursesPage isDashBoard={false} />
-                </ProtectedRoute>
-              </Suspense>
-            ),
-          },
-
-          {
-            path: `${paths.courses}/add`,
-            element: (
-              <Suspense fallback={<PageLoader />}>
-                <ProtectedRoute redirect={paths.login}>
-                  <AddCoursePage />
                 </ProtectedRoute>
               </Suspense>
             ),
@@ -221,17 +208,6 @@ export const routes = [
               <Suspense fallback={<PageLoader />}>
                 <ProtectedRoute redirect={paths.login}>
                   <CourseDetails />
-                </ProtectedRoute>
-              </Suspense>
-            ),
-          },
-
-          {
-            path: `${paths.courses}/update/:id`, // Fixed typo
-            element: (
-              <Suspense fallback={<PageLoader />}>
-                <ProtectedRoute redirect={paths.login}>
-                  <CourseUpdate />
                 </ProtectedRoute>
               </Suspense>
             ),

@@ -12,6 +12,7 @@ import AddCourseForm from 'components/Courses/AddCourseForm';
 import AddCourseLectuerForm from 'components/CourseLectuers/AddCourseLectuerForm';
 import { useState } from 'react';
 import useLeactuerTable from 'components/lectuerTable/useLeactuerTable';
+import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
 
 function CourseDetails() {
   const { id } = useParams();
@@ -20,16 +21,17 @@ function CourseDetails() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const { refetch: lectuerRefetch } = useLeactuerTable();
 
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: ['CourseDetails', id],
-    queryFn: () => fetchOne(id, 'courses'),
-  });
-
+  // const { data, error, isLoading, isError, refetch } = useQuery({
+  //   queryKey: ['CourseDetails', id],
+  //   queryFn: () => fetchOne(id, 'courses'),
+  // });
+  const {data ,isLoading,isError ,error} = useGetCourseQuery(id)
+const course = data?.data
+console.log(course)
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
-  console.log(data);
+  // if (isError) return <p>Error: {error}</p>;
+
   return (
     <>
       <Stack flexDirection={'row'} justifyContent={'space-between'}>
@@ -38,7 +40,7 @@ function CourseDetails() {
         </Typography>
       </Stack>
 
-      <ViewCoursForm initialData={data?.data} />
+      <ViewCoursForm initialData={course} />
 
       <Box>
         <Button variant="contained" color="info" onClick={handleOpen} sx={{marginY:4 }}>
@@ -50,7 +52,7 @@ function CourseDetails() {
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('AddCourse')}</h2>
 
-        <AddCourseLectuerForm vid={id} handleClose={handleClose} refetch={lectuerRefetch} />
+        <AddCourseLectuerForm vid={id} handleClose={handleClose} />
       </BasicModal>
     </>
   );

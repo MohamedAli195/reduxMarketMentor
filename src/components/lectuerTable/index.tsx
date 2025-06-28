@@ -11,6 +11,7 @@ import LecturerTableContent from './LectuersTable';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import UpdateLectuerForm from 'components/CourseLectuers/updateLectuerForm';
 import useLeactuerTable from './useLeactuerTable';
+import { useDeleteLectureMutation } from 'app/features/Lectuers/Lectuers';
 
 
 interface IProps {
@@ -32,18 +33,17 @@ function LecturerTable({ isDashBoard }: IProps) {
     opend,
     handleClosed,
     selectedCategory,
-    refetch,
     page,
     setPage,
-    per,
+    perPage,
     setper,
-    extractData,
+    lecters,
     isLoading,
     isError,
     totalItems
   } = useLeactuerTable()
     
-
+  const [deleteLecture] =useDeleteLectureMutation()
   const { t } = useTranslation();
 
   if (isLoading) {
@@ -65,7 +65,7 @@ function LecturerTable({ isDashBoard }: IProps) {
         </Stack>
 
         <LecturerTableContent
-          data={extractData}
+          data={lecters}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -79,10 +79,10 @@ function LecturerTable({ isDashBoard }: IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={Math.max(1, Math.ceil(totalItems / per))}
+            pageCounter={Math.max(1, Math.ceil(totalItems / perPage))}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>
       </Paper>
 
@@ -93,16 +93,15 @@ function LecturerTable({ isDashBoard }: IProps) {
         <UpdateLectuerForm
           handleClose={handleCloseU}
           initialData={selectedCategory}
-          refetch={refetch}
+
         />
       </BasicModal>
 
       <DeleteModal
         handleClosed={handleClosed}
         opend={opend}
-        refetch={refetch}
         tempId={tempId}
-        deleteFunc={() => deleteAnyThing(tempId, refetch, 'course-lectures')}
+        deleteFunc={() => deleteLecture(tempId)}
       />
 
       <Toaster position="bottom-center" reverseOrder={false} />

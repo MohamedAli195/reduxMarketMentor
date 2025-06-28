@@ -7,14 +7,14 @@ import { Navigate, useNavigate } from 'react-router-dom';
 // import { ICompany } from 'interfaces';
 import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
-import { ICategory, ICustomer, IFormInputCourses, IPackageLectuerSelected } from 'interfaces';
+import { ICategory, ICourseLectuer, ICustomer, IFormInputCourses, IPackageLectuerSelected } from 'interfaces';
 import { checkPermissions, parsedData } from 'functions';
 import SwitchStatus from 'components/Shared/switch';
 interface IProps {
   handleEditOpen:(val:IPackageLectuerSelected)=>void
   handleOpend:()=>void
   setTempId:(val:number)=>void
-  data: IPackageLectuerSelected[];
+  data: ICourseLectuer[];
 }
 function LectuerTables({data,handleEditOpen,setTempId,handleOpend}: IProps) {
   // console.log(data)
@@ -71,7 +71,7 @@ function LectuerTables({data,handleEditOpen,setTempId,handleOpend}: IProps) {
 
   const rows =
     data?.length > 0
-      ? data.map((lectuer: IPackageLectuerSelected) => ({
+      ? data.map((lectuer: ICourseLectuer) => ({
           ...lectuer,
         }))
       : [];

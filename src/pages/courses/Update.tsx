@@ -11,6 +11,8 @@ import { styled } from '@mui/material/styles';
 
 import { CloudUpload } from 'lucide-react';
 import { fetchPackagesOrCAtegoriesForCourses } from 'functions';
+import { useUpdateCourseMutation } from 'app/features/Courses/coursesSlice';
+import { ICourse } from 'interfaces';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -26,7 +28,7 @@ const VisuallyHiddenInput = styled('input')({
 
 export interface IPackageRes {
   code: number;
-  data:{
+  data: {
     data: {
       id: number;
       image: string;
@@ -34,8 +36,7 @@ export interface IPackageRes {
       price: string;
       status: string;
     }[];
-  }
-  
+  };
 }
 
 interface IFormInputCourses {
@@ -74,27 +75,28 @@ interface IFormInputCourses {
     fr: string;
   };
 }
-function UpdateCourse(props: IFormInputCourses) {
-
-  const [catState, setCatState] = useState(props.category.id);
-  const [coursLangState, setCoursLangState] = useState(props.course_lang);
-  const [coursLevelState, setcoursLevelState] = useState(props.course_level);
-  const [pacState, setpacState] = useState(props.package?.id);
-
+interface IProps {
+  course: ICourse | undefined;
+}
+function UpdateCourse({ course }: IProps) {
+  const [catState, setCatState] = useState(course?.category.id);
+  const [coursLangState, setCoursLangState] = useState(course?.course_lang);
+  const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
+  const [pacState, setpacState] = useState(course?.package?.id);
+  const id = course?.id;
   // console.log(catState);
   const [categories, setCategories] = useState<IPackageRes>({
     code: 0,
-    data:{
+    data: {
       data: [],
-    }
-    
+    },
   });
 
   const [packages, setPackages] = useState<IPackageRes>({
     code: 0,
-    data:{
+    data: {
       data: [],
-    }
+    },
   });
 
   const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
@@ -106,9 +108,9 @@ function UpdateCourse(props: IFormInputCourses) {
     watch,
     formState: { errors },
   } = useForm<IFormInputCourses>();
-
+  const [updateCourse] = useUpdateCourseMutation();
   const [previewImage, setPreviewImage] = useState<string | null>(
-    typeof props.image === "string" ? props.image : null
+    typeof course?.image === 'string' ? course?.image : null,
   );
   const selectedImage = watch('image');
 
@@ -137,27 +139,37 @@ function UpdateCourse(props: IFormInputCourses) {
   }, []);
 
   useEffect(() => {
-    if (props) {
-      setValue('name.en', props.name.en);
-      setValue('name.ar', props.name.ar);
-      setValue('name.fr', props.name.fr);
-      setValue('price', props.price);
-      setValue('main_video', props.main_video);
-      setValue('course_duration', props.course_duration);
-      setValue('course_level', coursLevelState);
-      setValue('course_lang', coursLangState);
-      setValue('priceAfterDiscount', props.priceAfterDiscount);
-      setValue('category.id', pacState);
-      setValue('package.id', catState);
-      setValue('description.en', props.description.en);
-      setValue('description.ar', props.description.ar);
-      setValue('description.fr', props.description.fr);
+    if (course) {
+      setValue('name.en', course.name.en);
+      setValue('name.ar', course.name.ar);
+      setValue('name.fr', course.name.fr);
+      setValue('price', course.price);
+      setValue('main_video', course.main_video);
+      setValue('course_duration', course.course_duration);
+      if (coursLevelState) {
+        setValue('course_level', coursLevelState);
+      }
+      if (coursLangState) {
+        setValue('course_lang', coursLangState);
+      }
 
-      if (typeof props.image === 'string') {
-        setPreviewImage(props.image);
+      setValue('priceAfterDiscount', course.priceAfterDiscount);
+      if (pacState) {
+        setValue('category.id', pacState);
+      }
+
+      if (catState) {
+        setValue('package.id', catState);
+      }
+      setValue('description.en', course.description.en);
+      setValue('description.ar', course.description.ar);
+      setValue('description.fr', course.description.fr);
+
+      if (typeof course.image === 'string') {
+        setPreviewImage(course.image);
       }
     }
-  }, [props, setValue]);
+  }, [course, setValue]);
 
   useEffect(() => {
     if (selectedImage && selectedImage.length > 0) {
@@ -182,11 +194,11 @@ function UpdateCourse(props: IFormInputCourses) {
       formData.append('price', data.price);
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
-      formData.append('course_level', coursLevelState);
-      formData.append('course_lang', coursLangState);
+     if (coursLevelState) formData.append('course_level', coursLevelState);
+      if (coursLangState) formData.append('course_lang', coursLangState);
       formData.append('price_after_discount', data.priceAfterDiscount);
-      formData.append('package_id', pacState.toString());
-      formData.append('category_id', catState.toString());
+     if(pacState) formData.append('package_id', pacState.toString());
+    if(catState)  formData.append('category_id', catState.toString());
       formData.append('description[en]', data.description.en);
       formData.append('description[ar]', data.description.ar);
       formData.append('description[fr]', data.description.ar);
@@ -196,15 +208,15 @@ function UpdateCourse(props: IFormInputCourses) {
         'Content-Type': 'multipart/form-data',
       };
 
-      const response = await axios.post(
-        `${url}/admin/courses/${props.id}/update`,
-        formData,
-        { headers },
-      );
+      // const response = await axios.post(
+      //   `${url}/admin/courses/${props.id}/update`,
+      //   formData,
+      //   { headers },
+      // );
+      await updateCourse({ id, formData });
 
       toast.success('Course added successfully');
     } catch (err) {
-
       console.error('Error updating course:', err);
       toast.error('Failed to add course, please check your input.');
     }
@@ -216,14 +228,14 @@ function UpdateCourse(props: IFormInputCourses) {
     <>
       <Box
         sx={{
-          mt: { sm: 5, xs: 2.5 },
-          width: '50%',
+   
         }}
         component="form"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Stack spacing={3}>
           {/* Name Fields */}
+          <Stack display={'flex'} flexDirection={'row'}>
           <TextField
             fullWidth
             variant="outlined"
@@ -248,7 +260,8 @@ function UpdateCourse(props: IFormInputCourses) {
             helperText={errors.name?.fr?.message}
             {...register('name.fr', { required: 'name franc is requirded' })}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           {/* Description Fields */}
           <TextField
             fullWidth
@@ -282,7 +295,8 @@ function UpdateCourse(props: IFormInputCourses) {
               required: 'desc france is required',
             })}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           <TextField
             select
             fullWidth
@@ -311,31 +325,27 @@ function UpdateCourse(props: IFormInputCourses) {
           </TextField>
 
           <Button
-          component="label"
-          role={undefined}
-          variant="outlined"
-          tabIndex={-1}
-          startIcon={<CloudUpload />}
-          
-        >
-          Upload Image
-          <VisuallyHiddenInput
-            type="file"
-            {...register('image')}
-            multiple
-          />
-        </Button>
+            component="label"
+            role={undefined}
+            variant="outlined"
+            tabIndex={-1}
+            startIcon={<CloudUpload />}
+          >
+            Upload Image
+            <VisuallyHiddenInput type="file" {...register('image')} multiple />
+          </Button>
 
-        {previewImage && (
-          <Box sx={{ mt: 2 }}>
-            <img
-              src={previewImage}
-              alt={t('Preview')}
-              style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
-            />
-          </Box>
-        )}
-
+          {previewImage && (
+            <Box sx={{ mt: 2 }}>
+              <img
+                src={previewImage}
+                alt={t('Preview')}
+                style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
+              />
+            </Box>
+          )}
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           {/* Other Inputs */}
           <TextField
             fullWidth
@@ -355,7 +365,8 @@ function UpdateCourse(props: IFormInputCourses) {
             helperText={errors.main_video?.message}
             {...register('main_video', { required: t('MainVideoURLReq') })}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           <TextField
             id="Course Duration"
             fullWidth
@@ -407,13 +418,14 @@ function UpdateCourse(props: IFormInputCourses) {
               marginBottom: 2, // Add margin to separate this field visually from the next
             }}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           {/* Category */}
-          <label htmlFor="package">Category</label>
 
           <TextField
             select
             id="Category"
+            label={t("category")}
             // error={!!errors.category_id}
             // helperText={errors.category_id?.message}
             value={catState || ''}
@@ -434,9 +446,9 @@ function UpdateCourse(props: IFormInputCourses) {
               </MenuItem>
             ))}
           </TextField>
-          <label htmlFor="package">Package</label>
           <TextField
             select
+            label={t("package")}
             id="package"
             {...register('package.id')}
             value={pacState || ''} // Fallback to an empty string if undefined
@@ -455,7 +467,7 @@ function UpdateCourse(props: IFormInputCourses) {
             ))}
           </TextField>
         </Stack>
-
+</Stack>
         <Button
           color="primary"
           variant="contained"

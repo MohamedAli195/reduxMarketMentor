@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
+import { useDeleteLectureMutation, useGetLecturesQuery } from 'app/features/Lectuers/Lectuers';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 import { fetchLectuers } from 'functions';
-import { ICategory, IPackageLectuerSelected } from 'interfaces';
+import { ICategory, ICourseLectuer, IPackageLectuerSelected } from 'interfaces';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -18,12 +21,11 @@ import { useParams } from 'react-router-dom';
   opend: boolean;
   handleClosed: () => void;
   selectedCategory: IPackageLectuerSelected | null;
-  refetch: () => void;
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  per: number;
+  perPage: number;
   setper: React.Dispatch<React.SetStateAction<number>>;
- extractData: IPackageLectuerSelected[];
+ lecters: ICourseLectuer[];
   isLoading: boolean;
   isError: boolean;
   totalItems:number
@@ -31,11 +33,10 @@ import { useParams } from 'react-router-dom';
 
 const useLeactuerTable = (): UseLecturerTableReturn => {
   const [page, setPage] = useState(1);
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [tempId, setTempId] = useState(1);
-  const { id } = useParams();
 
   // delete modal
   const [opend, setOpend] = useState(false);
@@ -54,43 +55,40 @@ const useLeactuerTable = (): UseLecturerTableReturn => {
 
   
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`Lectuers-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchLectuers(id, page, per, search, sort),
-  });
+  const { data,isError, error, isLoading, isFetching, isSuccess } = 
+  useGetLecturesQuery({ page, perPage, search ,sort_direction: sort });
 
-  // console.log(data)
+console.log(data)
+console.log(error)
+    const {data:profile} = useGetProfileQuery()
+const permissions = profile?.data.permissions
 
-  // console.log(data.data.data);
-  // Prepare rows for DataGrid
-
-  const totalItems = data?.data?.total;
-  const extractData = data?.data?.data;
+  const lecters = data?.data?.data || [];
+  const totalItems = data?.data?.total || 0
   return {
-    sort,
-    setSort,
-    search,
-    setSearch,
-    tempId,
-    setTempId,
-    openU,
-    handleCloseU,
-    handleEditOpen,
-    handleOpend,
-    opend,
-    handleClosed,
-    selectedCategory,
-    refetch,
-    page,
-    setPage,
-    per,
-    setper,
-    extractData,
-    isLoading,
-    isError,
-    totalItems
-  };
+  sort,
+  setSort,
+  search,
+  setSearch,
+  tempId,
+  setTempId,
+  openU,
+  handleCloseU,
+  handleEditOpen,
+  handleOpend,
+  opend,
+  handleClosed,
+  selectedCategory,
+  page,
+  setPage,
+  perPage,
+  setper,
+ lecters,
+  isLoading,
+  isError,
+  totalItems
+
+}
 };
 
 export default useLeactuerTable;

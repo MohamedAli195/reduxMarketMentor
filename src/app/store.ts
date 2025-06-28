@@ -19,6 +19,8 @@ import { customersApi } from "./features/Users/usersSlice";
 import { ordersApi } from "./features/Orders/ordersSlice";
 import { subAdminApi } from "./features/subAdmins/subAdmins";
 import { recommendationsApi } from "./features/Recommendations/RecommendationsSlice";
+import { coursesApi } from "./features/Courses/coursesSlice";
+import { leactuersApi } from "./features/Lectuers/Lectuers";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -45,6 +47,8 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [subAdminApi.reducerPath]: subAdminApi.reducer,
     [recommendationsApi.reducerPath]: recommendationsApi.reducer,
+    [coursesApi.reducerPath]: coursesApi.reducer,
+    [leactuersApi.reducerPath]: leactuersApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -61,6 +65,8 @@ export const store = configureStore({
       ordersApi.middleware,
       subAdminApi.middleware,
       recommendationsApi.middleware,
+      coursesApi.middleware,
+      leactuersApi.middleware,
       
 
     ),

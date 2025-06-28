@@ -1,29 +1,21 @@
 import { Button, Stack, Typography, Box } from '@mui/material';
-import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import paths from 'routes/path';
 import { useTranslation } from 'react-i18next';
-import { ICourse, ICourseSelect, IFormInputCourses } from 'interfaces';
-import { Eye, Trash2, Pencil } from 'lucide-react';
+import { ICourse  } from 'interfaces';
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-
 import BasicModal from 'components/Shared/modal/ShareModal';
-
 import DeleteModal from 'components/deleteModal';
-import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
-
+import { checkPermissions } from 'functions';
 import AddCourseForm from 'components/Courses/AddCourseForm';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import SelectSort from 'components/Shared/selectSort';
-import SkeletonTables from 'components/Shared/skelton';
-import SwitchStatus from 'components/Shared/switch';
 import CustomersTable from './CoursesTable';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+import { useDeleteCourseMutation, useGetCoursesQuery } from 'app/features/Courses/coursesSlice';
+import UpdateCourse from './Update';
 
 // Fetch packages function
 interface IProps {
@@ -32,11 +24,23 @@ interface IProps {
 function CoursesPage({ isDashBoard }: IProps) {
   // states
   const [page, setPage] = useState(1);
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [tempId, setTempId] = useState(1);
-  const navigate = useNavigate();
+
+  const { data,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
+  useGetCoursesQuery({ page, perPage, search ,sort_direction: sort });
+
+  const [deleteCourse] =useDeleteCourseMutation()
+    const {data:profile} = useGetProfileQuery()
+const permissions = profile?.data.permissions
+
+  const courses = data?.data?.data || [];
+  const totalItems = data?.data?.total || 0
+
+
+
   const { t, i18n } = useTranslation();
 
     // add modal
@@ -44,33 +48,33 @@ function CoursesPage({ isDashBoard }: IProps) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
   // update modal
-  const [openU, setOpenU] = useState(false);
-  const handleOpenU = () => setOpenU(true);
-  const handleCloseU = () => setOpenU(false);
+  const [openUp, setOpenUp] = useState(false);
+  const handleOpenUp = () => setOpenUp(true);
+  const handleCloseUp = () => setOpenUp(false);
   // delete modal
   const [opend, setOpend] = useState(false);
   const handleOpend = () => setOpend(true);
   const handleClosed = () => setOpend(false);
   // Define a state to store selected package data
-  const [selectedCourse, setSelectedCourse] = useState<null | IFormInputCourses | undefined>(null);
-  const handleEditOpen = (packageData: IFormInputCourses) => {
+  const [selectedCourse, setSelectedCourse] = useState<ICourse | undefined>();
+  const handleEditOpen = (packageData: ICourse) => {
     setSelectedCourse(packageData); // Set selected package data
-    handleOpenU(); // Open the update modal
+    handleOpenUp(); // Open the update modal
   };
   // Columns configuration
 
 
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`courses-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'courses'),
-  });
+  // // Fetch packages using React Query
+  // const { data, error, isLoading, isError, refetch } = useQuery({
+  //   queryKey: [`courses-${page}-${per}-${search}-${sort}`],
+  //   queryFn: () => fetchAllData(page, per, search, sort, '', 'courses'),
+  // });
 
-  // Prepare rows for DataGrid
-  // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
-  // console.log(data)
-  const totalItems = data?.data?.total;
+  // // Prepare rows for DataGrid
+  // // if (isLoading) return <SkeletonTables />;
+  // if (isError) return <p>Error: {error.message}</p>;
+  // // console.log(data)
+  // const totalItems = data?.data?.total;
   return (
     <>
       {isDashBoard ? (
@@ -88,7 +92,7 @@ function CoursesPage({ isDashBoard }: IProps) {
           </Typography>
 
           {
-            checkPermissions(parsedData,'add-course') &&  <Button variant="contained" color="info" onClick={() => handleOpen()}>
+            checkPermissions(permissions,'add-course') &&  <Button variant="contained" color="info" onClick={() => handleOpen()}>
             {t('AddCourse')}
           </Button>
           }
@@ -111,7 +115,7 @@ function CoursesPage({ isDashBoard }: IProps) {
         )}
 
 <CustomersTable
-          data={data?.data?.data}
+          data={courses}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -125,27 +129,32 @@ function CoursesPage({ isDashBoard }: IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 : Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 : Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>
       </Paper>
 
       <DeleteModal
         handleClosed={handleClosed}
         opend={opend}
-        refetch={refetch}
         tempId={tempId}
         deleteFunc={() => {
-          deleteAnyThing(tempId, refetch, 'courses');
+          deleteCourse(tempId);
         }}
       />
 
        {/* add modal */}
        <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('AddCourse')}</h2>
-        <AddCourseForm handleClose={handleClose} refetch={refetch} />
+        <AddCourseForm handleClose={handleClose} />
+      </BasicModal>
+
+             {/* update modal */}
+       <BasicModal open={openUp} handleClose={handleCloseUp}>
+        <h2>{t('AddCourse')}</h2>
+        <UpdateCourse  course={selectedCourse} />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

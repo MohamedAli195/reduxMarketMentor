@@ -133,7 +133,6 @@ function PermissionsPage({ isDashBoard }: IProps) {
       <DeleteModal
         handleClosed={handleClosed}
         opend={opend}
-        refetch={refetch}
         tempId={tempId}
         deleteFunc={() => {
           deleteAnyThing(tempId, refetch, 'roles');

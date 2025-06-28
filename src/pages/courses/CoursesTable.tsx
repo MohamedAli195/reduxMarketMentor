@@ -8,20 +8,22 @@ import i18n from 'i18n';
 import paths from 'routes/path';
 import SwitchStatus from 'components/Shared/switch';
 import { checkPermissions, parsedData } from 'functions';
-import { IFormInputCourses } from 'interfaces';
+import { ICourse, IFormInputCourses } from 'interfaces';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 interface IProps {
-  handleEditOpen: (val: IFormInputCourses) => void;
+  handleEditOpen: (val: ICourse) => void;
   handleOpend: () => void;
   setTempId: (val: number) => void;
-  data: IFormInputCourses[];
+  data: ICourse[];
   isDashBoard: boolean;
 }
 
 const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBoard }: IProps) => {
   const navigate = useNavigate();
   const isArabic = i18n.language === 'ar';
-
+    const {data:profile} = useGetProfileQuery()
+const permissions = profile?.data.permissions
   const columns: GridColDef[] = isDashBoard
     ? [
         { field: 'id', headerName: 'ID', width: 30, headerAlign: isArabic ? 'right' : 'left' },
@@ -115,7 +117,7 @@ const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBo
                 width: '100%',
               }}
             >
-              {checkPermissions(parsedData, 'delete-course') && (
+              {checkPermissions(permissions, 'delete-course') && (
                 <Button
                   variant="contained"
                   color="error"
@@ -127,7 +129,7 @@ const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBo
                   <Trash2 />
                 </Button>
               )}
-              {checkPermissions(parsedData, 'show-courses') && (
+              {checkPermissions(permissions, 'show-courses') && (
                 <Button
                   variant="contained"
                   color="info"
@@ -136,11 +138,11 @@ const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBo
                   <Eye />
                 </Button>
               )}
-              {checkPermissions(parsedData, 'edit-course') && (
+              {checkPermissions(permissions, 'edit-course') && (
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate(`${paths.courses}/update/${params.row.id}`)}
+                  onClick={() => handleEditOpen(params.row)}
                 >
                   <Pencil />
                 </Button>

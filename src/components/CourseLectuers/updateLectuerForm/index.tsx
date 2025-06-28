@@ -1,5 +1,6 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { useUpdateLectureMutation } from 'app/features/Lectuers/Lectuers';
 import axios from 'axios';
 import { fetchOne } from 'functions';
 import { IPackageLectuerSelected } from 'interfaces';
@@ -9,7 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-interface IFormInput {
+export interface IFormInputLectuers {
   title: {
     en: string;
     ar: string;
@@ -28,10 +29,10 @@ interface IFormInput {
 function UpdateLectuerForm({
   handleClose,
   initialData,
-  refetch
+
 }: {
   handleClose: () => void;
-  refetch:()=>void
+
   initialData?: null | IPackageLectuerSelected
 }) {
   const {
@@ -40,16 +41,15 @@ function UpdateLectuerForm({
     formState: { errors },
     setValue,
     watch,
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputLectuers>();
   const { t } = useTranslation();
-  const { id } = useParams();
-
+const [updateLecture] = useUpdateLectureMutation()
   // const { data, error, isLoading, isError, refetch } = useQuery({
   //   queryKey: [`Lectuers-${id}`],
   //   queryFn: () => fetchOne(id,'course-lectures'),
   // });
   // console.log(data?.data);
-
+const id = initialData?.id
   const url = import.meta.env.VITE_API_URL;
   useEffect(() => {
 
@@ -67,22 +67,14 @@ function UpdateLectuerForm({
     }
   }, [initialData, setValue]);
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<IFormInputLectuers> = async (data) => {
+
     try {
       
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
 
-      const response = await axios.post(
-        `${url}/admin/course-lectures/${initialData?.id}/update`,
-        data,
-        { headers },
-      );
-      refetch()
+await updateLecture({id,data})
+
       handleClose()
       // console.log(response.data);
       toast.success('course lectuer updated successfully');

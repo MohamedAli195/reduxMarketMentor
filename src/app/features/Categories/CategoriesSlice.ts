@@ -42,11 +42,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
   }),
   tagTypes: ["Categories"], // ✅ Define tag type
   endpoints: (builder) => ({
-    getCategories: builder.query<Ires, { search?: string; page: number; perPage: number,sort_direction:string }>({
-      query: ({ search = '', page = 1, perPage = 1 ,sort_direction='desc' }) => {
+    getCategories: builder.query<Ires, { search?: string; page?: number; perPage?: number,sort_direction?:string }>({
+      query: ({ search = '', page = 1, perPage ,sort_direction='desc' }) => {
         const params = new URLSearchParams();
         params.append('page', page.toString());
-        params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
+        if(perPage){
+params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
+        }
+        
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     

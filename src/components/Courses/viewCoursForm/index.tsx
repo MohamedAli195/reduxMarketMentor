@@ -1,4 +1,5 @@
 import { Avatar, Box, Stack, TextField, useTheme } from '@mui/material';
+import { ICourse } from 'interfaces';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -28,31 +29,7 @@ interface IFormInput {
   };
 }
 
-function ViewCoursForm({
-  initialData,
-}: {
-  initialData?: {
-    id: number;
-    name: { en: string; ar: string };
-    price: string;
-    image: FileList | string; // allow either FileList or URL string
-    main_video: string;
-    course_duration: string;
-    course_level: string;
-    course_lang: string;
-    priceAfterDiscount: string;
-
-    category: {
-      id: number;
-      name: {
-        ar: string;
-        en: string;
-      };
-    };
-    description: { en: string; ar: string };
-    status: string | null;
-  };
-}) {
+function ViewCoursForm({ initialData }: { initialData?: ICourse | undefined }) {
   const { register, setValue } = useForm<IFormInput>();
   const theme = useTheme();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -198,22 +175,19 @@ function ViewCoursForm({
             />
 
             {/* Language Field */}
-
-            
-
           </Stack>
-<Stack display={'flex'} flexDirection={'row'}>
-              {/* Category and Package Fields */}
-              <TextField
-                fullWidth
-                variant="outlined"
-                id="course_lang"
-                type="text"
-                label="Course Language"
-                sx={{ color: theme.palette.text.primary }}
-                {...register('course_lang')}
-              />
-                          <TextField
+          <Stack display={'flex'} flexDirection={'row'}>
+            {/* Category and Package Fields */}
+            <TextField
+              fullWidth
+              variant="outlined"
+              id="course_lang"
+              type="text"
+              label="Course Language"
+              sx={{ color: theme.palette.text.primary }}
+              {...register('course_lang')}
+            />
+            <TextField
               fullWidth
               variant="outlined"
               id="category.name"
@@ -231,7 +205,7 @@ function ViewCoursForm({
               sx={{ color: theme.palette.text.primary }}
               {...register('category.name.ar')}
             />
-            </Stack>
+          </Stack>
           {/* Image Preview */}
         </Stack>
         <Box width={'100%'}>
