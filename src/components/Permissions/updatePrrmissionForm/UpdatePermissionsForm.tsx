@@ -19,7 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllData, fetchOne } from 'functions';
-import { IPermissions, ITempPermissions } from 'interfaces';
+import { IPermissions, IRole, ITempPermissions } from 'interfaces';
+import { useUpdateRoleMutation } from 'app/features/Roles/roles';
+import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -63,15 +65,14 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 function UpdatePermissionsForm({
   handleClose,
-  refetch,
   tempPermission,
 }: {
   handleClose: () => void;
-  refetch: () => void;
-  tempPermission: ITempPermissions | undefined;
+  tempPermission: IRole | undefined;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
+    const [updateRole] =useUpdateRoleMutation()
   const {
     control,
     handleSubmit,
@@ -84,25 +85,21 @@ function UpdatePermissionsForm({
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [per, setPer] = useState(10);
+const id = tempPermission?.id;
 
-  const url = import.meta.env.VITE_API_URL;
-  const {
+const {
     data: apiPermissions,
     error: errorPermissions,
     isLoading: isLoadingpermissions,
     isError: iserrorpermissions,
-  } = useQuery({
-    queryKey: [`permissions-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'roles/permissions'),
-  });
-
-  // console.log(tempPermission);
+  } = useGetPermissionsQuery()
+   console.log(apiPermissions);
 
   useEffect(() => {
     if (tempPermission) {
       setValue('name', tempPermission?.name);
-      setValue('display_name.en', tempPermission?.display_nameEn);
-      setValue('display_name.ar', tempPermission?.display_nameAr);
+      setValue('display_name.en', tempPermission?.display_name?.en);
+      setValue('display_name.ar', tempPermission?.display_name?.ar);
       setValue(
         'permissions',
         tempPermission?.permissions.map((perm) => perm.name) || []
@@ -112,35 +109,17 @@ function UpdatePermissionsForm({
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
 
-      const resonse = await axios.post(`${url}/admin/roles/${tempPermission?.id}/update`, data, { headers });
+      await  updateRole({ id, data })
 
       // console.log(resonse);
       toast.success(t('roles added successfully'));
       handleClose();
-      refetch();
     } catch (err) {
       // console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));
     }
   };
-
-  //   if (isLoading) {
-  //     return (
-  //       <Box sx={{ width: '100%' }}>
-  //         <Skeleton variant="rectangular" width="100%" height={40} />
-  //       </Box>
-  //     );
-  //   }
-
-  //   if (isError) {
-  //     return <p>{t('Failed to fetch permissions. Please try again later.')}</p>;
-  //   }
-
   return (
     <Box
       sx={{
@@ -237,7 +216,7 @@ function UpdatePermissionsForm({
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
       >
-        {t('addPermissions')}
+        {t('updatePermissions')}
       </Button>
     </Box>
   );

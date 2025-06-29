@@ -19,6 +19,7 @@ import { fetchCountOfNotifications, fetchNotifications, readNotification } from 
 import i18n from 'i18n';
 import { useState } from 'react';
 import SimpleBar from 'simplebar-react';
+import { useGetCountOfNotificationsQuery, useGetNotificationsQuery, useReadNotificationMutation } from 'app/features/Notifications/notifications';
 
 function notificationsLabel(count: number) {
   if (count === 0) {
@@ -41,21 +42,17 @@ const NotificationDropdown = () => {
     setAnchorEl(null);
   };
 
+const {data, error, isLoading, isError} = useGetNotificationsQuery()
+const notifications = data?.data || [];
 
+const { data:countOfNotifactions, error:errorOfNotifactions, isLoading:isLoadingOfNotifactions, isError:isErrorOfNotifactions, refetch:refetchOfNotifactions } = useGetCountOfNotificationsQuery()
 
-  const { data, error, isLoading, isError, refetch:refetchNotfication } = useQuery({
-    queryKey: [`Notifications`],
-    queryFn: () => fetchNotifications(),
-  });
+const countNotifications = countOfNotifactions?.data || 0
 
-  const { data:countOfNotifactions, error:errorOfNotifactions, isLoading:isLoadingOfNotifactions, isError:isErrorOfNotifactions, refetch:refetchOfNotifactions } = useQuery({
-    queryKey: [`CountOfNotifactions`],
-    queryFn: () => fetchCountOfNotifications(),
-  });
-
+const [readNotification] = useReadNotificationMutation()
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  // if (isError) return <p>Error: {error}</p>;
 
 
   //fetchNotifications
@@ -69,7 +66,7 @@ const NotificationDropdown = () => {
           color: 'grey.200',
         }}
       >
-        <Badge color="primary" badgeContent={countOfNotifactions?.data}>
+        <Badge color="primary" badgeContent={countNotifications}>
           <NotificationIcon />
         </Badge>
       </IconButton>
@@ -100,21 +97,8 @@ const NotificationDropdown = () => {
         </Stack>
         <SimpleBar style={{ height: '385px' }}>
           {
-          !isLoading &&
-          data?.data?.map((item:{
-            id:number ,
-            data:{
-         
-                body:{
-                      ar:string;
-                      en:string;
-                    },
-                title:{
-                      ar:string;
-                      en:string;
-                      },
-                    
-          }} , index:number) => (
+          !isLoading && notifications &&
+          notifications.map((item , index:number) => (
             <MenuItem
               key={item?.id}
               sx={{
@@ -125,7 +109,6 @@ const NotificationDropdown = () => {
               onClick={()=>{
                 console.log(item.id)
                 readNotification(item?.id)
-                refetchNotfication()
               }
               
               }
@@ -172,6 +155,7 @@ const NotificationDropdown = () => {
         </Stack>
       </Menu>
     </>
+
   );
 };
 

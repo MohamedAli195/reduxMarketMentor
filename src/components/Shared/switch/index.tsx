@@ -11,18 +11,17 @@ interface IProps {
   id: number;
   url: string;
   apiStatus: 'inactive' | 'active';
-  updateStatus?:()=>void
+  updateState: ({ id, newStatus }: { id: number; newStatus: "inactive" | "active" }) => void;
 }
 
-export default function SwitchStatus({ id, url, apiStatus , updateStatus}: IProps) {
+export default function SwitchStatus({ id, apiStatus ,updateState }: IProps) {
   const [status, setStatus] = React.useState(apiStatus);
-const [updateRecommendationStatus ,{error}] = useUpdateRecommendationStatusMutation()
-console.log(error)
+
   const handleChange = () => {
     const newStatus = status === 'active' ? 'inactive' : 'active';
 console.log(newStatus)
     setStatus(newStatus);
-    updateRecommendationStatus({id,newStatus})
+    updateState({id,newStatus})
   };
 
   return (

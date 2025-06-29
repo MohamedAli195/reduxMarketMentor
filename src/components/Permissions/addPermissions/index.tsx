@@ -20,6 +20,7 @@ import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllData } from 'functions';
 import i18n from 'i18n';
+import { useCreateRoleMutation } from 'app/features/Roles/roles';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -33,7 +34,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-interface IFormInput {
+export interface IFormInputRoles {
   name: string;
   display_name: {
     ar: string;
@@ -61,20 +62,15 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function AddPermissionsForm({
-  handleClose,
-  refetch,
-}: {
-  handleClose: () => void;
-  refetch: () => void;
-}) {
+function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const [createRole] = useCreateRoleMutation()
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputRoles>();
 
   const [personName, setPersonName] = useState<string[]>([]);
   const [page, setPage] = useState(1);
@@ -94,29 +90,16 @@ function AddPermissionsForm({
     queryFn: () => fetchAllData(page, per, search, sort, '', 'roles/permissions'),
   });
   console.log(apiPermissions);
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<IFormInputRoles> = async (data) => {
     try {
-      // console.log(data)
-      // const formData = new FormData();
-      // formData.append('display_name[en]', data.display_name.en);
-      // formData.append('display_name[ar]', data.display_name.ar);
-      // formData.append('name', data.name);
 
-      // // Convert permissions array to the expected format (e.g., an array of IDs or JSON string)
-      // const permissionsArray = data.permissions; // Ensure `permissions` is an array of IDs or valid format
-      // formData.append('permissions', JSON.stringify(permissionsArray));
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
 
-      const res = await axios.post(`${url}/admin/roles`, data, { headers });
+      const res = await createRole(data)
 
       // console.log(res)
       toast.success(t('roles added successfully'));
       handleClose();
-      refetch();
     } catch (err) {
       // console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));
@@ -201,7 +184,7 @@ function AddPermissionsForm({
                         display_name: {
                           ar: string;
                           en: string;
-                        }
+                        };
                       }) => (
                         <MenuItem
                           key={item.name}

@@ -249,3 +249,25 @@ export interface IUser {
   password?: string;
   partner_code?: string;
 }
+export interface INotfications {
+  id: number;
+  data: {
+    body: {
+      ar: string;
+      en: string;
+    };
+    title: {
+      ar: string;
+      en: string;
+    };
+  };
+}
+export interface IRole {
+  id?:number
+  name:string;
+  display_name:{
+      ar: string;
+      en: string;
+  }
+  permissions:Ipermisson[]
+}

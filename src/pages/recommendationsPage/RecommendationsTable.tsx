@@ -11,22 +11,32 @@ import { IREc, ITempPermissions } from 'interfaces';
 import SwitchStatus from 'components/Shared/switch';
 import { useUpdateRecommendationStatusMutation } from 'app/features/Recommendations/RecommendationsSlice';
 interface IProps {
-  handleEditOpen:(val:IREc)=>void
-  handleOpend:()=>void
-  setTempId:(val:number)=>void
+  handleEditOpen: (val: IREc) => void;
+  handleOpend: () => void;
+  setTempId: (val: number) => void;
   data: IREc[];
 }
-function RecommendationsTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
-  console.log(data)
+function RecommendationsTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
+  console.log(data);
   const navigate = useNavigate();
+  const [updateRecommendationStatus, { error }] = useUpdateRecommendationStatusMutation();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
-    { field: 'name', headerName: i18n.language === 'ar' ? 'الاسم' : 'Name',flex: 0.5, },
-    { field: 'value', headerName: i18n.language === 'ar' ? 'القيمة' : 'email',flex: 1,  },
-    { field: 'status', headerName: i18n.language === 'ar' ? 'الحالة' : 'status', width: 130 ,renderCell: (params) => (
-              <SwitchStatus id={params.row.id} url={"recommendations"} apiStatus={params.row.status} />
-             
-            ), },
+    { field: 'name', headerName: i18n.language === 'ar' ? 'الاسم' : 'Name', flex: 0.5 },
+    { field: 'value', headerName: i18n.language === 'ar' ? 'القيمة' : 'email', flex: 1 },
+    {
+      field: 'status',
+      headerName: i18n.language === 'ar' ? 'الحالة' : 'status',
+      width: 130,
+      renderCell: (params) => (
+        <SwitchStatus
+          id={params.row.id}
+          url={'recommendations'}
+          apiStatus={params.row.status}
+          updateState={updateRecommendationStatus}
+        />
+      ),
+    },
     {
       field: 'actions',
       headerName: i18n.language === 'ar' ? 'العمليات' : 'actions',
@@ -36,13 +46,10 @@ function RecommendationsTable({data,handleEditOpen,setTempId,handleOpend}: IProp
           <Button
             variant="contained"
             color="error"
-            
-            onClick={
-              ()=>{
-              handleOpend()
-              setTempId(params.row.id)
-            }
-          }
+            onClick={() => {
+              handleOpend();
+              setTempId(params.row.id);
+            }}
           >
             {/* {t('delete')} */}
             <Trash2 />
@@ -64,7 +71,6 @@ function RecommendationsTable({data,handleEditOpen,setTempId,handleOpend}: IProp
     },
   ];
 
-
   const rows =
     data?.length > 0
       ? data?.map((recom: IREc) => ({
@@ -72,19 +78,19 @@ function RecommendationsTable({data,handleEditOpen,setTempId,handleOpend}: IProp
         }))
       : [];
   return (
-<DataGrid
-    rows={rows}
-    columns={columns}
-    sx={{ border: 0 }}
-    autoHeight
-    getRowHeight={() => 200} // Set each row's height to 200px
-    getRowClassName={(params: GridRowClassNameParams) =>
-      params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-    }
-    disableRowSelectionOnClick
-    disableMultipleRowSelection
-    hideFooterPagination={true}
-  />
+    <DataGrid
+      rows={rows}
+      columns={columns}
+      sx={{ border: 0 }}
+      autoHeight
+      getRowHeight={() => 200} // Set each row's height to 200px
+      getRowClassName={(params: GridRowClassNameParams) =>
+        params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+      }
+      disableRowSelectionOnClick
+      disableMultipleRowSelection
+      hideFooterPagination={true}
+    />
   );
 }
 

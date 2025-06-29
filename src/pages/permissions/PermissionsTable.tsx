@@ -5,14 +5,14 @@ import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
-import { ITempPermissions } from 'interfaces';
+import { IRole, ITempPermissions } from 'interfaces';
 import SwitchStatus from 'components/Shared/switch';
 
 interface IProps {
-  handleEditOpen: (val: ITempPermissions) => void;
+  handleEditOpen: (val: IRole) => void;
   handleOpend: () => void;
   setTempId: (val: number) => void;
-  data: ITempPermissions[];
+  data: IRole[];
 }
 
 function PermissionsTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {

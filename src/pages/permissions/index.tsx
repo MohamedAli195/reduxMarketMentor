@@ -10,7 +10,7 @@ import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { ITempPermissions } from 'interfaces';
+import { IRole, ITempPermissions } from 'interfaces';
 
 import PaginationComponent from 'components/Shared/pagination';
 
@@ -26,6 +26,8 @@ import PermissionsTable from './PermissionsTable';
 import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
+import { useDeleteRoleMutation, useGetRolesQuery } from 'app/features/Roles/roles';
+import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 // Fetch packages function
 interface IProps {
@@ -36,7 +38,7 @@ function PermissionsPage({ isDashBoard }: IProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setper] = useState(10);
+  const [perPage, setper] = useState(10);
   const [tempId, setTempId] = useState(1);
   const { t, i18n } = useTranslation();
 
@@ -55,23 +57,30 @@ function PermissionsPage({ isDashBoard }: IProps) {
   const handleOpenU = () => setOpenU(true);
   const handleCloseU = () => setOpenU(false);
   // Define a state to store selected package data
-  const [tempPermission, settempPermission] = useState<ITempPermissions | undefined>();
+  const [tempPermission, settempPermission] = useState<IRole | undefined>();
 
-  const handleEditOpen = (packageData: ITempPermissions) => {
+  const handleEditOpen = (packageData: IRole) => {
     settempPermission(packageData);
     handleOpenU(); // Open the update modalclg
   };
 
   // Fetch packages using React Query
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`roles-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
-  });
+  // const { data, error, isLoading, isError } = useQuery({
+  //   queryKey: [`roles-${page}-${per}-${search}-${sort}`],
+  //   queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
+  // });
 
-  // if (isLoading) return <SkeletonTables />;
-  if (isError) return <p>Error: {error.message}</p>;
+  const {data, error, isLoading, isError} = useGetRolesQuery({ page, perPage, search ,sort_direction: sort })
+
+     const [deleteRole] =useDeleteRoleMutation()
+      const {data:profile} = useGetProfileQuery()
+  const permissions = profile?.data.permissions
   
-  const totalItems = data?.data?.total;
+    const roles = data?.data?.data || [];
+    const totalItems = data?.data?.total || 0
+  if (isLoading) return <SkeletonTables />;
+  // if (isError) return <p>Error: {error}</p>;
+  
   // console.log(totalItems)
   return (
     <>
@@ -104,7 +113,7 @@ function PermissionsPage({ isDashBoard }: IProps) {
           </Typography>
         )}
         <PermissionsTable
-          data={data?.data?.data}
+          data={roles}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -117,17 +126,17 @@ function PermissionsPage({ isDashBoard }: IProps) {
         >
           <PaginationComponent
             page={page}
-            pageCounter={totalItems / per <= 1 ? 1 : Math.ceil(totalItems / per)}
+            pageCounter={totalItems / perPage <= 1 ? 1 : Math.ceil(totalItems / perPage)}
             setPage={setPage}
           />
-          <SelectPerPage perPage={per} setPerPage={setper} />
+          <SelectPerPage perPage={perPage} setPerPage={setper} />
         </Stack>{' '}
       </Paper>
 
       {/* add modal */}
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('addPermissions')}</h2>
-        <AddPermissinsForm handleClose={handleClose} refetch={refetch} />
+        <AddPermissinsForm handleClose={handleClose} />
       </BasicModal>
 
       <DeleteModal
@@ -135,7 +144,7 @@ function PermissionsPage({ isDashBoard }: IProps) {
         opend={opend}
         tempId={tempId}
         deleteFunc={() => {
-          deleteAnyThing(tempId, refetch, 'roles');
+          deleteRole(tempId);
         }}
       />
 
@@ -144,7 +153,6 @@ function PermissionsPage({ isDashBoard }: IProps) {
         <h2>{t('editPackage')}</h2>
         <UpdatePermissionsForm
           handleClose={handleCloseU}
-          refetch={refetch}
           tempPermission={tempPermission}
         />
       </BasicModal>

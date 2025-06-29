@@ -21,6 +21,9 @@ import { subAdminApi } from "./features/subAdmins/subAdmins";
 import { recommendationsApi } from "./features/Recommendations/RecommendationsSlice";
 import { coursesApi } from "./features/Courses/coursesSlice";
 import { leactuersApi } from "./features/Lectuers/Lectuers";
+import { notificationsApi } from "./features/Notifications/notifications";
+import { rolesApi } from "./features/Roles/roles";
+import { permissionsApi } from "./features/permissions/permissions";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -49,6 +52,9 @@ export const store = configureStore({
     [recommendationsApi.reducerPath]: recommendationsApi.reducer,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [leactuersApi.reducerPath]: leactuersApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
+    [rolesApi.reducerPath]: rolesApi.reducer,
+     [permissionsApi.reducerPath]: permissionsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -67,7 +73,9 @@ export const store = configureStore({
       recommendationsApi.middleware,
       coursesApi.middleware,
       leactuersApi.middleware,
-      
+      notificationsApi.middleware,
+      rolesApi.middleware,
+      permissionsApi.middleware
 
     ),
 });
