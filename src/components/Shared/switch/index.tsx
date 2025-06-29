@@ -11,7 +11,7 @@ interface IProps {
   id: number;
   url: string;
   apiStatus: 'inactive' | 'active';
-  updateState: ({ id, newStatus }: { id: number; newStatus: "inactive" | "active" }) => void;
+  updateState?: ({ id, newStatus }: { id: number; newStatus: "inactive" | "active" }) => void;
 }
 
 export default function SwitchStatus({ id, apiStatus ,updateState }: IProps) {
@@ -21,7 +21,9 @@ export default function SwitchStatus({ id, apiStatus ,updateState }: IProps) {
     const newStatus = status === 'active' ? 'inactive' : 'active';
 console.log(newStatus)
     setStatus(newStatus);
-    updateState({id,newStatus})
+    if (updateState) {
+  updateState({ id, newStatus });
+}
   };
 
   return (
