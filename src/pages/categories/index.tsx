@@ -79,17 +79,6 @@ const permissions = data?.data.permissions
     handleOpenU(); // Open the update modal
   };
 
-  // // Fetch packages using React Query
-  // const { data, error, isLoading, isError, refetch } = useQuery({
-  //   queryKey: [`packages-${page}-${perPage}-${search}-${sort}`],
-  //   queryFn: () => fetchAllData(page, perPage, search,sort,'','categories'),
-  // });
-
-  // if (isLoading) return <SkeletonTables />
-  // if (isError) return <p>Error: {error}</p>;
-
- 
-      // const totalItems = data?.data?.total
   return (
     <>
    {!isDashBoard &&
