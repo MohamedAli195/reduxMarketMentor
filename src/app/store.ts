@@ -24,6 +24,7 @@ import { leactuersApi } from "./features/Lectuers/Lectuers";
 import { notificationsApi } from "./features/Notifications/notifications";
 import { rolesApi } from "./features/Roles/roles";
 import { permissionsApi } from "./features/permissions/permissions";
+import { sectionsApi } from "./features/Sections/sectionsSlice";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -55,6 +56,7 @@ export const store = configureStore({
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
      [permissionsApi.reducerPath]: permissionsApi.reducer,
+     [sectionsApi.reducerPath]: sectionsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -75,7 +77,8 @@ export const store = configureStore({
       leactuersApi.middleware,
       notificationsApi.middleware,
       rolesApi.middleware,
-      permissionsApi.middleware
+      permissionsApi.middleware,
+      sectionsApi.middleware
 
     ),
 });

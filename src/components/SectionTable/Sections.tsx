@@ -7,11 +7,12 @@ import { deleteAnyThing } from 'functions';
 import SearchForm from 'components/Shared/searchForm';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import SelectSort from 'components/Shared/selectSort';
-import LecturerTableContent from './LectuersTable';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import UpdateLectuerForm from 'components/CourseLectuers/updateLectuerForm';
-import useLeactuerTable from './useLeactuerTable';
+import useLeactuerTable from './useSectionsTable';
 import { useDeleteLectureMutation } from 'app/features/Lectuers/Lectuers';
+import SectionTable from './SectionTable';
+import useSectionsTable from './useSectionsTable';
 import { useParams } from 'react-router-dom';
 
 
@@ -19,8 +20,8 @@ interface IProps {
   isDashBoard: boolean;
 }
 
-function LecturerTable({ isDashBoard }: IProps) {
-   const {id} = useParams()
+function Sections({ isDashBoard }: IProps) {
+ 
   const {
     sort,
     setSort,
@@ -39,15 +40,15 @@ function LecturerTable({ isDashBoard }: IProps) {
     setPage,
     perPage,
     setper,
-    lecters,
+    sections,
     isLoading,
     isError,
     totalItems
-  } = useLeactuerTable(id)
+  } = useSectionsTable()
     
   const [deleteLecture] =useDeleteLectureMutation()
   const { t } = useTranslation();
-console.log(selectedCategory)
+
   if (isLoading) {
     return <Typography>{t('Loading')}...</Typography>;
   }
@@ -58,7 +59,7 @@ console.log(selectedCategory)
 
   return (
     <>
-      <Typography variant="h1">{t('CoursesTable')}</Typography>
+      <Typography variant="h1">{t('SectionsTable')}</Typography>
 
       <Paper sx={{ width: '100%', mt: 2 }}>
         <Stack direction="row" alignItems="center" flexWrap="wrap" spacing={2} p={2}>
@@ -66,8 +67,8 @@ console.log(selectedCategory)
           <SearchForm setsearch={setSearch} isDashBoard={isDashBoard} />
         </Stack>
 
-        <LecturerTableContent
-          data={lecters}
+        <SectionTable
+          data={sections}
           handleEditOpen={handleEditOpen}
           handleOpend={handleOpend}
           setTempId={setTempId}
@@ -111,4 +112,4 @@ console.log(selectedCategory)
   );
 }
 
-export default LecturerTable;
+export default Sections;

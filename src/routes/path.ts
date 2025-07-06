@@ -18,6 +18,7 @@ const paths = {
   orders: `${rootPaths.pagesRoot}orders`,
   reports: `${rootPaths.pagesRoot}reports`,
   courses: `${rootPaths.pagesRoot}courses`,
+  sections: `${rootPaths.pagesRoot}sections`,
   permissions: `${rootPaths.pagesRoot}permissions`,
   recommendations: `${rootPaths.pagesRoot}recommendations`,
   subAdmins: `${rootPaths.pagesRoot}sub-admins`,

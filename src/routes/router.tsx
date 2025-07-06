@@ -7,6 +7,7 @@ import paths, { rootPaths } from './path';
 import ProtectedRoute from 'components/protectedRoute/ProtectedRoute';
 import SkeletonTables from 'components/Shared/skelton';
 import { store } from 'app/store';
+import Section from 'pages/section';
 
 const App = lazy(() => import('App'));
 const MainLayout = lazy(() => import('layouts/main-layout'));
@@ -219,6 +220,17 @@ export const routes = [
                 {' '}
                 <ProtectedRoute redirect={paths.login}>
                   <LectuerDetails />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: `${paths.sections}/:id`, // Fixed typo
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                {' '}
+                <ProtectedRoute redirect={paths.login}>
+                  <Section />
                 </ProtectedRoute>
               </Suspense>
             ),

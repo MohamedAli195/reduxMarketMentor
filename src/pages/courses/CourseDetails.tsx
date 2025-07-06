@@ -13,6 +13,8 @@ import AddCourseLectuerForm from 'components/CourseLectuers/AddCourseLectuerForm
 import { useState } from 'react';
 import useLeactuerTable from 'components/lectuerTable/useLeactuerTable';
 import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
+import AddSectionToCourse from 'components/section/addSectionToCourse';
+import Sections from 'components/SectionTable/Sections';
 
 function CourseDetails() {
   const { id } = useParams();
@@ -42,17 +44,25 @@ console.log(course)
 
       <ViewCoursForm initialData={course} />
 
-      <Box>
+      {/* <Box>
         <Button variant="contained" color="info" onClick={handleOpen} sx={{marginY:4 }}>
           {t('AddCourseLectuer')}
         </Button>
         <LectuerTable isDashBoard={false} />
+      </Box> */}
+
+      <Box>
+        <Button variant="contained" color="info" onClick={handleOpen} sx={{marginY:4 }}>
+          {t('AddCourseSection')}
+        </Button>
+        <Sections isDashBoard={false} />
       </Box>
 
-      <BasicModal open={open} handleClose={handleClose}>
-        <h2>{t('AddCourse')}</h2>
 
-        <AddCourseLectuerForm vid={id} handleClose={handleClose} />
+        <BasicModal open={open} handleClose={handleClose}>
+        <h2>{t('AddSection')}</h2>
+
+        <AddSectionToCourse vid={id} handleClose={handleClose} />
       </BasicModal>
     </>
   );

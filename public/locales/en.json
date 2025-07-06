@@ -93,7 +93,9 @@
       "add-Recommendations":"add Recommendations",
       "UpdateSubAdmin":"Update Sub-Admin",
       "Roles":"Roles",
-      "updatePermissions":"Update Permissions"
+      "updatePermissions":"Update Permissions",
+      "AddCourseSection":"Add Course Section",
+       "AddSection":"Add Section"
 
 
 

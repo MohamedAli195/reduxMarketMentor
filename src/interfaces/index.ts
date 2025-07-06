@@ -271,3 +271,11 @@ export interface IRole {
   }
   permissions:Ipermisson[]
 }
+
+export interface ISection {
+    name:{
+        ar:string;
+        en:string;
+        fr:string;
+    }
+}

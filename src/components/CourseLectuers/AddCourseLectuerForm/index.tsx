@@ -23,6 +23,7 @@ import { IFormInputLectuers } from '../updateLectuerForm';
 
 
 function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,handleClose: () => void; }) {
+  const id = vid
   const {
     register,
     handleSubmit,
@@ -44,10 +45,9 @@ function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,ha
       formData.append('description[fr]', data.description?.ar);
       formData.append('video_url', data.video_url);
       formData.append('duration', data.duration);
-      formData.append('course_id', vid || ''); // Ensure course_id is included
+      // formData.append('course_id', vid || ''); // Ensure course_id is included
 
-      await createLecture(data)
-
+await createLecture({ id, formdata: formData }).unwrap();
       // console.log(response.data);
       toast.success('course lectuer added successfully');
          handleClose();

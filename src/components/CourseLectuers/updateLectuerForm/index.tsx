@@ -21,7 +21,6 @@ export interface IFormInputLectuers {
     ar: string;
     fr: string;
   };
-  course_id: number ;
   video_url: string;
   duration: string;
 }
@@ -44,26 +43,21 @@ function UpdateLectuerForm({
   } = useForm<IFormInputLectuers>();
   const { t } = useTranslation();
 const [updateLecture] = useUpdateLectureMutation()
-  // const { data, error, isLoading, isError, refetch } = useQuery({
-  //   queryKey: [`Lectuers-${id}`],
-  //   queryFn: () => fetchOne(id,'course-lectures'),
-  // });
-  // console.log(data?.data);
-const id = initialData?.id
-  const url = import.meta.env.VITE_API_URL;
+  const id = initialData?.id
+
   useEffect(() => {
 
     // console.log(data)
     if (initialData) {
-      setValue('title.ar', initialData.title.ar);
-      setValue('title.en', initialData.title.en);
-      setValue('title.fr', initialData.title.fr);
-      setValue('description.ar', initialData.description.ar);
-      setValue('description.en', initialData.description.en);
-      setValue('description.fr', initialData.description.fr);
-      setValue('video_url', initialData.video_url);
-      setValue('duration', initialData.duration);
-      setValue('course_id', initialData.course.id);
+      setValue('title.ar', initialData?.title?.ar);
+      setValue('title.en', initialData?.title?.en);
+      setValue('title.fr', initialData?.title?.fr);
+      setValue('description.ar', initialData?.description?.ar);
+      setValue('description.en', initialData?.description?.en);
+      setValue('description.fr', initialData?.description?.fr);
+      setValue('video_url', initialData?.video_url);
+      setValue('duration', initialData?.duration);
+      // setValue('course_id', initialData?.);
     }
   }, [initialData, setValue]);
 
@@ -73,13 +67,13 @@ const id = initialData?.id
       
 
 
-await updateLecture({id,data})
+await updateLecture({id,data}).unwrap()
 
       handleClose()
       // console.log(response.data);
       toast.success('course lectuer updated successfully');
     } catch (err) {
-      // console.error('Error adding course lectuer:', err);
+      console.error('Error adding course lectuer:', err);
       toast.error('Failed to add course lectuer, please check your input.');
     }
   };

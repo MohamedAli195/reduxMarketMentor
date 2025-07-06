@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
 import { useDeleteLectureMutation, useGetLecturesQuery } from 'app/features/Lectuers/Lectuers';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+import { useGetSectionsByCourseIDQuery } from 'app/features/Sections/sectionsSlice';
 import { fetchLectuers } from 'functions';
-import { ICategory, ICourseLectuer, IPackageLectuerSelected } from 'interfaces';
+import { ICategory, ICourseLectuer, IPackageLectuerSelected, ISection } from 'interfaces';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -25,14 +26,14 @@ import { useParams } from 'react-router-dom';
   setPage: React.Dispatch<React.SetStateAction<number>>;
   perPage: number;
   setper: React.Dispatch<React.SetStateAction<number>>;
- lecters: ICourseLectuer[];
+ sections: ISection[];
   isLoading: boolean;
   isError: boolean;
   totalItems:number
 }
 
-const useLeactuerTable = (id: string | undefined ): UseLecturerTableReturn => {
-  console.log(id)
+const useSectionsTable = (): UseLecturerTableReturn => {
+  const {id} = useParams()
   const [page, setPage] = useState(1);
   const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
@@ -57,12 +58,8 @@ const useLeactuerTable = (id: string | undefined ): UseLecturerTableReturn => {
   
 
   const { data,isError, error, isLoading, isFetching, isSuccess } = 
-  useGetLecturesQuery({id, page, perPage, search ,sort_direction: sort });
-
-    const {data:profile} = useGetProfileQuery()
-const permissions = profile?.data.permissions
-
-  const lecters = data?.data?.data || [];
+  useGetSectionsByCourseIDQuery(id);
+  const sections = data?.data?.data || [];
   const totalItems = data?.data?.total || 0
   return {
   sort,
@@ -82,7 +79,7 @@ const permissions = profile?.data.permissions
   setPage,
   perPage,
   setper,
- lecters,
+ sections,
   isLoading,
   isError,
   totalItems
@@ -90,4 +87,4 @@ const permissions = profile?.data.permissions
 }
 };
 
-export default useLeactuerTable;
+export default useSectionsTable;
