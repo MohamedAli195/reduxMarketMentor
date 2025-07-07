@@ -29,7 +29,7 @@ const VisuallyHiddenInput = styled('input')({
 
 function AddCourseForm({ handleClose }: { handleClose: () => void }) {
   const [isFree, setIsFree] = useState<'0' | '1'>('1');
-  console.log(isFree)
+
   const { data: categories } = useGetCategoriesQuery({});
 
   const { data: packages } = useGetPackagesQuery({});

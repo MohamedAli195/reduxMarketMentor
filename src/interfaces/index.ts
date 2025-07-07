@@ -129,7 +129,7 @@ export interface ICourse {
   course_lang: string;
   priceAfterDiscount: string;
   package_id: number | string;
-
+  is_free:'0' | '1' | undefined;
   description: {
     en: string;
     ar: string;
