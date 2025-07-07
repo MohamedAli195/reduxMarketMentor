@@ -93,7 +93,11 @@
                  "updatePermissions":"تحديث صلاحية",
                  "AddCourseSection":" اضافة سكشن للكورس ",
                  "AddSection":"اضافة سكشن",
-                 "SectionsTable":"جدول السكاشن"
+                 "SectionsTable":"جدول السكاشن",
+                   "isFree": "هل مجانى ؟",
+  "free": "مجانى",
+  "notFree": "غير مجانى",
+  "isFreeReq": "من فضلك اختار هل الكورس مجانى ام لا"
 
 
 

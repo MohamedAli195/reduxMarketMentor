@@ -27,26 +27,15 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export interface IPackageRes {
-  code: number;
-  data: {
-    data: {
-      id: number;
-      image: string;
-      name: { ar: string; en: string; fr: string };
-      price: string;
-      status: string;
-    }[];
-  };
-}
-
 function AddCourseForm({ handleClose }: { handleClose: () => void }) {
+  const [isFree, setIsFree] = useState<'0' | '1'>('1');
+  console.log(isFree)
   const { data: categories } = useGetCategoriesQuery({});
 
   const { data: packages } = useGetPackagesQuery({});
 
-  console.log(categories)
-  console.log(packages)
+  console.log(categories);
+  console.log(packages);
   const {
     register,
     handleSubmit,
@@ -81,6 +70,8 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       formData.append('price_after_discount', data.priceAfterDiscount);
       formData.append('package_id', data.package_id.toString());
       formData.append('category_id', data.category_id.toString());
+      formData.append('is_free', String(isFree));
+      formData.append(' total_hours', String(data.total_hours));
       formData.append('description[en]', data.description.en);
       formData.append('description[ar]', data.description.ar);
       formData.append('description[fr]', data.description.ar);
@@ -95,9 +86,12 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       //   formData,
       //   { headers },
       // );
-      await createCourse(formData);
+      const res = await createCourse(formData).unwrap();
+      console.log(res);
+      if (res.code === 200) {
+        toast.success('Course added successfully');
+      }
 
-      toast.success('Course added successfully');
       handleClose();
     } catch (err) {
       console.error('Error adding course:', err);
@@ -252,14 +246,17 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
             {/* Other Inputs */}
-            <TextField
-              fullWidth
-              variant="outlined"
-              label={t('price')}
-              error={!!errors.price}
-              helperText={errors.price?.message}
-              {...register('price', { required: t('priceReq2') })}
-            />
+            {isFree === '0' && (
+              <TextField
+                fullWidth
+                variant="outlined"
+                label={t('price')}
+                error={!!errors.price}
+                helperText={errors.price?.message}
+                {...register('price', { required: t('priceReq2') })}
+              />
+            )}
+
             <TextField
               select
               fullWidth
@@ -324,21 +321,55 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 </MenuItem>
               ))}
             </TextField>
-
-            <TextField
-              fullWidth
-              variant="outlined"
-              label={t('PriceAfterDiscount')}
-              error={!!errors.priceAfterDiscount}
-              helperText={errors.priceAfterDiscount?.message}
-              {...register('priceAfterDiscount', {
-                required: t('PriceAfterDiscountReq'),
-              })}
-              sx={{
-                marginBottom: 2, // Add margin to separate this field visually from the next
-              }}
-            />
+            {isFree === '0' && (
+              <TextField
+                fullWidth
+                variant="outlined"
+                label={t('PriceAfterDiscount')}
+                error={!!errors.priceAfterDiscount}
+                helperText={errors.priceAfterDiscount?.message}
+                {...register('priceAfterDiscount', {
+                  required: t('PriceAfterDiscountReq'),
+                })}
+                sx={{
+                  marginBottom: 2, // Add margin to separate this field visually from the next
+                }}
+              />
+            )}
           </Stack>
+
+          <TextField
+            select
+            fullWidth
+            variant="outlined"
+            label={t('isFree')}
+            error={!!errors.is_free}
+            helperText={errors.is_free?.message}
+            value={isFree}
+            onChange={(e) => {
+              const value = e.target.value;
+              setIsFree(value as '0' | '1');
+            }}
+          >
+            <MenuItem value="1">{t('free')}</MenuItem>
+            <MenuItem value="0">{t('notFree')}</MenuItem>
+          </TextField>
+          <TextField
+            fullWidth
+            type="number"
+            variant="outlined"
+            label="Total Hours"
+            error={!!errors.total_hours}
+            helperText={errors.total_hours?.message}
+            {...register('total_hours', {
+              required: 'Total hours is required',
+              valueAsNumber: true,
+              min: {
+                value: 1,
+                message: 'Total hours must be at least 1',
+              },
+            })}
+          />
         </Stack>
 
         <Button

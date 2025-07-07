@@ -168,6 +168,8 @@ export interface IFormInputCourses {
   priceAfterDiscount: string;
   package_id: number | string;
   category_id: number | string;
+  is_free:"0" |"1";
+  total_hours:number;
   description: {
     en: string;
     ar: string;

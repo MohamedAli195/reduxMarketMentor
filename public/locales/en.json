@@ -95,7 +95,11 @@
       "Roles":"Roles",
       "updatePermissions":"Update Permissions",
       "AddCourseSection":"Add Course Section",
-       "AddSection":"Add Section"
+       "AddSection":"Add Section",
+         "isFree": "Is Free?",
+  "free": "Free",
+  "notFree": "Not Free",
+  "isFreeReq": "Please select whether it is free or not"
 
 
 
