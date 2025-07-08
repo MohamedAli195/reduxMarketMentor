@@ -5,14 +5,15 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useCreateCustomerMutation } from 'app/features/Users/usersSlice';
+import { errorType } from 'interfaces';
 
 interface IFormInput {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    password: string;
-    partner_code:string
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  partner_code: string;
 }
 
 function AddCustomer({ handleClose }: { handleClose: () => void }) {
@@ -24,8 +25,8 @@ function AddCustomer({ handleClose }: { handleClose: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
-const [createCustomer , {error}] = useCreateCustomerMutation()
-console.log(error)
+  const [createCustomer, { error }] = useCreateCustomerMutation();
+  console.log(error);
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       // Create a FormData object and append the data
@@ -36,16 +37,19 @@ console.log(error)
       formData.append('password', data.password); // Access the first file in the FileList
       formData.append('partner_code', data.partner_code);
 
-
-      const response = await createCustomer(formData)
-      if(response.data?.code===200){
-      toast.success('customer added successfully');
-
+      const response = await createCustomer(formData).unwrap();
+      if (response.code === 200) {
+        toast.success('customer added successfully');
       }
       handleClose();
-    } catch (err) {
-      console.error('Error in adding customer:', err);
-      toast.error('Failed to add customer, please check your input.');
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add Customer, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 
@@ -57,49 +61,56 @@ console.log(error)
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-     <Stack spacing={3}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              id="names.ar"
-              type="text"
-              label={t("name")}
-              {...register('name', { required: t("ArabicNameReq") })}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              id="email"
-              type="text"
-              label={t("email")}
-              {...register('email', { required: t("EnglishNameReq") })}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              id="phone"
-              type="text"
-              label={t("phone")}
-              {...register('phone', { required: t("priceReq2") })}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              id="password"
-              type="password"
-              label={t("password")}
-              {...register('password', { required: t("priceReq2") })}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              id="partner_code"
-              type="text"
-              label={t("partner_code")}
-              {...register('partner_code', { required: t("priceReq2") })}
-            />
-           
-          </Stack>
+      <Stack spacing={3}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          id="names.ar"
+          type="text"
+          label={t('name')}
+          error={!!errors.name}
+            helperText={errors.name?.message}
+          {...register('name', { required: t('ArabicNameReq') })}
+        />
+        <TextField
+          fullWidth
+          variant="outlined"
+          id="email"
+          type="text"
+          label={t('email')}
+          error={!!errors.email}
+            helperText={errors.email?.message}
+          {...register('email', { required: t('EnglishNameReq') })}
+        />
+        <TextField
+          fullWidth
+          variant="outlined"
+          id="phone"
+          type="text"
+          label={t('phone')}
+          error={!!errors.phone}
+            helperText={errors.phone?.message}
+          {...register('phone', { required: t('priceReq2') })}
+        />
+        <TextField
+          fullWidth
+          variant="outlined"
+          id="password"
+          type="password"
+          label={t('password')}
+          error={!!errors.password}
+            helperText={errors.password?.message}
+          {...register('password', { required: t('priceReq2') })}
+        />
+        <TextField
+          fullWidth
+          variant="outlined"
+          id="partner_code"
+          type="text"
+          label={t('partner_code')}
+          {...register('partner_code')}
+        />
+      </Stack>
       <Button
         color="primary"
         variant="contained"
@@ -108,7 +119,7 @@ console.log(error)
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
       >
-        {t("Addcustomers")}
+        {t('Addcustomers')}
       </Button>
     </Box>
   );

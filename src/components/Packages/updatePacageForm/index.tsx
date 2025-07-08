@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { CloudUpload } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchOne } from 'functions';
 import { useUpdatePackageMutation } from 'app/features/packages/packages';
-import { IPackage, IPackage2, IPackageSelected } from 'interfaces';
+import { errorType, IPackage, IPackage2, IPackageSelected } from 'interfaces';
 // import { fetchPackage } from 'pages/packages/packagesFunct';
 
 const VisuallyHiddenInput = styled('input')({
@@ -41,15 +41,19 @@ function UpdatePackageForm({
 }: {
   handleClose: () => void;
 
-
   tempIdUpdate: IPackage2;
 }) {
-  const { register, setValue, handleSubmit, watch } = useForm<IFormInput>();
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>();
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
   // Fetch packages using React Query
-  const [updatePackage] = useUpdatePackageMutation()
-const id = tempIdUpdate.id
+  const [updatePackage] = useUpdatePackageMutation();
+  const id = tempIdUpdate.id;
   const ImageFromApi = tempIdUpdate.image;
   // console.log(ImageFromApi);
   const [preview, setPreview] = useState<string | undefined | null>(ImageFromApi);
@@ -97,19 +101,20 @@ const id = tempIdUpdate.id
         formData.append('image', data.image[0]);
       }
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-
-      const response = await updatePackage({id , formData})
-
-      toast.success(t('Package updated successfully'));
+      const response = await updatePackage({ id, formData });
+      if (response.data?.code === 200) {
+        toast.success(t('Package updated successfully'));
+      }
 
       handleClose();
-    } catch (err) {
-      // console.error('Error updating package:', err);
-      toast.error(t('Failed to update package, please check your input.'));
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add package, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 
@@ -129,23 +134,31 @@ const id = tempIdUpdate.id
             id="name-ar"
             type="text"
             label={t('ArabicName')}
-            {...register('name.ar', { required: t('ArabicNameReq') })}
+            error={!!errors.name?.ar}
+            helperText={errors.name?.ar?.message}
+            {...register('name.ar', { required: 'حقل الاسم مطلوب' })}
           />
+
           <TextField
             fullWidth
             variant="outlined"
             id="name-en"
             type="text"
             label={t('EnglishName')}
-            {...register('name.en', { required: t('EnglishNameReq') })}
+            error={!!errors.name?.en}
+            helperText={errors.name?.en?.message}
+            {...register('name.en', { required: 'حقل الاسم مطلوب' })}
           />
+
           <TextField
             fullWidth
             variant="outlined"
             id="name-fr"
             type="text"
             label={t('fr.name')}
-            {...register('name.fr', { required: t('EnglishNameReq') })}
+            error={!!errors.name?.fr}
+            helperText={errors.name?.fr?.message}
+            {...register('name.fr', { required: 'حقل الاسم مطلوب' })}
           />
         </Stack>
 
@@ -155,9 +168,12 @@ const id = tempIdUpdate.id
           id="price"
           type="text"
           label={t('price')}
-          {...register('price', { required: t('priceReq2') })}
+          error={!!errors.price}
+          helperText={errors.price?.message}
+          {...register('price', { required: 'حقل السعر مطلوب' })}
         />
-        <Stack flexDirection={'row'} gap={2} alignItems={"center"}>
+
+        <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
           <Button
             component="label"
             role={undefined}
@@ -169,11 +185,19 @@ const id = tempIdUpdate.id
             Upload Image
             <VisuallyHiddenInput
               type="file"
-              {...register('image')}
+              {...register('image', {
+                required: preview ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+              })}
               multiple
               onChange={handleFileChange}
             />
           </Button>
+
+          {errors.image && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {errors.image.message}
+            </Typography>
+          )}
 
           {preview && (
             <Box sx={{ mt: 2 }}>
@@ -185,6 +209,7 @@ const id = tempIdUpdate.id
             </Box>
           )}
         </Stack>
+        {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
       </Stack>
 
       <Button

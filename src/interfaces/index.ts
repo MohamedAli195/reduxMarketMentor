@@ -281,3 +281,14 @@ export interface ISection {
         fr:string;
     }
 }
+
+export interface errorType {
+  data: {
+    errors: {
+      name: string[];
+      label?: string[];
+      message: string;
+    };
+  };
+  status: number;
+}

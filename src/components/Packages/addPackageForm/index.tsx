@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 
 import { CloudUpload } from 'lucide-react';
 import { useCreatePackageMutation } from 'app/features/packages/packages';
+import { errorType } from 'interfaces';
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -30,7 +31,6 @@ interface IFormInput {
 }
 
 function AddPackageForm({ handleClose }: { handleClose: () => void;}) {
-  const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
   const { t } = useTranslation();
 const [createPackage] = useCreatePackageMutation()
   const {
@@ -51,8 +51,7 @@ const [createPackage] = useCreatePackageMutation()
       reader.readAsDataURL(file);
     }
   };
-  const selectedImage = watch('image');
-  const url = import.meta.env.VITE_API_URL;
+ 
   
 
   const onSubmitPackage: SubmitHandler<IFormInput> = async (data) => {
@@ -66,18 +65,22 @@ const [createPackage] = useCreatePackageMutation()
       formData.append('price', data.price);
 
       // Define headers with the token
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
 
-      const response = await createPackage(formData)
 
-      toast.success('Package added successfully');
+      const response = await createPackage(formData).unwrap()
+      if(response.code===200){
+toast.success('Package added successfully');
+      }
+      
       handleClose();
-    } catch (err) {
-      // console.error('Error signing in:', err);
-      toast.error('Failed to add package, please check your input.');
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join("\n")
+        : "Failed to add package, please check your input.";
+
+      toast.error(errorMessages);
     }
   };
 
@@ -97,23 +100,31 @@ const [createPackage] = useCreatePackageMutation()
             id="name-ar"
             type="text"
             label={t('ArabicName')}
-            {...register('name.ar', { required: t('ArabicNameReq') })}
+            error={!!errors.name?.ar}
+            helperText={errors.name?.ar?.message}
+            {...register('name.ar', { required: "حقل الاسم مطلوب" })}
           />
+      
           <TextField
             fullWidth
             variant="outlined"
             id="name-en"
             type="text"
             label={t('EnglishName')}
-            {...register('name.en', { required: t('EnglishNameReq') })}
+            error={!!errors.name?.en}
+            helperText={errors.name?.en?.message}
+            {...register('name.en', { required: "حقل الاسم مطلوب" } )}
           />
+         
           <TextField
             fullWidth
             variant="outlined"
             id="name-fr"
             type="text"
             label={t('fr.name')}
-            {...register('name.fr', { required: t('EnglishNameReq') })}
+            error={!!errors.name?.fr}
+            helperText={errors.name?.fr?.message}
+            {...register('name.fr', { required: "حقل الاسم مطلوب" })}
           />
         </Stack>
 
@@ -123,8 +134,11 @@ const [createPackage] = useCreatePackageMutation()
           id="price"
           type="text"
           label={t('price')}
-          {...register('price', { required: t('priceReq2') })}
+          error={!!errors.price}
+            helperText={errors.price?.message}
+          {...register('price', { required: "حقل السعر مطلوب" })}
         />
+    
         <Stack flexDirection={'row'} gap={2} alignItems={"center"}>
           <Button
             component="label"
@@ -137,11 +151,19 @@ const [createPackage] = useCreatePackageMutation()
             Upload Image
             <VisuallyHiddenInput
               type="file"
-              {...register('image')}
+              {...register('image', {
+                required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+              })}
               multiple
               onChange={handleFileChange}
             />
           </Button>
+
+          {errors.image && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {errors.image.message}
+            </Typography>
+          )}
 
           {preview && (
             <Box sx={{ mt: 2 }}>
@@ -153,6 +175,9 @@ const [createPackage] = useCreatePackageMutation()
             </Box>
           )}
         </Stack>
+        {errors.image && (
+          <p className="text-red-500 text-sm">{errors.image.message}</p>
+        )}
       </Stack>
 
       <Button
