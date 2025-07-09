@@ -153,8 +153,8 @@ const permissions = profile?.data.permissions
 
              {/* update modal */}
        <BasicModal open={openUp} handleClose={handleCloseUp}>
-        <h2>{t('AddCourse')}</h2>
-        <UpdateCourse  course={selectedCourse} />
+        <h2>{t('updateCourse')}</h2>
+        <UpdateCourse  course={selectedCourse}  handleCloseUp={handleCloseUp}/>
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

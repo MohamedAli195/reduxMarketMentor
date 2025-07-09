@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, MenuItem, Stack, TextField } from '@mui/material';
+import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 // import { fetchCategories, fetchCategoriesForCourses } from 'pages/categories/categoriesFunct';
 // import { fetchPackages, fetchPackagesForCourses } from 'pages/packages/packagesFunct';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { t } from 'i18next';
-import { IFormInputCourses } from 'interfaces';
+import { errorType, IFormInputCourses } from 'interfaces';
 import { styled } from '@mui/material/styles';
 
 import { CloudUpload } from 'lucide-react';
@@ -71,21 +71,11 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       formData.append('package_id', data.package_id.toString());
       formData.append('category_id', data.category_id.toString());
       formData.append('is_free', String(isFree));
-      formData.append(' total_hours', String(data.total_hours));
+      formData.append('total_hours', String(data.total_hours));
       formData.append('description[en]', data.description.en);
       formData.append('description[ar]', data.description.ar);
       formData.append('description[fr]', data.description.ar);
 
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-
-      // const response = await axios.post(
-      //   `${url}/admin/courses`,
-      //   formData,
-      //   { headers },
-      // );
       const res = await createCourse(formData).unwrap();
       console.log(res);
       if (res.code === 200) {
@@ -93,9 +83,14 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       }
 
       handleClose();
-    } catch (err) {
-      console.error('Error adding course:', err);
-      toast.error('Failed to add course, please check your input.');
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add course, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
   // console.log(categories)
@@ -131,10 +126,10 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
             <TextField
               fullWidth
               variant="outlined"
-              label="name franc"
+              label={t("FrancName")}
               error={!!errors.name?.fr}
               helperText={errors.name?.fr?.message}
-              {...register('name.fr', { required: 'name franc is requirded' })}
+              {...register('name.fr', { required: t("FrancNameReq") })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
@@ -164,11 +159,11 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               fullWidth
               key={'description.fr'}
               variant="outlined"
-              label="desc france"
+              label={t("FrancDesc")}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
               {...register('description.en', {
-                required: 'desc france is required',
+                required: t("FrancDescReq"),
               })}
             />
           </Stack>
@@ -181,7 +176,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               label={t('CourseLanguage')}
               error={!!errors.course_lang}
               helperText={errors.course_lang?.message}
-              {...register('course_lang', { required: t('CourseLanguageReq') })}
+              {...register('course_lang')}
               sx={{
                 '.MuiOutlinedInput-root': {
                   lineHeight: 0, // Match default height for MUI TextField
@@ -229,11 +224,19 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               Upload Image
               <VisuallyHiddenInput
                 type="file"
-                {...register('image')}
+                {...register('image', {
+                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                })}
                 multiple
                 onChange={handleFileChange}
               />
             </Button>
+
+            {errors.image && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {errors.image.message}
+              </Typography>
+            )}
             {preview && (
               <Box sx={{ mt: 2, maxHeight: '200px' }}>
                 <img
@@ -246,14 +249,14 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
             {/* Other Inputs */}
-            {isFree === '0' && (
+            {isFree == '0' && (
               <TextField
                 fullWidth
                 variant="outlined"
                 label={t('price')}
                 error={!!errors.price}
                 helperText={errors.price?.message}
-                {...register('price', { required: t('priceReq2') })}
+                {...register('price')}
               />
             )}
 
@@ -264,7 +267,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               label={t('package')}
               error={!!errors.package_id}
               helperText={errors.package_id?.message}
-              {...register('package_id', { required: t('packageReq') })}
+              {...register('package_id')}
               sx={{
                 '.MuiOutlinedInput-root': {
                   lineHeight: 0, // Match default height for MUI TextField
@@ -285,9 +288,6 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               helperText={errors.main_video?.message}
               {...register('main_video', { required: t('MainVideoURLReq') })}
             />
-          </Stack>
-
-          <Stack display={'flex'} flexDirection={'row'}>
             <TextField
               id="Course Duration"
               fullWidth
@@ -299,7 +299,9 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 required: t('CourseDurationReq'),
               })}
             />
+          </Stack>
 
+          <Stack display={'flex'} flexDirection={'row'}>
             <TextField
               select
               fullWidth
@@ -321,55 +323,57 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 </MenuItem>
               ))}
             </TextField>
-            {isFree === '0' && (
+            {isFree == '0' && (
               <TextField
                 fullWidth
                 variant="outlined"
                 label={t('PriceAfterDiscount')}
                 error={!!errors.priceAfterDiscount}
                 helperText={errors.priceAfterDiscount?.message}
-                {...register('priceAfterDiscount', {
-                  required: t('PriceAfterDiscountReq'),
-                })}
+                {...register('priceAfterDiscount')}
                 sx={{
                   marginBottom: 2, // Add margin to separate this field visually from the next
                 }}
               />
             )}
+            <TextField
+              select
+              fullWidth
+              variant="outlined"
+              label={t('isFree')}
+              error={!!errors.is_free}
+              helperText={errors.is_free?.message}
+              value={isFree}
+              onChange={(e) => {
+                const value = e.target.value;
+                setIsFree(value as '0' | '1');
+              }}
+              sx={{
+                '.MuiOutlinedInput-root': {
+                  lineHeight: 0, // Match default height for MUI TextField
+                },
+              }}
+            >
+              <MenuItem value="1">{t('free')}</MenuItem>
+              <MenuItem value="0">{t('notFree')}</MenuItem>
+            </TextField>
+            <TextField
+              fullWidth
+              type="number"
+              variant="outlined"
+              label={t("totalHours")}
+              error={!!errors.total_hours}
+              helperText={errors.total_hours?.message}
+              {...register('total_hours', {
+                required: t("totalHoursReq"),
+                valueAsNumber: true,
+                min: {
+                  value: 1,
+                  message: 'Total hours must be at least 1',
+                },
+              })}
+            />
           </Stack>
-
-          <TextField
-            select
-            fullWidth
-            variant="outlined"
-            label={t('isFree')}
-            error={!!errors.is_free}
-            helperText={errors.is_free?.message}
-            value={isFree}
-            onChange={(e) => {
-              const value = e.target.value;
-              setIsFree(value as '0' | '1');
-            }}
-          >
-            <MenuItem value="1">{t('free')}</MenuItem>
-            <MenuItem value="0">{t('notFree')}</MenuItem>
-          </TextField>
-          <TextField
-            fullWidth
-            type="number"
-            variant="outlined"
-            label="Total Hours"
-            error={!!errors.total_hours}
-            helperText={errors.total_hours?.message}
-            {...register('total_hours', {
-              required: 'Total hours is required',
-              valueAsNumber: true,
-              min: {
-                value: 1,
-                message: 'Total hours must be at least 1',
-              },
-            })}
-          />
         </Stack>
 
         <Button

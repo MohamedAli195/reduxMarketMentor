@@ -34,7 +34,6 @@
       "ArabicName":"Arabic Name",
       "ArabicNameReq":"Arabic name is required",
       "EnglishName":"English Name",
-      "EnglishNameReq":"English name is required",
 
       "descAr":"Arabic Description",
       "descArReq":"Arabic Description is required",
@@ -99,12 +98,16 @@
          "isFree": "Is Free?",
   "free": "Free",
   "notFree": "Not Free",
-  "isFreeReq": "Please select whether it is free or not"
+  "isFreeReq": "Please select whether it is free or not",
+  "FrancName":"Franc Name",
+  "FrancDesc" :"Franc Description",
+"CoursLang":"Course Language",
 
-
-
+"totalHours":"Total Hours",
       
-
-      
-
+"totalHoursReq":"Total Hours is required",
+      "FrancNameReq":"Franc Name is required",
+      "FrancDescReq":"Franc Description is required",
+      "EnglishNameReq":"English name is required",
+ "ImageRequired":"image is required"
   }

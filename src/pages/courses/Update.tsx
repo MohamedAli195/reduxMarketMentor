@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, MenuItem, Stack, TextField } from '@mui/material';
+import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 // import { fetchCategories, fetchCategoriesForCourses } from 'pages/categories/categoriesFunct';
 // import { fetchPackages, fetchPackagesForCourses } from 'pages/packages/packagesFunct';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { t } from 'i18next';
 // import { IFormInputCourses } from 'interfaces';
@@ -12,7 +12,9 @@ import { styled } from '@mui/material/styles';
 import { CloudUpload } from 'lucide-react';
 import { fetchPackagesOrCAtegoriesForCourses } from 'functions';
 import { useUpdateCourseMutation } from 'app/features/Courses/coursesSlice';
-import { ICourse } from 'interfaces';
+import { errorType, ICourse } from 'interfaces';
+import { useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
+import { useGetPackagesQuery } from 'app/features/packages/packages';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -52,11 +54,13 @@ interface IFormInputCourses {
   course_duration: string;
   course_level: string;
   course_lang: string;
+  category_id: number | string;
+  package_id: number | string;
   priceAfterDiscount: string;
-  is_free: '0' | '1' | undefined
-   total_hours:number;
+  is_free: '0' | '1' | undefined;
+  total_hours: number;
   package: {
-    id: number;
+    id: number | undefined;
     name: {
       en: string;
       ar: string;
@@ -64,7 +68,7 @@ interface IFormInputCourses {
     };
   };
   category: {
-    id: number;
+    id: number | undefined;
     name: {
       en: string;
       ar: string;
@@ -79,68 +83,73 @@ interface IFormInputCourses {
 }
 interface IProps {
   course: ICourse | undefined;
+  handleCloseUp:()=>void
 }
-function UpdateCourse({ course }: IProps) {
-const [isFree, setIsFree] = useState<'0' | '1' | undefined>(course?.is_free);
-console.log(isFree)
+function UpdateCourse({ course ,handleCloseUp }: IProps) {
+  const [isFree, setIsFree] = useState<'0' | '1' | undefined>(course?.is_free);
+
   const [catState, setCatState] = useState(course?.category.id);
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
   const [pacState, setpacState] = useState(course?.package?.id);
+  console.log(pacState);
   const id = course?.id;
   // console.log(catState);
-  const [categories, setCategories] = useState<IPackageRes>({
-    code: 0,
-    data: {
-      data: [],
-    },
-  });
-
-  const [packages, setPackages] = useState<IPackageRes>({
-    code: 0,
-    data: {
-      data: [],
-    },
-  });
-
-  const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
+  console.log(catState);
+  // const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<IFormInputCourses>();
+  console.log(errors)
+  const { data: categories } = useGetCategoriesQuery({});
+
+  const { data: packages } = useGetPackagesQuery({});
   const [updateCourse] = useUpdateCourseMutation();
   const [previewImage, setPreviewImage] = useState<string | null>(
     typeof course?.image === 'string' ? course?.image : null,
   );
   const selectedImage = watch('image');
-
+  const [preview, setPreview] = useState<string | null>(null);
+  // const [createCourse] = useCreateCourseMutation();
   const url = import.meta.env.VITE_API_URL;
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const categoryData = await fetchPackagesOrCAtegoriesForCourses('categories');
-        setCategories(categoryData);
-      } catch (error) {
-        // console.error('Error fetching categories:', error);
-      }
-    };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  // useEffect(() => {
+  //   const loadCategories = async () => {
+  //     try {
+  //       const categoryData = await fetchPackagesOrCAtegoriesForCourses('categories');
+  //       setCategories(categoryData);
+  //     } catch (error) {
+  //       // console.error('Error fetching categories:', error);
+  //     }
+  //   };
 
-    const loadPackages = async () => {
-      try {
-        const packageData = await fetchPackagesOrCAtegoriesForCourses('packages');
-        setPackages(packageData);
-      } catch (error) {
-        // console.error('Error fetching packages:', error);
-      }
-    };
+  //   const loadPackages = async () => {
+  //     try {
+  //       const packageData = await fetchPackagesOrCAtegoriesForCourses('packages');
+  //       setPackages(packageData);
+  //     } catch (error) {
+  //       // console.error('Error fetching packages:', error);
+  //     }
+  //   };
 
-    loadCategories();
-    loadPackages();
-  }, []);
+  //   loadCategories();
+  //   loadPackages();
+  // }, []);
 
   useEffect(() => {
     if (course) {
@@ -150,21 +159,22 @@ console.log(isFree)
       setValue('price', course.price);
       setValue('is_free', isFree);
       setValue('main_video', course.main_video);
+      setValue('total_hours', course.total_hours);
       setValue('course_duration', course.course_duration);
-      if (coursLevelState) {
-        setValue('course_level', coursLevelState);
-      }
+      // if (coursLevelState) {
+      setValue('course_level', course.course_level);
+      // }
       if (coursLangState) {
         setValue('course_lang', coursLangState);
       }
 
       setValue('priceAfterDiscount', course.priceAfterDiscount);
-      if (pacState) {
-        setValue('category.id', pacState);
+      if (catState) {
+        setValue('category.id', catState);
       }
 
-      if (catState) {
-        setValue('package.id', catState);
+      if (pacState) {
+        setValue('package.id', pacState);
       }
       setValue('description.en', course.description.en);
       setValue('description.ar', course.description.ar);
@@ -174,7 +184,7 @@ console.log(isFree)
         setPreviewImage(course.image);
       }
     }
-  }, [course, setValue ,isFree]);
+  }, [course, setValue, isFree]);
 
   useEffect(() => {
     if (selectedImage && selectedImage.length > 0) {
@@ -214,12 +224,22 @@ console.log(isFree)
       //   formData,
       //   { headers },
       // );
-      await updateCourse({ id, formData });
+     const res = await updateCourse({ id, formData }).unwrap()
+   console.log(res);
+      if (res.code === 200) {
+        toast.success('Course updated successfully');
+      }
 
-      toast.success('Course added successfully');
-    } catch (err) {
-      console.error('Error updating course:', err);
-      toast.error('Failed to add course, please check your input.');
+      handleCloseUp();
+      
+    }catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add course, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
   // console.log(packages.data.data)
@@ -229,8 +249,8 @@ console.log(isFree)
     <>
       <Box sx={{}} component="form" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {/* Name Fields */}
-          <Stack display={'flex'} flexDirection={'row'}>
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
+            {/* Name Fields */}
             <TextField
               fullWidth
               variant="outlined"
@@ -250,13 +270,13 @@ console.log(isFree)
             <TextField
               fullWidth
               variant="outlined"
-              label="name franc"
+              label={t('FrancName')}
               error={!!errors.name?.fr}
               helperText={errors.name?.fr?.message}
-              {...register('name.fr', { required: 'name franc is requirded' })}
+              {...register('name.fr', { required: t("FrancNameReq") })}
             />
           </Stack>
-          <Stack display={'flex'} flexDirection={'row'}>
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
             {/* Description Fields */}
             <TextField
               fullWidth
@@ -283,64 +303,116 @@ console.log(isFree)
               fullWidth
               key={'description.fr'}
               variant="outlined"
-              label="desc france"
+              label={t("FrancDesc")}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
               {...register('description.en', {
-                required: 'desc france is required',
+                required:t("FrancDescReq"),
               })}
             />
           </Stack>
-          <Stack display={'flex'} flexDirection={'row'}>
-            <TextField
-              select
-              fullWidth
-              key={'CourseLanguage'}
-              id="Course Language"
-              variant="outlined"
-              label={t('CourseLanguage')}
-              error={!!errors.course_lang}
-              helperText={errors.course_lang?.message}
-              value={coursLangState}
-              {...register('course_lang', { required: t('CourseLanguageReq') })}
-              onChange={(e) => {
-                setCoursLangState(e.target.value);
-              }}
-              sx={{
-                '.MuiOutlinedInput-root': {
-                  lineHeight: 0, // Match default height for MUI TextField
-                },
-              }}
-            >
-              {['arabic', 'english'].map((lang) => (
-                <MenuItem key={lang} value={lang}>
-                  {lang}
-                </MenuItem>
-              ))}
-            </TextField>
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
 
-            <Button
+
+            <Controller
+              name="course_lang"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  select
+                  fullWidth
+                  id="CourseLanguage"
+                  variant="outlined"
+                  label={t('CoursLang')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={coursLangState}
+                  onChange={(e) => {
+                    setCoursLangState(e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {['arabic', 'english'].map((lang) => (
+                    <MenuItem key={lang} value={lang}>
+                      {lang}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
+            {/* Category */}
+            <Controller
+              name="category"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                fullWidth
+                  select
+                  id="category"
+                  variant="outlined"
+                  label={t('Category')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={catState}
+                  onChange={(e) => {
+                    setCatState(+e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {categories?.data?.data?.map((cat) => (
+                    <MenuItem key={cat.id} value={cat.id}>
+                      {cat.name.en}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
+            {/* Image Upload */}
+             <Button
               component="label"
               role={undefined}
               variant="outlined"
               tabIndex={-1}
+              sx={{ mt: 2, maxHeight: '200px', lineHeight: 1 }}
               startIcon={<CloudUpload />}
             >
               Upload Image
-              <VisuallyHiddenInput type="file" {...register('image')} multiple />
+              <VisuallyHiddenInput
+                type="file"
+                {...register('image', {
+                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                })}
+                multiple
+                onChange={handleFileChange}
+              />
             </Button>
 
-            {previewImage && (
-              <Box sx={{ mt: 2 }}>
+            {errors.image && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {errors.image.message}
+              </Typography>
+            )}
+            {preview && (
+              <Box sx={{ mt: 2, maxHeight: '200px' }}>
                 <img
-                  src={previewImage}
+                  src={preview}
                   alt={t('Preview')}
                   style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
                 />
               </Box>
             )}
           </Stack>
-          <Stack display={'flex'} flexDirection={'row'}>
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
             {/* Other Inputs */}
             {isFree == '0' && (
               <TextField
@@ -349,11 +421,44 @@ console.log(isFree)
                 label={t('price')}
                 error={!!errors.price}
                 helperText={errors.price?.message}
-                {...register('price', { required: t('priceReq2') })}
+                {...register('price')}
               />
             )}
 
-            {errors.package?.id && <span>{errors.package.id.message}</span>}
+            
+
+            <Controller
+              name="package"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  select
+                  fullWidth
+                  id="package"
+                  variant="outlined"
+                  label={t('package')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={pacState}
+                  onChange={(e) => {
+                    setpacState(+e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {packages?.data?.data?.map((pkg) => (
+                    <MenuItem key={pkg.id} value={pkg.id}>
+                      {pkg.name.en}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
+
             <TextField
               fullWidth
               variant="outlined"
@@ -362,8 +467,6 @@ console.log(isFree)
               helperText={errors.main_video?.message}
               {...register('main_video', { required: t('MainVideoURLReq') })}
             />
-          </Stack>
-          <Stack display={'flex'} flexDirection={'row'}>
             <TextField
               id="Course Duration"
               fullWidth
@@ -375,33 +478,42 @@ console.log(isFree)
                 required: t('CourseDurationReq'),
               })}
             />
+          </Stack>
 
-            <TextField
-              select
-              fullWidth
-              id="Course Level"
-              variant="outlined"
-              label={t('CourseLevel')}
-              error={!!errors.course_level}
-              helperText={errors.course_level?.message}
-              value={coursLevelState}
-              {...register('course_level', { required: t('CourseLevelReq') })}
-              onChange={(e) => {
-                setcoursLevelState(e.target.value);
-              }}
-              sx={{
-                '.MuiOutlinedInput-root': {
-                  lineHeight: 0, // Match default height for MUI TextField
-                },
-              }}
-            >
-              {['beginner', 'intermediate', 'advance'].map((lev) => (
-                <MenuItem key={lev} value={lev}>
-                  {lev}
-                </MenuItem>
-              ))}
-            </TextField>
-
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
+            
+            <Controller
+              name="course_level"
+              control={control}
+              rules={{ required: t('CourseLevelReq') }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  select
+                  fullWidth
+                  id="Course Level"
+                  variant="outlined"
+                  label={t('CourseLevel')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={coursLevelState}
+                  onChange={(e) => {
+                    setcoursLevelState(e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {['beginner', 'intermediate', 'advance'].map((lev) => (
+                    <MenuItem key={lev} value={lev}>
+                      {lev}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
             {isFree == '0' && (
               <TextField
                 fullWidth
@@ -409,95 +521,50 @@ console.log(isFree)
                 label={t('PriceAfterDiscount')}
                 error={!!errors.priceAfterDiscount}
                 helperText={errors.priceAfterDiscount?.message}
-                {...register('priceAfterDiscount', {
-                  required: t('PriceAfterDiscountReq'),
-                })}
+                {...register('priceAfterDiscount')}
                 sx={{
                   marginBottom: 2, // Add margin to separate this field visually from the next
                 }}
               />
             )}
-          </Stack>
-          <Stack display={'flex'} flexDirection={'row'}>
-            {/* Category */}
-
             <TextField
               select
-              id="Category"
-              label={t('category')}
-              // error={!!errors.category_id}
-              // helperText={errors.category_id?.message}
-              value={catState || ''}
-              {...register('category.id')}
+              fullWidth
+              variant="outlined"
+              label={t('isFree')}
+              error={!!errors.is_free}
+              helperText={errors.is_free?.message}
+              value={isFree}
               onChange={(e) => {
-                setCatState(+e.target.value);
+                const value = e.target.value;
+                setIsFree(value as '0' | '1');
               }}
-              fullWidth
               sx={{
                 '.MuiOutlinedInput-root': {
-                  lineHeight: 0,
+                  lineHeight: 0, // Match default height for MUI TextField
                 },
               }}
             >
-              {categories?.data?.data?.map((cat) => (
-                <MenuItem key={cat.id} value={cat.id}>
-                  {cat.name.en}
-                </MenuItem>
-              ))}
+              <MenuItem value="1">{t('free')}</MenuItem>
+              <MenuItem value="0">{t('notFree')}</MenuItem>
             </TextField>
             <TextField
-              select
-              label={t('package')}
-              id="package"
-              {...register('package.id')}
-              value={pacState || ''} // Fallback to an empty string if undefined
-              onChange={(e) => setpacState(+e.target.value)} // Sync value with react-hook-form
               fullWidth
-              sx={{
-                '.MuiOutlinedInput-root': {
-                  lineHeight: 0,
+              type="number"
+              variant="outlined"
+              label={t("totalHours")}
+              error={!!errors.total_hours}
+              helperText={errors.total_hours?.message}
+              {...register('total_hours', {
+                required: t("totalHoursReq"),
+                valueAsNumber: true,
+                min: {
+                  value: 1,
+                  message: 'Total hours must be at least 1',
                 },
-              }}
-            >
-              {packages?.data?.data?.map((pkg) => (
-                <MenuItem key={pkg.id} value={pkg.id}>
-                  {pkg.name.en}
-                </MenuItem>
-              ))}
-            </TextField>
+              })}
+            />
           </Stack>
-           <TextField
-                      select
-                      fullWidth
-                      variant="outlined"
-                      label={t('isFree')}
-                      error={!!errors.is_free}
-                      helperText={errors.is_free?.message}
-                      value={isFree}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setIsFree(value as '0' | '1');
-                      }}
-                    >
-                      <MenuItem value="1">{t('free')}</MenuItem>
-                      <MenuItem value="0">{t('notFree')}</MenuItem>
-                    </TextField>
-                    <TextField
-                      fullWidth
-                      type="number"
-                      variant="outlined"
-                      label="Total Hours"
-                      error={!!errors.total_hours}
-                      helperText={errors.total_hours?.message}
-                      {...register('total_hours', {
-                        required: 'Total hours is required',
-                        valueAsNumber: true,
-                        min: {
-                          value: 1,
-                          message: 'Total hours must be at least 1',
-                        },
-                      })}
-                    />
         </Stack>
         <Button
           color="primary"
