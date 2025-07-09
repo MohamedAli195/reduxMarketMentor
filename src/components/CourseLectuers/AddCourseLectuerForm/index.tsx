@@ -91,10 +91,10 @@ await createLecture({ id, formdata: formData }).unwrap();
             <TextField
               fullWidth
               variant="outlined"
-              label="franc name"
+               label={t('FrancName')}
               error={!!errors.title?.fr}
               helperText={errors.title?.fr?.message}
-              {...register('title.fr', { required: 'franc name is required' })}
+              {...register('title.fr', { required: t("FrancNameReq") })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
@@ -120,10 +120,10 @@ await createLecture({ id, formdata: formData }).unwrap();
             <TextField
               fullWidth
               variant="outlined"
-              label="franc desc"
+              label={t("FrancDesc")}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
-              {...register('description.en', { required: 'franc desc required' })}
+              {...register('description.en', { required: t("FrancDescReq")})}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>

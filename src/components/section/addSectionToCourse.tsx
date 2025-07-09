@@ -63,7 +63,7 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
       >
         <Stack spacing={3}>
           {/* Arabic Name */}
-          <Stack display={'flex'} flexDirection={'row'}>
+          <Stack display={'flex'} flexDirection={'column'}>
             <TextField
               fullWidth
               variant="outlined"
@@ -86,7 +86,7 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
             <TextField
               fullWidth
               variant="outlined"
-              label="franc name"
+              label={t('FrancName')}
               error={!!errors.name?.fr}
               helperText={errors.name?.fr?.message}
               {...register('name.fr', { required: 'franc name is required' })}
@@ -101,7 +101,7 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
             type="submit"
             sx={{ mt: 3, fontSize: '18px' }}
           >
-            {t('AddLecuter')}
+            {t('AddSection')}
           </Button>
         </Stack>
       </Box>

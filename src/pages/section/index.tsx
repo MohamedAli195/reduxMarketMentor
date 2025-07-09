@@ -20,12 +20,12 @@ const Section = () => {
     
         <Box>
             <Button variant="contained" color="info" onClick={handleOpen} sx={{marginY:4 }}>
-              {t('AddCourseSection')}
+              {t('AddLecuter')}
             </Button>
           <LecturerTable isDashBoard={false} />
           </Box>
           <BasicModal open={open} handleClose={handleClose}>
-            <h2>{t('AddCourse')}</h2>
+            <h2>{t('AddLecuter')}</h2>
     
             <AddCourseLectuerForm vid={id} handleClose={handleClose} />
           </BasicModal>
