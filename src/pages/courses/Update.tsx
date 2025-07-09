@@ -115,15 +115,16 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
     typeof course?.image === 'string' ? course?.image : null,
   );
   const selectedImage = watch('image');
-  const [preview, setPreview] = useState<string | null>(null);
+  // const [preview, setPreview] = useState<string | null>(null);
   // const [createCourse] = useCreateCourseMutation();
+  console.log(previewImage)
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreview(reader.result as string);
+        setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -249,7 +250,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
     <>
       <Box sx={{}} component="form" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          <Stack display={'flex'} flexDirection={'row'} gap={1}>
+          <Stack display={'flex'} flexDirection={'row'}>
             {/* Name Fields */}
             <TextField
               fullWidth
@@ -402,10 +403,10 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
                 {errors.image.message}
               </Typography>
             )}
-            {preview && (
+            {previewImage && (
               <Box sx={{ mt: 2, maxHeight: '200px' }}>
                 <img
-                  src={preview}
+                  src={previewImage}
                   alt={t('Preview')}
                   style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
                 />
