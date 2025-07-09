@@ -127,40 +127,40 @@ function UpdatePackageForm({
       onSubmit={handleSubmit(onSubmit)}
     >
       <Stack spacing={3}>
-        <Stack flexDirection={'row'} gap={2}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="name-ar"
-            type="text"
-            label={t('ArabicName')}
-            error={!!errors.name?.ar}
-            helperText={errors.name?.ar?.message}
-            {...register('name.ar', { required: 'حقل الاسم مطلوب' })}
-          />
-
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="name-en"
-            type="text"
-            label={t('EnglishName')}
-            error={!!errors.name?.en}
-            helperText={errors.name?.en?.message}
-            {...register('name.en', { required: 'حقل الاسم مطلوب' })}
-          />
-
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="name-fr"
-            type="text"
-            label={t('fr.name')}
-            error={!!errors.name?.fr}
-            helperText={errors.name?.fr?.message}
-            {...register('name.fr', { required: 'حقل الاسم مطلوب' })}
-          />
-        </Stack>
+       <Stack flexDirection={'row'} gap={2}>
+                 <TextField
+                   fullWidth
+                   variant="outlined"
+                   id="name-ar"
+                   type="text"
+                   label={t('ArabicName')}
+                   error={!!errors.name?.ar}
+                   helperText={errors.name?.ar?.message}
+                   {...register('name.ar', { required: t('ArabicNameReq')})}
+                 />
+             
+                 <TextField
+                   fullWidth
+                   variant="outlined"
+                   id="name-en"
+                   type="text"
+                   label={t('EnglishName')}
+                   error={!!errors.name?.en}
+                   helperText={errors.name?.en?.message}
+                   {...register('name.en', { required: t('EnglishNameReq') } )}
+                 />
+                
+                 <TextField
+                   fullWidth
+                   variant="outlined"
+                   id="name-fr"
+                   type="text"
+                    label={t('FrancName')}
+                   error={!!errors.name?.fr}
+                   helperText={errors.name?.fr?.message}
+                   {...register('name.fr', { required:t("FrancNameReq")})}
+                 />
+               </Stack>
 
         <TextField
           fullWidth

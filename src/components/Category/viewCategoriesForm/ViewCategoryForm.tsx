@@ -35,19 +35,16 @@ interface IFormInput {
   image: FileList;
 }
 
-function ViewCategoryForm({
-
-  initialData,
-
-}: {
-
-  initialData?: null | ICategory
-}) {
-  const { register, setValue , formState: { errors },} = useForm<IFormInput>();
+function ViewCategoryForm({ initialData }: { initialData?: null | ICategory }) {
+  const {
+    register,
+    setValue,
+    formState: { errors },
+  } = useForm<IFormInput>();
   const { t } = useTranslation();
-  const ImageFromApi = initialData?.image
+  const ImageFromApi = initialData?.image;
   // console.log(ImageFromApi)
-  const [preview, setPreview] = useState<string | undefined |null>(ImageFromApi);
+  const [preview, setPreview] = useState<string | undefined | null>(ImageFromApi);
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -61,7 +58,7 @@ function ViewCategoryForm({
   };
 
   useEffect(() => {
-    console.log(initialData)
+    console.log(initialData);
     if (initialData) {
       setValue('name.en', initialData?.name?.en);
       setValue('name.ar', initialData?.name?.ar);
@@ -69,11 +66,8 @@ function ViewCategoryForm({
       setValue('description.ar', initialData?.description?.ar);
       setValue('description.en', initialData?.description?.en);
       setValue('description.fr', initialData?.description?.fr);
-
     }
   }, [initialData, setValue]);
-
-
 
   return (
     <Box
@@ -83,103 +77,98 @@ function ViewCategoryForm({
       component="form"
     >
       <Stack spacing={3}>
-                <Stack flexDirection={"row"} gap={2}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  id="names.ar"
-                  type="text"
-                  label={t("ArabicName")}
-                  error={!!errors.name?.ar}
-                  helperText={errors.name?.ar?.message}
-                  {...register('name.ar', { required: t("ArabicNameReq") })}
-                />
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  id="names.en"
-                  type="text"
-                  label={t("EnglishName")}
-                  error={!!errors.name?.en}
-                  helperText={errors.name?.en?.message}
-                  {...register('name.en', { required: t("EnglishNameReq") })}
-                />
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  id="names.fr"
-                  type="text"
-                  label="fr name"
-                  error={!!errors.name?.fr}
-                  helperText={errors.name?.fr?.message}
-                  {...register('name.fr', { required: "fr name is requried" })}
-                />
-                </Stack>
-                <Stack flexDirection={"row"} gap={2}>
-                <TextField
-                multiline
-                  fullWidth
-                  variant="outlined"
-                  id="description.ar"
-                  type="text"
-                  label={t("descAr")}
-                  error={!!errors.description?.ar}
-                  helperText={errors.description?.ar?.message}
-                  {...register('description.ar', { required: t("descArReq")  })}
-                  sx={{
-                    '& .MuiInputBase-input': {
-                      lineHeight: '1.2', // Adjust line height
-                    },
-                  }}
-                />
-                <TextField
-                multiline
-                  fullWidth
-                  variant="outlined"
-                  id="description.en"
-                  type="text"
-                  label={t("descEn")}
-                  error={!!errors.description?.en}
-                  helperText={errors.description?.en?.message}
-                  {...register('description.en', { required: t("descEnReq")   })}
-                  sx={{
-                    '& .MuiInputBase-input': {
-                      lineHeight: '1.2', // Adjust line height
-                    },
-                  }}
-                />
-                <TextField
-                multiline
-                  fullWidth
-                  variant="outlined"
-                  id="description.fr"
-                  type="text"
-                  label="fr desc"
-                  error={!!errors.description?.fr}
-                  helperText={errors.description?.fr?.message}
-                  {...register('description.fr', { required: "fr desc is required"   })}
-                  sx={{
-                    '& .MuiInputBase-input': {
-                      lineHeight: '1.2', // Adjust line height
-                    },
-                  }}
-                />
-                </Stack>
-                <Stack flexDirection={"row"} gap={2} alignItems={"center"}>
-            
-                {preview  && (
-                  <Box sx={{ mt: 2 }}>
-                    <img
-                      src={preview}
-                      alt={t('Preview')}
-                      style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
-                    />
-                  </Box>
-                )}
-                </Stack>
-                
-              </Stack>
-
+        <Stack flexDirection={'row'} gap={2}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="names.ar"
+            type="text"
+            label={t('ArabicName')}
+            error={!!errors.name?.ar}
+            helperText={errors.name?.ar?.message}
+            {...register('name.ar', { required: t('ArabicNameReq') })}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="names.en"
+            type="text"
+            label={t('EnglishName')}
+            error={!!errors.name?.en}
+            helperText={errors.name?.en?.message}
+            {...register('name.en', { required: t('EnglishNameReq') })}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="names.fr"
+            type="text"
+            label={t('FrancName')}
+            error={!!errors.name?.fr}
+            helperText={errors.name?.fr?.message}
+            {...register('name.fr', { required: t('FrancNameReq') })}
+          />
+        </Stack>
+        <Stack flexDirection={'row'} gap={2}>
+          <TextField
+            multiline
+            fullWidth
+            variant="outlined"
+            id="description.ar"
+            type="text"
+            label={t('descAr')}
+            error={!!errors.description?.ar}
+            helperText={errors.description?.ar?.message}
+            {...register('description.ar', { required: t('descArReq') })}
+            sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
+          />
+          <TextField
+            multiline
+            fullWidth
+            variant="outlined"
+            id="description.en"
+            type="text"
+            label={t('descEn')}
+            error={!!errors.description?.en}
+            helperText={errors.description?.en?.message}
+            {...register('description.en', { required: t('descEnReq') })}
+            sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
+          />
+          <TextField
+            multiline
+            fullWidth
+            variant="outlined"
+            id="description.fr"
+            type="text"
+            label={t('FrancDesc')}
+            {...register('description.fr')}
+            sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
+          />
+        </Stack>
+        <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
+          {preview && (
+            <Box sx={{ mt: 2 }}>
+              <img
+                src={preview}
+                alt={t('Preview')}
+                style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'cover' }}
+              />
+            </Box>
+          )}
+        </Stack>
+      </Stack>
     </Box>
   );
 }

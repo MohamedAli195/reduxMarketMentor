@@ -8,6 +8,7 @@ interface IFormInput {
   name: {
     en: string;
     ar: string;
+    fr: string;
   };
   image: FileList | string; // allow either FileList or URL string
   price: string;
@@ -21,10 +22,11 @@ function ViewPackageForm({ initialData }: { initialData?: IPackage }) {
   const inputs: {
     id: string;
     laberl: string;
-    InputName: 'name.ar' | 'name.en' | 'price' | 'name' | 'image';
+    InputName: 'name.ar' | 'name.en' | 'price' | 'name' | 'image' | 'name.fr'
   }[] = [
     { id: 'names.ar', laberl: 'ArabicName', InputName: 'name.ar' },
     { id: 'names.en', laberl: 'EnglishName', InputName: 'name.en' },
+    { id: 'names.fr', laberl: 'FrancName', InputName: 'name.fr' },
     { id: 'price', laberl: 'price', InputName: 'price' },
   ];
 
@@ -32,6 +34,7 @@ function ViewPackageForm({ initialData }: { initialData?: IPackage }) {
     if (initialData) {
       setValue('name.en', initialData.name.en);
       setValue('name.ar', initialData.name.ar);
+      setValue('name.fr', initialData.name.fr);
       setValue('price', initialData.price);
 
       // Convert FileList to a URL if necessary

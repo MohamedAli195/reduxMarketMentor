@@ -29,7 +29,7 @@ export interface IPackageSelected {
 
 export interface IPackage {
   id: number;
-  name: { en: string; ar: string };
+  name: { en: string; ar: string; fr:string };
   price: string;
   image: string | null | FileList;
   status: string | null;

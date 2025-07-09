@@ -138,15 +138,15 @@ function UpdateCategoryForm({
             {...register('name.en', { required: t('EnglishNameReq') })}
           />
           <TextField
-            fullWidth
-            variant="outlined"
-            id="names.fr"
-            type="text"
-            label="fr name"
-            error={!!errors.name?.fr}
-            helperText={errors.name?.fr?.message}
-            {...register('name.fr', { required: 'fr name is requried' })}
-          />
+                      fullWidth
+                      variant="outlined"
+                      id="names.fr"
+                      type="text"
+                      label={t('FrancName')}
+                      error={!!errors.name?.fr}
+                      helperText={errors.name?.fr?.message}
+                      {...register('name.fr', { required:t("FrancNameReq") })}
+                    />
         </Stack>
         <Stack flexDirection={'row'} gap={2}>
           <TextField
@@ -177,20 +177,20 @@ function UpdateCategoryForm({
               },
             }}
           />
-          <TextField
-            multiline
-            fullWidth
-            variant="outlined"
-            id="description.fr"
-            type="text"
-            label="fr desc"
-            {...register('description.fr')}
-            sx={{
-              '& .MuiInputBase-input': {
-                lineHeight: '1.2', // Adjust line height
-              },
-            }}
-          />
+         <TextField
+                     multiline
+                     fullWidth
+                     variant="outlined"
+                     id="description.fr"
+                     type="text"
+                     label={t("FrancDesc")}
+                     {...register('description.fr')}
+                     sx={{
+                       '& .MuiInputBase-input': {
+                         lineHeight: '1.2', // Adjust line height
+                       },
+                     }}
+                   />
         </Stack>
         <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
           <Button

@@ -123,10 +123,10 @@ function AddCategoryForm({ handleClose }: { handleClose: () => void }) {
             variant="outlined"
             id="names.fr"
             type="text"
-            label="fr name"
+            label={t('FrancName')}
             error={!!errors.name?.fr}
             helperText={errors.name?.fr?.message}
-            {...register('name.fr', { required: 'fr name is requried' })}
+            {...register('name.fr', { required:t("FrancNameReq") })}
           />
         </Stack>
         <Stack flexDirection={'row'} gap={2}>
@@ -164,7 +164,7 @@ function AddCategoryForm({ handleClose }: { handleClose: () => void }) {
             variant="outlined"
             id="description.fr"
             type="text"
-            label="fr desc"
+            label={t("FrancDesc")}
             {...register('description.fr')}
             sx={{
               '& .MuiInputBase-input': {

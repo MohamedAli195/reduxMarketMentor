@@ -102,7 +102,7 @@ toast.success('Package added successfully');
             label={t('ArabicName')}
             error={!!errors.name?.ar}
             helperText={errors.name?.ar?.message}
-            {...register('name.ar', { required: "حقل الاسم مطلوب" })}
+            {...register('name.ar', { required: t('ArabicNameReq')})}
           />
       
           <TextField
@@ -113,7 +113,7 @@ toast.success('Package added successfully');
             label={t('EnglishName')}
             error={!!errors.name?.en}
             helperText={errors.name?.en?.message}
-            {...register('name.en', { required: "حقل الاسم مطلوب" } )}
+            {...register('name.en', { required: t('EnglishNameReq') } )}
           />
          
           <TextField
@@ -121,10 +121,10 @@ toast.success('Package added successfully');
             variant="outlined"
             id="name-fr"
             type="text"
-            label={t('fr.name')}
+             label={t('FrancName')}
             error={!!errors.name?.fr}
             helperText={errors.name?.fr?.message}
-            {...register('name.fr', { required: "حقل الاسم مطلوب" })}
+            {...register('name.fr', { required:t("FrancNameReq")})}
           />
         </Stack>
 
