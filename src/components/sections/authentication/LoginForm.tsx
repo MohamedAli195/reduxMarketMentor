@@ -144,6 +144,7 @@ const dispatch = useDispatch()
       }
     } catch (error) {
       console.error("Login failed:", error);
+      console.error("Login", error?.data?.error);
     }
   };
 
