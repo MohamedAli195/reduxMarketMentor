@@ -2,7 +2,7 @@ import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from "@reduxjs/too
 import { Ipermisson } from "interfaces";
 
 // URL الأساسي الذي يتم توجيه الطلبات إليه
-const BASE_URL = "/api"; // يستخدم البروكسي
+const BASE_URL = '/api'; // مهم جدًا لأنه هو ما يتم عمل proxy عليه
 
 // واجهة الاستجابة المتوقعة من الخادم
 interface Ires {
@@ -23,6 +23,8 @@ const baseQueryWithLogging = async (args: string | FetchArgs, api: BaseQueryApi,
     baseUrl: BASE_URL,
     prepareHeaders: (headers) => {
       headers.set("Accept", "application/json");
+      headers.set('Content-Type', 'application/json');
+
       return headers;
     },
   })(args, api, extraOptions);
@@ -45,10 +47,10 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     // نقطة النهاية لتسجيل الدخول
     login: builder.mutation<Ires, { email: string; password: string }>({
-      query: (credentials) => ({
+      query: ({ email, password }) => ({
         url: "/admin/login",
         method: "POST",
-        body: credentials,
+        body: { email, password },
       }),
       transformResponse: (response: unknown): Ires => {
         // إذا كانت الاستجابة على شكل HTML، نرمي خطأ
