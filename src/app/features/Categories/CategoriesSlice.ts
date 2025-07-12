@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
@@ -8,7 +9,7 @@ import { ICategory } from "interfaces";
   
 // }
 
-const BASE_URL = "/api/admin"; // triggers the proxy
+ // triggers the proxy
 
 interface Ires {
   code: number;
@@ -53,7 +54,7 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/categories?${params.toString()}`;
+        return `/admin/categories?${params.toString()}`;
       },
       providesTags: ["Categories"],
     }),
@@ -61,7 +62,7 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
 
     createCategory: builder.mutation<IresPost, FormData>({
       query: (FormData) => ({
-        url: `/categories `,
+        url: `/admin/categories `,
         method: "POST",
         body: FormData,
       }),
@@ -69,14 +70,14 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
     }),
     deleteCategory: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/categories/${id}/destroy`,
+        url: `/admin/categories/${id}/destroy`,
         method: "DELETE",
       }),
       invalidatesTags: ["Categories"],
     }),
     updateCategory: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/categories/${id}/update`,
+        url: `/admin/categories/${id}/update`,
         method: "POST",
         body: formData,
       }),

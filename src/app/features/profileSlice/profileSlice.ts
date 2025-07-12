@@ -1,9 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "app/store";
 import { Ipermisson } from "interfaces";
-
-
-const BASE_URL = "/api"; // triggers the proxy
+import { BASE_URL } from "../auth/authQuery";
 
 interface Ires {
   code: number;
@@ -38,7 +36,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
   endpoints: (builder) => ({
     getProfile: builder.query<Ires,void>({
       query: () => {
-        return `/admin/profile`;
+        return `/admin/admin/profile`;
       },
      
     }),

@@ -2,15 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory, IREc } from "interfaces";
 import { IFormInputRecommendations } from "components/Recommendations/addRecommendations";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
   
 // }
-
-const BASE_URL = "/api/admin"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -51,7 +49,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/recommendations?${params.toString()}`;
+        return `/admin/recommendations?${params.toString()}`;
       },
       providesTags: ["Recommendations"],
     }),
@@ -59,7 +57,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
     createRecommendation: builder.mutation<IresPost, IFormInputRecommendations>({
       query: (data) => ({
-        url: `/recommendations `,
+        url: `/admin/recommendations `,
         method: "POST",
         body: data,
       }),
@@ -67,14 +65,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
     }),
     deleteRecommendation: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/recommendations/${id}/destroy`,
+        url: `/admin/recommendations/${id}/destroy`,
         method: "DELETE",
       }),
       invalidatesTags: ["Recommendations"],
     }),
     updateRecommendation: builder.mutation<IresPost, { id: number | undefined; data: IFormInputRecommendations }>({
       query: ({ id, data }) => ({
-        url: `/recommendations/${id}/update`,
+        url: `/admin/recommendations/${id}/update`,
         method: "POST",
         body: data,
       }),
@@ -82,7 +80,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
     }),
       updateRecommendationStatus: builder.mutation<IresPost, { id: number | undefined; newStatus: "inactive" | "active" }>({
       query: ({ id, newStatus }) => ({
-        url: `/recommendations/${id}/change-status`,
+        url: `/admin/recommendations/${id}/change-status`,
         method: "POST",
         body: newStatus,
       }),

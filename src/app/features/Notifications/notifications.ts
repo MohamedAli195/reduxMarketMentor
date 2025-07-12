@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
 import { ICategory, INotfications } from 'interfaces';
 import { number } from 'echarts';
+import { BASE_URL } from '../auth/authQuery';
 
 // export interface ISize {
 //   id?: number | undefined;
@@ -9,7 +10,6 @@ import { number } from 'echarts';
 
 // }
 
-const BASE_URL = '/api/admin'; // triggers the proxy
 
 interface Ires {
   code: number;
@@ -48,20 +48,20 @@ export const notificationsApi = createApi({
   endpoints: (builder) => ({
     getNotifications: builder.query<Ires, void>({
       query: () => {
-        return `/admin-notifications`;
+        return `/admin/admin-notifications`;
       },
       providesTags: ['Notifications'],
     }),
     getCountOfNotifications: builder.query<resCount, void>({
       query: () => {
-        return `/admin-count-of-notifications`;
+        return `/admin/admin-count-of-notifications`;
       },
       providesTags: ['Notifications'],
     }),
 
     readNotification: builder.mutation<IresPost, number | string>({
       query: (id) => ({
-        url: `/categories `,
+        url: `/admin/categories `,
         method: 'POST',
         body: id,
       }),

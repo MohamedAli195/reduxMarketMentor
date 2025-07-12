@@ -3,15 +3,13 @@ import { RootState } from "app/store";
 import { IFormInputSubAdmin } from "components/SubAdmin/addSubAdmin";
 
 import { ICategory, ISubADmin } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
   
 // }
-
-const BASE_URL = "/api"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -52,7 +50,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/sub-admins?${params.toString()}`;
+        return `/admin/sub-admins?${params.toString()}`;
       },
       providesTags: ["SubAdmin"],
     }),
@@ -60,7 +58,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
     createSubAdmin: builder.mutation<IresPost, IFormInputSubAdmin>({
       query: (data) => ({
-        url: `/sub-admins `,
+        url: `/admin/sub-admins `,
         method: "POST",
         body: data,
       }),
@@ -68,14 +66,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
     }),
     deleteSubAdmin: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/sub-admins/${id}/destroy`,
+        url: `/admin/sub-admins/${id}/destroy`,
         method: "DELETE",
       }),
       invalidatesTags: ["SubAdmin"],
     }),
     updateSubAdmin: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/sub-admins/${id}/update`,
+        url: `/admin/sub-admins/${id}/update`,
         method: "POST",
         body: formData,
       }),

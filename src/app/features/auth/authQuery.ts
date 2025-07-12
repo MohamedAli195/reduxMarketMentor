@@ -2,7 +2,7 @@ import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from "@reduxjs/too
 import { Ipermisson } from "interfaces";
 
 // URL الأساسي الذي يتم توجيه الطلبات إليه
-const BASE_URL = 'https://business.market-mentor.net/public/api';
+export const BASE_URL = 'https://business.market-mentor.net/public/api';
 
 // واجهة الاستجابة المتوقعة من الخادم
 interface Ires {

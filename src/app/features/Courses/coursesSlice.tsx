@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
 import { ICategory, ICourse } from 'interfaces';
+import { BASE_URL } from '../auth/authQuery';
 
 // export interface ISize {
 //   id?: number | undefined;
@@ -8,7 +9,6 @@ import { ICategory, ICourse } from 'interfaces';
 
 // }
 
-const BASE_URL = '/api/admin'; // triggers the proxy
 
 interface Ires {
   code: number;
@@ -48,7 +48,7 @@ headers.set("Accept", "application/json");
   endpoints: (builder) => ({
     getCourse: builder.query<IresOne, string | undefined>({
       query: (id) => {
-        return `/courses/${id}`;
+        return `/admin/courses/${id}`;
       },
       providesTags: ['Courses'],
     }),
@@ -63,14 +63,14 @@ headers.set("Accept", "application/json");
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
 
-        return `/courses?${params.toString()}`;
+        return `/admin/courses?${params.toString()}`;
       },
       providesTags: ['Courses'],
     }),
 
     createCourse: builder.mutation<IresPost, FormData>({
       query: (FormData) => ({
-        url: `/courses `,
+        url: `/admin/courses `,
         method: 'POST',
         body: FormData,
       }),
@@ -78,14 +78,14 @@ headers.set("Accept", "application/json");
     }),
     deleteCourse: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/courses/${id}/destroy`,
+        url: `/admin/courses/${id}/destroy`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Courses'],
     }),
     updateCourse: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/courses/${id}/update`,
+        url: `/admin/courses/${id}/update`,
         method: 'POST',
         body: formData,
       }),

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
 import { ICategory, ICourseLectuer } from 'interfaces';
 import { IFormInputLectuers } from 'components/CourseLectuers/updateLectuerForm';
+import { BASE_URL } from '../auth/authQuery';
 
 // export interface ISize {
 //   id?: number | undefined;
@@ -9,7 +10,6 @@ import { IFormInputLectuers } from 'components/CourseLectuers/updateLectuerForm'
 
 // }
 
-const BASE_URL = '/api/admin'; // triggers the proxy
 
 interface Ires {
   code: number;
@@ -59,14 +59,14 @@ export const leactuersApi = createApi({
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
 
-        return `/sections/${id}/lectures?${params.toString()}`;
+        return `/admin/sections/${id}/lectures?${params.toString()}`;
       },
       providesTags: ['Lectuers'],
     }),
 
     createLecture: builder.mutation<IresPost, { id: string | undefined; formdata: FormData }>({
       query: ({ id, formdata }) => ({
-        url: `/sections/${id}/lectures`,
+        url: `/admin/sections/${id}/lectures`,
         method: 'POST',
         body: formdata,
       }),
@@ -74,7 +74,7 @@ export const leactuersApi = createApi({
     }),
     deleteLecture: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/course-lectures/${id}/destroy`,
+        url: `/admin/course-lectures/${id}/destroy`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Lectuers'],
@@ -84,7 +84,7 @@ export const leactuersApi = createApi({
       { id: string | number | undefined; data: IFormInputLectuers }
     >({
       query: ({ id, data }) => ({
-        url: `/course-lectures/${id}/update`,
+        url: `/admin/course-lectures/${id}/update`,
         method: 'POST',
         body: data,
       }),

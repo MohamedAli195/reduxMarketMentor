@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory, IPackage } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
   
 // }
-
-const BASE_URL = "/api/admin"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -51,7 +49,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/packages?${params.toString()}`;
+        return `/admin/packages?${params.toString()}`;
       },
       providesTags: ["Packages"],
     }),
@@ -59,7 +57,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
     createPackage: builder.mutation<IresPost, FormData>({
       query: (FormData) => ({
-        url: `/packages `,
+        url: `/admin/packages `,
         method: "POST",
         body: FormData,
       }),
@@ -67,14 +65,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
     }),
     deletePackage: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/packages/${id}/destroy`,
+        url: `/admin/packages/${id}/destroy`,
         method: "DELETE",
       }),
       invalidatesTags: ["Packages"],
     }),
     updatePackage: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/packages/${id}/update`,
+        url: `/admin/packages/${id}/update`,
         method: "POST",
         body: formData,
       }),

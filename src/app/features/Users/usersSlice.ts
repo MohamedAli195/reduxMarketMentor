@@ -1,15 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory, IPackage, IUser } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
-  
 // }
-
-const BASE_URL = "/api/admin"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -51,7 +48,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/customers?${params.toString()}`;
+        return `/admin/customers?${params.toString()}`;
       },
       providesTags: ["Customers"],
     }),
@@ -59,7 +56,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
     createCustomer: builder.mutation<IresPost, FormData>({
       query: (FormData) => ({
-        url: `/customers `,
+        url: `/admin/customers `,
         method: "POST",
         body: FormData,
       }),
@@ -67,14 +64,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
     }),
     deleteCustomer: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
-        url: `/customers/${id}/destroy`,
+        url: `/admin/customers/${id}/destroy`,
         method: "DELETE",
       }),
       invalidatesTags: ["Customers"],
     }),
     updateCustomer: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/customers/${id}/update`,
+        url: `/admin/customers/${id}/update`,
         method: "POST",
         body: formData,
       }),

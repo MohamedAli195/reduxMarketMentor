@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory, IOrder } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
@@ -8,7 +9,6 @@ import { ICategory, IOrder } from "interfaces";
   
 // }
 
-const BASE_URL = "/api/admin"; // triggers the proxy
 
 interface Ires {
   code: number;
@@ -50,13 +50,13 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/orders?${params.toString()}`;
+        return `/admin/orders?${params.toString()}`;
       },
       providesTags: ["Orders"],
     }),
     updateOrderStatus: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/orders/${id}/change-status`,
+        url: `/admin/orders/${id}/change-status`,
         method: "POST",
         body: formData,
       }),

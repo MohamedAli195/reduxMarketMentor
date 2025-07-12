@@ -2,15 +2,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
 import { ICategory, INotfications, Ipermisson } from 'interfaces';
 import { number } from 'echarts';
+import { BASE_URL } from '../auth/authQuery';
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
 
 // }
-
-const BASE_URL = '/api/admin'; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -38,7 +36,7 @@ headers.set("Accept", "application/json");
   endpoints: (builder) => ({
     getPermissions: builder.query<Ires, void>({
       query: () => {
-        return `/roles/permissions`;
+        return `/admin/roles/permissions`;
       },
       providesTags: ['Permissions'],
     }),

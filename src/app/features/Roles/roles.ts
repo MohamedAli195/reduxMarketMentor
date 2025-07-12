@@ -2,15 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ICategory, IRole } from "interfaces";
 import { IFormInputRoles } from "components/Permissions/addPermissions";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
   
 // }
-
-const BASE_URL = "/api/admin"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -54,7 +52,7 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
         params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
         if (search) params.append('search', search);
     
-        return `/roles?${params.toString()}`;
+        return `/admin/roles?${params.toString()}`;
       },
       providesTags: ["Roles"],
     }),
@@ -62,7 +60,7 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
 
     createRole: builder.mutation<IresPost, IFormInputRoles>({
       query: (data) => ({
-        url: `/roles `,
+        url: `/admin/roles `,
         method: "POST",
         body: data,
       }),
@@ -77,7 +75,7 @@ params.append('per_page', perPage.toString()); // تأكد من أن API يتط�
     }),
     updateRole: builder.mutation<IresPost, { id: number | undefined; data: IFormInputRoles }>({
       query: ({ id, data }) => ({
-        url: `/roles/${id}/update`,
+        url: `/admin/roles/${id}/update`,
         method: "POST",
         body: data,
       }),

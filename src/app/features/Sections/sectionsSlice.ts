@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../store";
 import { ISection } from "interfaces";
+import { BASE_URL } from "../auth/authQuery";
 
 // export interface ISize {
 //   id?: number | undefined;
 //   label: string;
   
 // }
-
-const BASE_URL = "/api/admin"; // triggers the proxy
-
 interface Ires {
   code: number;
   message: string;
@@ -46,7 +44,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
       query: (id) => {
 
     
-        return `/courses/${id}/sections`;
+        return `/admin/courses/${id}/sections`;
       },
       providesTags: ["Sections"],
     }),
@@ -54,7 +52,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
     createSection: builder.mutation<IresPost, {id:string | undefined , data:ISection}>({
       query: ({id,data}) => ({
-        url: `/courses/${id}/sections`,
+        url: `/admin/courses/${id}/sections`,
         method: "POST",
         body: data,
       }),
