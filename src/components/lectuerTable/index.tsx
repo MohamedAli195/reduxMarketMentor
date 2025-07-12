@@ -3,7 +3,6 @@ import { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import PaginationComponent from 'components/Shared/pagination';
 import DeleteModal from 'components/deleteModal';
-import { deleteAnyThing } from 'functions';
 import SearchForm from 'components/Shared/searchForm';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import SelectSort from 'components/Shared/selectSort';

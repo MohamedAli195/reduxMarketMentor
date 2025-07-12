@@ -1,26 +1,14 @@
 import {  Button, Stack, Typography } from '@mui/material';
-
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import BasicModal from 'components/Shared/modal/ShareModal';
-
-
-// import { fetchPackages } from './packagesFunct';
 import { useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { IRole, ITempPermissions } from 'interfaces';
-
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-
-
 import DeleteModal from 'components/deleteModal';
-import { deleteAnyThing, fetchAllData } from 'functions';
 import AddPermissinsForm from 'components/Permissions/addPermissions';
-
 import UpdatePermissionsForm from 'components/Permissions/updatePrrmissionForm/UpdatePermissionsForm';
 import PermissionsTable from './PermissionsTable';
 import SkeletonTables from 'components/Shared/skelton';
@@ -63,13 +51,6 @@ function PermissionsPage({ isDashBoard }: IProps) {
     settempPermission(packageData);
     handleOpenU(); // Open the update modalclg
   };
-
-  // Fetch packages using React Query
-  // const { data, error, isLoading, isError } = useQuery({
-  //   queryKey: [`roles-${page}-${per}-${search}-${sort}`],
-  //   queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
-  // });
-
   const {data, error, isLoading, isError} = useGetRolesQuery({ page, perPage, search ,sort_direction: sort })
 
      const [deleteRole] =useDeleteRoleMutation()

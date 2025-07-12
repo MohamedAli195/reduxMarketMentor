@@ -12,16 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { ISubADmin } from 'interfaces';
 import { Eye, Trash2, Pencil } from 'lucide-react';
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-
 import DeleteModal from 'components/deleteModal';
-import { deleteAnyThing, fetchAllData } from 'functions';
-
 import AddSubAdminForm from 'components/SubAdmin/addSubAdmin';
-
 import UpdateSubAdminForm from 'components/SubAdmin/updateSubAdminForm';
-import SwitchStatus from 'components/Shared/switch';
 import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';

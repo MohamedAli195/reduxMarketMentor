@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
 import { Box, Button, Stack, TextField, Skeleton, Chip, FormControl, InputLabel, MenuItem, Select, OutlinedInput } from '@mui/material';
-import axios from 'axios';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData } from 'functions';
 import { useCreateRecommendationMutation } from 'app/features/Recommendations/RecommendationsSlice';
 
 const VisuallyHiddenInput = styled('input')({
@@ -59,12 +55,6 @@ function AddRecommendationsForm({ handleClose }: { handleClose: () => void;  }) 
 const [createRecommendation] = useCreateRecommendationMutation()
   const onSubmit: SubmitHandler<IFormInputRecommendations> = async (data) => {
     try {
-      // const headers = {
-      //   Authorization: `Bearer ${localStorage.getItem('token')}`,
-      //   'Content-Type': 'multipart/form-data',
-      // };
-  
-      // await axios.post(`${url}/admin/recommendations`, data, { headers });
       await createRecommendation(data)
       toast.success(t('recommendations added successfully'));
       handleClose();

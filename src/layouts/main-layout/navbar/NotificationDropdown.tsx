@@ -14,8 +14,6 @@ import {
 import img from "../../../../public/images/avatar.png"
 import { useQuery } from '@tanstack/react-query';
 import NotificationIcon from 'components/icons/NotificationIcon';
-import { notificationOptions } from 'data/navbar/menu-data';
-import { fetchCountOfNotifications, fetchNotifications, readNotification } from 'functions';
 import i18n from 'i18n';
 import { useState } from 'react';
 import SimpleBar from 'simplebar-react';
@@ -55,7 +53,7 @@ const [readNotification] = useReadNotificationMutation()
   // if (isError) return <p>Error: {error}</p>;
 
 
-  //fetchNotifications
+ 
   return (
     <>
       <IconButton

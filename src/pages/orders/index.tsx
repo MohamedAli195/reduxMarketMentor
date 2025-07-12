@@ -1,27 +1,14 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
+import { Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import BasicModal from 'components/Shared/modal/ShareModal';
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import paths from 'routes/path';
 import { useTranslation } from 'react-i18next';
-import AddCustomer from 'components/Customers/addCustomer';
-import UpdateCustomerForm from 'components/Customers/updateCustomer';
-import { Eye, Trash2, Pencil } from 'lucide-react';
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-import { ICustomer, IOrder } from 'interfaces';
-
-import DeleteModal from 'components/deleteModal';
-// import { fetchCustomers } from 'pages/customers/costumersFunct';
+import {  IOrder } from 'interfaces';
 import UpdateOrderForm from 'components/updateOrderForm';
-import { fetchAllData } from 'functions';
-import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import OrdersTable from './OrdersTable';

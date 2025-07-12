@@ -4,7 +4,6 @@ import {
   Button,
   Stack,
   TextField,
-  Skeleton,
   Chip,
   FormControl,
   InputLabel,
@@ -12,14 +11,11 @@ import {
   Select,
   OutlinedInput,
 } from '@mui/material';
-import axios from 'axios';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData, fetchOne } from 'functions';
-import { IPermissions, IRole, ITempPermissions } from 'interfaces';
+import {  IRole } from 'interfaces';
 import { useUpdateRoleMutation } from 'app/features/Roles/roles';
 import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
 

@@ -1,17 +1,13 @@
 import { Button, Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { IPackage2, IPackageSelected } from 'interfaces';
 import PaginationComponent from 'components/Shared/pagination';
 import SearchForm from 'components/Shared/searchForm';
-import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
+import { checkPermissions} from 'functions';
 import PackagesTable from './PackagesTable';
-import AddPackageForm from 'components/Packages/addPackageForm';
 import SelectSort from 'components/Shared/selectSort';
-import SkeletonTables from 'components/Shared/skelton';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import Modals from './Modals';
 import { useGetPackagesQuery } from 'app/features/packages/packages';
@@ -68,20 +64,6 @@ const permissions = profile?.data.permissions
     handleOpenU(); // Open the update modal
   };
 
-  // Columns configuration
-
-  // Fetch packages using React Query
-  // const { data, error, isLoading, isError, refetch } = useQuery({
-  //   queryKey: [`packages-${page}-${perPage}-${search}-${sort}`],
-  //   queryFn: () => fetchAllData(page, perPage, search, sort, '', 'packages'),
-  // });
-
-  // if (isLoading) return <SkeletonTables />;
-  // if (isError) return <p>Error: {error.message}</p>;
-
-  // Prepare rows for DataGrid
-
-  // const totalItems = data?.data?.total;
   return (
     <>
       {!isDashBoard && (

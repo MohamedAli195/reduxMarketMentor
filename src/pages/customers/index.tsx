@@ -1,24 +1,17 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import paths from 'routes/path';
 import { useTranslation } from 'react-i18next';
 import AddCustomer from 'components/Customers/addCustomer';
 import UpdateCustomerForm from 'components/Customers/updateCustomer';
 import { Eye, Trash2, Pencil } from 'lucide-react';
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
 import { ICustomer, IUser } from 'interfaces';
-
 import DeleteModal from 'components/deleteModal';
-import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
-import SkeletonTables from 'components/Shared/skelton';
+import { checkPermissions } from 'functions';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import CustomersTable from './CustomerTable';
@@ -35,19 +28,14 @@ function CustomersPage({isDashBoard}:IProps) {
   const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
- 
+
     const { data: CategoriesFromRTK, isLoading:isLoadingRTK, isFetching, isSuccess } = 
     useGetCustomersQuery({ page, perPage, search ,sort_direction: sort });
-  
     const [deleteCustomer] =useDeleteCustomerMutation()
       const {data:profile} = useGetProfileQuery()
   const permissions = profile?.data.permissions
-  
     const categories = CategoriesFromRTK?.data?.data || [];
     const totalItems = CategoriesFromRTK?.data?.total || 0
-  
-  
-  
   const { t, i18n } = useTranslation();
   const [tempId, setTempId] = useState(1);
   // delete modal
@@ -72,9 +60,6 @@ function CustomersPage({isDashBoard}:IProps) {
     setSelectedPackage(packageData); // Set selected package data
     handleOpenU(); // Open the update modal
   };
-
-
-
 
   return (
     <>

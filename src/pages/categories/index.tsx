@@ -1,29 +1,17 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
+import {Button, Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import paths from 'routes/path';
 import AddCategoryForm from 'components/Category/addCategoryForm';
 import UpdateCategoryForm from 'components/Category/updateCategoryForm/UpdateCategory';
 import { useTranslation } from 'react-i18next';
 import { ICategory, ISelectCategory } from 'interfaces';
-import { Eye, Trash2, Pencil } from 'lucide-react';
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-
-// import CustomDataGridFooter from 'components/common/table/CustomDataGridFooter';
-import Lottie from "lottie-react";
-import deleteAnimation from "./../../../src/components/animations/delete.json";
 import DeleteModal from 'components/deleteModal';
-import { checkPermissions, deleteAnyThing, fetchAllData, parsedData } from 'functions';
-
+import { checkPermissions } from 'functions';
 import CategoriesTable from './CategoriesTable';
-import SkeletonTables from 'components/Shared/skelton';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';

@@ -12,13 +12,8 @@ import {
   Select,
   OutlinedInput,
 } from '@mui/material';
-
-import { CloudUpload } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData, fetchOne } from 'functions';
 import { ISubADmin } from 'interfaces';
 // import { fetchPackage } from 'pages/packages/packagesFunct';
-
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',

@@ -6,8 +6,6 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 import { CloudUpload } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchOne } from 'functions';
 import { useUpdatePackageMutation } from 'app/features/packages/packages';
 import { errorType, IPackage, IPackage2, IPackageSelected } from 'interfaces';
 // import { fetchPackage } from 'pages/packages/packagesFunct';

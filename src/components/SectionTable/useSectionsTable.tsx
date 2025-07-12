@@ -1,10 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
-import { useDeleteLectureMutation, useGetLecturesQuery } from 'app/features/Lectuers/Lectuers';
-import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+
 import { useGetSectionsByCourseIDQuery } from 'app/features/Sections/sectionsSlice';
-import { fetchLectuers } from 'functions';
-import { ICategory, ICourseLectuer, IPackageLectuerSelected, ISection } from 'interfaces';
+import {IPackageLectuerSelected, ISection } from 'interfaces';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 

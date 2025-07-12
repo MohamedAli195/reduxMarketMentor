@@ -15,7 +15,6 @@ import {
   OutlinedInput,
 } from '@mui/material';
 
-import { CloudUpload } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllData, fetchOne } from 'functions';
 // import { fetchPackage } from 'pages/packages/packagesFunct';

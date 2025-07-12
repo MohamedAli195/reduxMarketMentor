@@ -4,10 +4,8 @@ import DeleteModal from 'components/deleteModal';
 import AddPackageForm from 'components/Packages/addPackageForm';
 import UpdatePackageForm from 'components/Packages/updatePacageForm';
 import BasicModal from 'components/Shared/modal/ShareModal';
-import { deleteAnyThing } from 'functions';
 import { t } from 'i18next';
 import { IPackage, IPackage2, IPackageSelected } from 'interfaces';
-import React from 'react'
 import { Toaster } from 'react-hot-toast';
 
 

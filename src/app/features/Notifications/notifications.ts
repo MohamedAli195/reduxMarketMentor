@@ -61,7 +61,7 @@ export const notificationsApi = createApi({
 
     readNotification: builder.mutation<IresPost, number | string>({
       query: (id) => ({
-        url: `/admin/categories `,
+        url: `/admin/admin-read-of-notification/${id}`,
         method: 'POST',
         body: id,
       }),

@@ -62,19 +62,6 @@ const permissions = profile?.data.permissions
     handleOpenUp(); // Open the update modal
   };
   // Columns configuration
-
-
-  // // Fetch packages using React Query
-  // const { data, error, isLoading, isError, refetch } = useQuery({
-  //   queryKey: [`courses-${page}-${per}-${search}-${sort}`],
-  //   queryFn: () => fetchAllData(page, per, search, sort, '', 'courses'),
-  // });
-
-  // // Prepare rows for DataGrid
-  // // if (isLoading) return <SkeletonTables />;
-  // if (isError) return <p>Error: {error.message}</p>;
-  // // console.log(data)
-  // const totalItems = data?.data?.total;
   return (
     <>
       {isDashBoard ? (

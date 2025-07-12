@@ -1,15 +1,10 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
 import { useUpdateLectureMutation } from 'app/features/Lectuers/Lectuers';
-import axios from 'axios';
-import { fetchOne } from 'functions';
 import { IPackageLectuerSelected } from 'interfaces';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
-
 export interface IFormInputLectuers {
   title: {
     en: string;

@@ -1,28 +1,18 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import BasicModal from 'components/Shared/modal/ShareModal';
-
 // import { fetchPackages } from './packagesFunct';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useTranslation } from 'react-i18next';
 import { IPackageSelected, IREc } from 'interfaces';
-
 import PaginationComponent from 'components/Shared/pagination';
-
 import SearchForm from 'components/Shared/searchForm';
-
 import DeleteModal from 'components/deleteModal';
-import { deleteAnyThing, fetchAllData } from 'functions';
-;
 import AddRecommendationsForm from 'components/Recommendations/addRecommendations';
 import UpdateRecommendationsForm from 'components/Recommendations/updaterecommendations';
-import SwitchStatus from 'components/Shared/switch';
-import SkeletonTables from 'components/Shared/skelton';
+
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import RecommendationsTable from './RecommendationsTable';

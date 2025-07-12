@@ -10,7 +10,6 @@ import { errorType, IFormInputCourses } from 'interfaces';
 import { styled } from '@mui/material/styles';
 
 import { CloudUpload } from 'lucide-react';
-import { fetchPackagesOrCAtegoriesForCourses } from 'functions';
 import { useCreateCourseMutation } from 'app/features/Courses/coursesSlice';
 import { useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
 import { useGetPackagesQuery } from 'app/features/packages/packages';

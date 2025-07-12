@@ -1,17 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-
-import { useQuery } from '@tanstack/react-query';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import paths from 'routes/path';
 import { useTranslation } from 'react-i18next';
 import ViewCoursForm from 'components/Courses/viewCoursForm';
-import LectuerTable from 'components/lectuerTable';
-import { fetchOne } from 'functions';
 import BasicModal from 'components/Shared/modal/ShareModal';
-import AddCourseForm from 'components/Courses/AddCourseForm';
-import AddCourseLectuerForm from 'components/CourseLectuers/AddCourseLectuerForm';
 import { useState } from 'react';
-import useLeactuerTable from 'components/lectuerTable/useLeactuerTable';
 import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
 import AddSectionToCourse from 'components/section/addSectionToCourse';
 import Sections from 'components/SectionTable/Sections';
@@ -24,10 +16,6 @@ function CourseDetails() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // const { data, error, isLoading, isError, refetch } = useQuery({
-  //   queryKey: ['CourseDetails', id],
-  //   queryFn: () => fetchOne(id, 'courses'),
-  // });
   const {data ,isLoading,isError ,error} = useGetCourseQuery(id)
 const course = data?.data
 // console.log(course)

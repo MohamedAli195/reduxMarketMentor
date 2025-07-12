@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-// import { fetchCategories, fetchCategoriesForCourses } from 'pages/categories/categoriesFunct';
-// import { fetchPackages, fetchPackagesForCourses } from 'pages/packages/packagesFunct';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { t } from 'i18next';
-// import { IFormInputCourses } from 'interfaces';
 import { styled } from '@mui/material/styles';
-
 import { CloudUpload } from 'lucide-react';
-import { fetchPackagesOrCAtegoriesForCourses } from 'functions';
 import { useUpdateCourseMutation } from 'app/features/Courses/coursesSlice';
 import { errorType, ICourse } from 'interfaces';
 import { useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
@@ -129,29 +123,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
       reader.readAsDataURL(file);
     }
   };
-  // useEffect(() => {
-  //   const loadCategories = async () => {
-  //     try {
-  //       const categoryData = await fetchPackagesOrCAtegoriesForCourses('categories');
-  //       setCategories(categoryData);
-  //     } catch (error) {
-  //       // console.error('Error fetching categories:', error);
-  //     }
-  //   };
-
-  //   const loadPackages = async () => {
-  //     try {
-  //       const packageData = await fetchPackagesOrCAtegoriesForCourses('packages');
-  //       setPackages(packageData);
-  //     } catch (error) {
-  //       // console.error('Error fetching packages:', error);
-  //     }
-  //   };
-
-  //   loadCategories();
-  //   loadPackages();
-  // }, []);
-
+ 
   useEffect(() => {
     if (course) {
       setValue('name.en', course.name.en);
