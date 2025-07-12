@@ -34,8 +34,8 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
 
   const { data: packages } = useGetPackagesQuery({});
 
-  console.log(categories);
-  console.log(packages);
+  // console.log(categories);
+  // console.log(packages);
   const {
     register,
     handleSubmit,

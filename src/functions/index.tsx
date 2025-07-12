@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 const url = import.meta.env.VITE_API_URL;
 const token = store.getState().auth.authData.token;
 
-console.log(token)
+// console.log(token)
 
 const storedPermissions = localStorage.getItem('permissions');
 export let parsedData:Ipermisson[];
@@ -21,7 +21,7 @@ if (storedPermissions) {
     // console.log(parsedData);
 } else {
    
-    console.log('No data found!');
+    // console.log('No data found!');
    
 }
   // Delete package function
@@ -66,7 +66,7 @@ export  const deleteAnyThing = async (id: number,refetch:()=>void ,module:string
         },
       },
     );
-    console.log(response)
+    // console.log(response)
     return response.data;
   };
   /// Api requestes
@@ -106,7 +106,7 @@ export  const deleteAnyThing = async (id: number,refetch:()=>void ,module:string
             );
             return response.data;
         } catch (error) {
-            console.error(`Error fetching ${module} details:`, error); // Log full error
+            console.error(`Error fetching ${module} details:`, error); 
             throw error; // Rethrow to handle in useQuery's error state
         }
     };
@@ -191,7 +191,7 @@ export const fetchCountOfNotifications = async () => {
       );
       return response.data;
   } catch (error) {
-      console.error(`Error fetching notifications details:`, error); // Log full error
+      // console.error(`Error fetching notifications details:`, error); // Log full error
       if(error.response.status===401){
         localStorage.removeItem("token")
         window.location.pathname="/authentication/login"
@@ -203,7 +203,7 @@ export const fetchCountOfNotifications = async () => {
 export const readNotification = async (id:number) => {
 
   if (!token) throw new Error("Authorization token is missing");
-  console.log(token)
+  // console.log(token)
   try {
       const response = await axios.post(
           `${url}/admin/admin-read-of-notification/${id}`,
@@ -216,7 +216,7 @@ export const readNotification = async (id:number) => {
               },
           }
       );
-      console.log(response.data)
+      // console.log(response.data)
       return response.data;
   } catch (error) {
       console.error(`Error reading notifications details:`, error); // Log full error

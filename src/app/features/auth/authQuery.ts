@@ -30,11 +30,11 @@ const baseQueryWithLogging = async (args: string | FetchArgs, api: BaseQueryApi,
   })(args, api, extraOptions);
 
   // طباعة الاستجابة الخام للتحقق من النوع
-  console.log("Raw Response:", result);
+  // console.log("Raw Response:", result);
   
   // إذا كانت الاستجابة HTML بدلاً من JSON، نطبع رسالة تنبيهية
   if (result.error && result.error.status === 200 && typeof result.error.data === 'string' && result.error.data.includes("<html")) {
-    console.error("تم تلقي استجابة HTML بدلاً من JSON. ربما صفحة خطأ.");
+    // console.error("تم تلقي استجابة HTML بدلاً من JSON. ربما صفحة خطأ.");
   }
 
   return result;

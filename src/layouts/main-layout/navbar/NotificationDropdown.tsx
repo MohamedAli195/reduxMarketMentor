@@ -107,7 +107,7 @@ const [readNotification] = useReadNotificationMutation()
               }}
               // onClick={handleClose}
               onClick={()=>{
-                console.log(item.id)
+                // console.log(item.id)
                 readNotification(item?.id)
               }
               

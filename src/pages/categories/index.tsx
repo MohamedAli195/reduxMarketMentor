@@ -74,7 +74,7 @@ const permissions = data?.data.permissions
   const [selectedCategory, setSelectedCategory] = useState<null | ICategory>(null);
 
   const handleEditOpen = (categoryData: ICategory) => {
-    console.log(categoryData)
+    // console.log(categoryData)
     setSelectedCategory(categoryData); // Set selected package data
     handleOpenU(); // Open the update modal
   };

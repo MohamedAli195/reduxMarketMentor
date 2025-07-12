@@ -32,7 +32,7 @@ import { useParams } from 'react-router-dom';
 }
 
 const useLeactuerTable = (id: string | undefined ): UseLecturerTableReturn => {
-  console.log(id)
+  // console.log(id)
   const [page, setPage] = useState(1);
   const [perPage, setper] = useState(10);
   const [search, setSearch] = useState('');
@@ -45,7 +45,7 @@ const useLeactuerTable = (id: string | undefined ): UseLecturerTableReturn => {
   const handleClosed = () => setOpend(false);
   const [selectedCategory, setSelectedCategory] = useState<null | IPackageLectuerSelected>(null);
   const handleEditOpen = (categoryData: IPackageLectuerSelected) => {
-    console.log(categoryData);
+    // console.log(categoryData);
     setSelectedCategory(categoryData); // Set selected package data
     handleOpenU(); // Open the update modal
   };

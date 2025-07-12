@@ -92,10 +92,10 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
   const [pacState, setpacState] = useState(course?.package?.id);
-  console.log(pacState);
+  // console.log(pacState);
   const id = course?.id;
   // console.log(catState);
-  console.log(catState);
+  // console.log(catState);
   // const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
 
   const {
@@ -106,7 +106,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
     control,
     formState: { errors },
   } = useForm<IFormInputCourses>();
-  console.log(errors)
+  // console.log(errors)
   const { data: categories } = useGetCategoriesQuery({});
 
   const { data: packages } = useGetPackagesQuery({});
@@ -117,7 +117,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
   const selectedImage = watch('image');
   // const [preview, setPreview] = useState<string | null>(null);
   // const [createCourse] = useCreateCourseMutation();
-  console.log(previewImage)
+  // console.log(previewImage)
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -226,7 +226,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
       //   { headers },
       // );
      const res = await updateCourse({ id, formData }).unwrap()
-   console.log(res);
+  //  console.log(res);
       if (res.code === 200) {
         toast.success('Course updated successfully');
       }

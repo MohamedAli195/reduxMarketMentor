@@ -67,7 +67,7 @@ function UpdateCategoryForm({
   };
 
   useEffect(() => {
-    console.log(initialData);
+    // console.log(initialData);
     if (initialData) {
       setValue('name.en', initialData?.name?.en);
       setValue('name.ar', initialData?.name?.ar);

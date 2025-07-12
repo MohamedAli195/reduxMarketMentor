@@ -58,7 +58,7 @@ function ViewCategoryForm({ initialData }: { initialData?: null | ICategory }) {
   };
 
   useEffect(() => {
-    console.log(initialData);
+    // console.log(initialData);
     if (initialData) {
       setValue('name.en', initialData?.name?.en);
       setValue('name.ar', initialData?.name?.ar);

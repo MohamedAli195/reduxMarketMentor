@@ -65,7 +65,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
   const url = import.meta.env.VITE_API_URL;
 
   const [createSubAdmin ,{error}] = useCreateSubAdminMutation()
-  console.log(error)
+  // console.log(error)
   const { data: apiRoles, isLoading, isError } = useQuery({
     queryKey: [`roles-${page}-${per}-${search}-${sort}`],
     queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),

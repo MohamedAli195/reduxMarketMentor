@@ -131,7 +131,7 @@ function OrdersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBoard
     },
   ];
 
-  console.log(data)
+  // console.log(data)
   const columns = isDashBoard ? dashboardColumns : defaultColumns;
 
 const rows = data?.length > 0

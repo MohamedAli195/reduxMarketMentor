@@ -31,7 +31,7 @@ function CoursesPage({ isDashBoard }: IProps) {
 
   const { data,isError, error, isLoading:isLoadingRTK, isFetching, isSuccess } = 
   useGetCoursesQuery({ page, perPage, search ,sort_direction: sort });
-console.log(data)
+// console.log(data)
   const [deleteCourse] =useDeleteCourseMutation()
     const {data:profile} = useGetProfileQuery()
 const permissions = profile?.data.permissions

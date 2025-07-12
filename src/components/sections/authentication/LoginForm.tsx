@@ -122,7 +122,7 @@ const dispatch = useDispatch()
   const onSubmit = async (formData: IFormInput) => {
     try {
       const response = await login(formData).unwrap();
-      console.log(response);
+      // console.log(response);
       const token = response?.token;
       const user = {
         email: response?.data?.email,
@@ -139,17 +139,17 @@ const dispatch = useDispatch()
         //   localStorage.setItem("useToken",token)
 
         navigate("/");
-      console.error("Logied:", error);
+      // console.error("Logied:", error);
 
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      console.error("Login", error?.data?.error);
+      // console.error("Login failed:", error);
+      // console.error("Login", error?.data?.error);
     }
   };
 
   
-console.log("reder/rerender")
+// console.log("reder/rerender")
   return (
     <>
       <Box

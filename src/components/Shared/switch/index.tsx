@@ -19,7 +19,7 @@ export default function SwitchStatus({ id, apiStatus ,updateState }: IProps) {
 
   const handleChange = () => {
     const newStatus = status === 'active' ? 'inactive' : 'active';
-console.log(newStatus)
+// console.log(newStatus)
     setStatus(newStatus);
     if (updateState) {
   updateState({ id, newStatus });

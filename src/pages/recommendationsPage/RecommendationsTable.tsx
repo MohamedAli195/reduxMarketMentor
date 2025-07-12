@@ -17,7 +17,7 @@ interface IProps {
   data: IREc[];
 }
 function RecommendationsTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
-  console.log(data);
+  // console.log(data);
   const navigate = useNavigate();
   const [updateRecommendationStatus, { error }] = useUpdateRecommendationStatusMutation();
   const columns: GridColDef[] = [

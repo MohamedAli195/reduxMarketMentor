@@ -46,7 +46,7 @@ const useSectionsTable = (): UseLecturerTableReturn => {
   const handleClosed = () => setOpend(false);
   const [selectedCategory, setSelectedCategory] = useState<null | IPackageLectuerSelected>(null);
   const handleEditOpen = (categoryData: IPackageLectuerSelected) => {
-    console.log(categoryData);
+    // console.log(categoryData);
     setSelectedCategory(categoryData); // Set selected package data
     handleOpenU(); // Open the update modal
   };

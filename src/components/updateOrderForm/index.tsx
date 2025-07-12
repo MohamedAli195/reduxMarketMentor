@@ -75,7 +75,7 @@ function UpdateOrderForm({
       toast.success('Order Status successfully');
       handleClose();
     } catch (err) {
-      console.error('Error updating order:', err);
+      // console.error('Error updating order:', err);
       toast.error('Failed to update order, please check your input.');
     }
   };

@@ -27,7 +27,7 @@ export default function InputFileUpload() {
       Upload Image
       <VisuallyHiddenInput
         type="file"
-        onChange={(event) => console.log(event.target.files)}
+        // onChange={(event) => console.log(event.target.files)}
         multiple
       />
     </Button>

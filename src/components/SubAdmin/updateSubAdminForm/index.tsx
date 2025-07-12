@@ -108,7 +108,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
   // }, [selectedImage]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -117,7 +117,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
 
       const response = await axios.post(`${url}/admin/sub-admins/${id}/update`, data, { headers });
 
-      console.log(response);
+      // console.log(response);
 
       if (response.status === 200) {
         toast.success(t('roles updated successfully'));

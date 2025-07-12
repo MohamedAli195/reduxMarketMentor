@@ -47,7 +47,7 @@ function SubAdminsPage({ isDashBoard }: IProps) {
   const [deleteSubAdmin] =useDeleteSubAdminMutation()
     const {data:profile} = useGetProfileQuery()
 const permissions = profile?.data?.permissions
-  console.log(data)
+  // console.log(data)
   const subAdmins = data?.data?.data || [];
   const totalItems = data?.data?.total || 0
 

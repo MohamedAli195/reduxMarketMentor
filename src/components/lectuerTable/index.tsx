@@ -47,7 +47,7 @@ function LecturerTable({ isDashBoard }: IProps) {
     
   const [deleteLecture] =useDeleteLectureMutation()
   const { t } = useTranslation();
-console.log(selectedCategory)
+// console.log(selectedCategory)
   if (isLoading) {
     return <Typography>{t('Loading')}...</Typography>;
   }

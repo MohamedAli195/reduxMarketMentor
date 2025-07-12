@@ -28,7 +28,7 @@ if (storedPermissions) {
   parsedData = JSON.parse(storedPermissions);
     // console.log(parsedData);
 } else {
-    console.log('No data found!');
+    // console.log('No data found!');
 }
 
 // console.log(parsedData)
@@ -37,7 +37,7 @@ if (storedPermissions) {
   useEffect(() => {
     document.documentElement.lang = i18n.language;
     document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
-    console.log(parsedData)
+    // console.log(parsedData)
     
   }, [i18n.language]);
   return (

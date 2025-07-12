@@ -43,7 +43,7 @@ const permissions = profile?.data.permissions
 
   const packages = packagesFromRTK?.data?.data || [];
   const totalItems = packagesFromRTK?.data?.total || 0
-console.log(totalItems)
+// console.log(totalItems)
   // add modal
 
 

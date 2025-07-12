@@ -30,7 +30,7 @@ function CourseDetails() {
   // });
   const {data ,isLoading,isError ,error} = useGetCourseQuery(id)
 const course = data?.data
-console.log(course)
+// console.log(course)
   if (isLoading) return <p>Loading...</p>;
   // if (isError) return <p>Error: {error}</p>;
 
