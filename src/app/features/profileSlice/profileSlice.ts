@@ -36,7 +36,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
   endpoints: (builder) => ({
     getProfile: builder.query<Ires,void>({
       query: () => {
-        return `/admin/admin/profile`;
+        return `/admin/profile`;
       },
      
     }),
