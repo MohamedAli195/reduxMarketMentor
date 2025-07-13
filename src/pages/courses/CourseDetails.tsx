@@ -5,8 +5,9 @@ import ViewCoursForm from 'components/Courses/viewCoursForm';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
 import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
-import AddSectionToCourse from 'components/section/AddSectionToCourse';
+import AddSectionToCourse from 'components/section/addSectionToCourse';
 import Sections from 'components/SectionTable/Sections';
+
 
 function CourseDetails() {
   const { id } = useParams();
