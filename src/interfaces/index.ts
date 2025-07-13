@@ -296,6 +296,7 @@ export interface IRole {
 }
 
 export interface ISection {
+  id?:number
     name:{
         ar:string;
         en:string;

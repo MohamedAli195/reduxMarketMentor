@@ -10,15 +10,17 @@ import { ICategory, ICourseLectuer, ICustomer, IFormInputCourses, IPackageLectue
 import { checkPermissions, parsedData } from 'functions';
 import SwitchStatus from 'components/Shared/switch';
 import { Link } from 'react-router-dom';
+import { useDeleteSectionMutation } from 'app/features/Sections/sectionsSlice';
 
 
 interface IProps {
-  handleEditOpen:(val:IPackageLectuerSelected)=>void
+  handleEditOpen:(val:ISection)=>void
   handleOpend:()=>void
   setTempId:(val:number)=>void
   data: ISection[];
 }
 function SectionTable({data,handleEditOpen,setTempId,handleOpend}: IProps) {
+ 
   // console.log(data)
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },

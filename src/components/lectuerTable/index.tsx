@@ -106,6 +106,7 @@ function LecturerTable({ isDashBoard }: IProps) {
       />
 
       <Toaster position="bottom-center" reverseOrder={false} />
+  
     </>
   );
 }

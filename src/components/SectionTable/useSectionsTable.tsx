@@ -1,8 +1,8 @@
 
 import { useGetSectionsByCourseIDQuery } from 'app/features/Sections/sectionsSlice';
-import {IPackageLectuerSelected, ISection } from 'interfaces';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { ISection } from 'interfaces';
 
   interface UseLecturerTableReturn {
   sort: string;
@@ -13,11 +13,11 @@ import { useParams } from 'react-router-dom';
   setTempId: React.Dispatch<React.SetStateAction<number>>;
   openU: boolean;
   handleCloseU: () => void;
-  handleEditOpen: (categoryData: IPackageLectuerSelected) => void;
+  handleEditOpen: (categoryData: ISection) => void;
   handleOpend: () => void;
   opend: boolean;
   handleClosed: () => void;
-  selectedCategory: IPackageLectuerSelected | null;
+  selectedCategory: ISection | null;
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   perPage: number;
@@ -40,8 +40,8 @@ const useSectionsTable = (): UseLecturerTableReturn => {
   const [opend, setOpend] = useState(false);
   const handleOpend = () => setOpend(true);
   const handleClosed = () => setOpend(false);
-  const [selectedCategory, setSelectedCategory] = useState<null | IPackageLectuerSelected>(null);
-  const handleEditOpen = (categoryData: IPackageLectuerSelected) => {
+  const [selectedCategory, setSelectedCategory] = useState<null | ISection>(null);
+  const handleEditOpen = (categoryData: ISection) => {
     // console.log(categoryData);
     setSelectedCategory(categoryData); // Set selected package data
     handleOpenU(); // Open the update modal

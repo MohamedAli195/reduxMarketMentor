@@ -13,6 +13,8 @@ import { useDeleteLectureMutation } from 'app/features/Lectuers/Lectuers';
 import SectionTable from './SectionTable';
 import useSectionsTable from './useSectionsTable';
 import { useParams } from 'react-router-dom';
+import { useDeleteSectionMutation } from 'app/features/Sections/sectionsSlice';
+import UpdateSectionToCourse from 'components/section/UpdateSectionToCourse';
 
 
 interface IProps {
@@ -45,7 +47,7 @@ function Sections({ isDashBoard }: IProps) {
     totalItems
   } = useSectionsTable()
     
-  const [deleteLecture] =useDeleteLectureMutation()
+   const [deleteSection] = useDeleteSectionMutation()
   const { t } = useTranslation();
 
   if (isLoading) {
@@ -90,9 +92,9 @@ function Sections({ isDashBoard }: IProps) {
 
       <BasicModal open={openU} handleClose={handleCloseU}>
         <Typography variant="h6" mb={2}>
-          {t('updateCategory')}
+          {t('UpdateSection')}
         </Typography>
-        <UpdateLectuerForm
+        <UpdateSectionToCourse
           handleClose={handleCloseU}
           initialData={selectedCategory}
 
@@ -103,7 +105,7 @@ function Sections({ isDashBoard }: IProps) {
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
-        deleteFunc={() => deleteLecture(tempId)}
+        deleteFunc={() => deleteSection(tempId)}
       />
 
       <Toaster position="bottom-center" reverseOrder={false} />
