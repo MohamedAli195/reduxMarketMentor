@@ -5,9 +5,8 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData } from 'functions';
 import { useCreateSubAdminMutation } from 'app/features/subAdmins/subAdmins';
+import { useGetRolesQuery } from 'app/features/Roles/roles';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -60,31 +59,22 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setPer] = useState(10);
+  const [perPage, setPer] = useState(10);
 
   const url = import.meta.env.VITE_API_URL;
 
   const [createSubAdmin ,{error}] = useCreateSubAdminMutation()
   // console.log(error)
-  const { data: apiRoles, isLoading, isError } = useQuery({
-    queryKey: [`roles-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
-  });
+  const {data: apiRoles,
+    error: errorRoles,
+    isLoading,
+    isError} = useGetRolesQuery({ page, perPage, search ,sort_direction: sort })
 
 
 
   const onSubmit: SubmitHandler<IFormInputSubAdmin> = async (data) => {
     try {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-  
-      // await axios.post(`${url}/admin/sub-admins`, data, { headers });
-      // toast.success(t('roles added successfully'));
-      // handleClose();
-
-      await createSubAdmin(data)
+      await createSubAdmin(data).unwrap()
     } catch (err) {
     //   console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));
@@ -174,7 +164,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
                 MenuProps={MenuProps}
               >
                 {Array.isArray(apiRoles?.data?.data) &&
-                  apiRoles?.data?.data.map((item: { id: number; name: string }) => (
+                  apiRoles?.data?.data.map((item) => (
                     <MenuItem
                       key={item.name}
                       value={item.name}

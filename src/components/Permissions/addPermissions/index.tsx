@@ -12,15 +12,13 @@ import {
   Select,
   OutlinedInput,
 } from '@mui/material';
-import axios from 'axios';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData } from 'functions';
 import i18n from 'i18n';
 import { useCreateRoleMutation } from 'app/features/Roles/roles';
+import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -78,30 +76,23 @@ function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
   const [sort, setSort] = useState('desc');
   const [per, setPer] = useState(10);
 
-  const url = import.meta.env.VITE_API_URL;
-
-  const {
-    data: apiPermissions,
+  const { data: apiPermissions,
     error,
     isLoading,
-    isError,
-  } = useQuery({
-    queryKey: [`permissions-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'roles/permissions'),
-  });
+    isError} = useGetPermissionsQuery()
   console.log(apiPermissions);
   const onSubmit: SubmitHandler<IFormInputRoles> = async (data) => {
     try {
 
 
 
-      const res = await createRole(data)
+      const res = await createRole(data).unwrap()
 
-      // console.log(res)
+      
       toast.success(t('roles added successfully'));
       handleClose();
     } catch (err) {
-      // console.error(err);
+      
       toast.error(t('Failed to add roles, please check your input.'));
     }
   };
@@ -178,14 +169,7 @@ function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
                 >
                   {Array.isArray(apiPermissions?.data) &&
                     apiPermissions.data.map(
-                      (item: {
-                        id: number;
-                        name: string;
-                        display_name: {
-                          ar: string;
-                          en: string;
-                        };
-                      }) => (
+                      (item) => (
                         <MenuItem
                           key={item.name}
                           value={item.name}

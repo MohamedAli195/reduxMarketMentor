@@ -25,6 +25,13 @@ interface IresPost {
   status: boolean;
   data: ISubADmin;
 }
+interface IresOne {
+  code: number;
+  message: string;
+  status: boolean;
+  data: ISubADmin;
+}
+
 
 export const subAdminApi = createApi({
   reducerPath: "subAdminApi",
@@ -53,6 +60,14 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         return `/admin/sub-admins?${params.toString()}`;
       },
       providesTags: ["SubAdmin"],
+    }),
+
+
+    getSubAdmin: builder.query<IresOne, number>({
+      query: (id) => ({
+        url: `/admin/sub-admins/${id}`,
+      }),
+      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
     
 
@@ -84,6 +99,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
 export const {
   useGetSubAdminsQuery,
+  useGetSubAdminQuery,
   useCreateSubAdminMutation,
   useDeleteSubAdminMutation,
   useUpdateSubAdminMutation,

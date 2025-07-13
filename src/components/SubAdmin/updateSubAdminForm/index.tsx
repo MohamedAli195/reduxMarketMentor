@@ -5,18 +5,9 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import {
-  Skeleton,
-  Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  OutlinedInput,
-} from '@mui/material';
-
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllData, fetchOne } from 'functions';
+import { Chip, FormControl, InputLabel, MenuItem, Select, OutlinedInput } from '@mui/material';
+import { useGetRolesQuery } from 'app/features/Roles/roles';
+import { useGetSubAdminQuery } from 'app/features/subAdmins/subAdmins';
 // import { fetchPackage } from 'pages/packages/packagesFunct';
 
 const VisuallyHiddenInput = styled('input')({
@@ -71,7 +62,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
-  const [per, setPer] = useState(10);
+  const [perPage, setPer] = useState(10);
   const url = import.meta.env.VITE_API_URL;
 
   const {
@@ -79,32 +70,21 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
     error: errorRoles,
     isLoading: isLoadingRoles,
     isError: isErrorRoles,
-  } = useQuery({
-    queryKey: [`roles-${page}-${per}-${search}-${sort}`],
-    queryFn: () => fetchAllData(page, per, search, sort, '', 'roles'),
-  });
+  } = useGetRolesQuery({ page, perPage, search, sort_direction: sort });
+  console.log(apiRoles);
   const [personName, setPersonName] = useState<string[]>([]);
-  // Fetch packages using React Query
-  const { data, error, isLoading, isError } = useQuery({
-    queryKey: [`sub-admins-${id}`],
-    queryFn: () => fetchOne(id, 'sub-admins'),
-  });
+  const { data, error, isLoading, isError } = useGetSubAdminQuery(id);
 
   useEffect(() => {
     if (data) {
       setValue('name', data?.data?.name);
       setValue('email', data?.data?.email);
-      setValue('password', data?.data?.password);
+      if (data?.data?.password) {
+        setValue('password', data?.data?.password);
+      }
       setValue('roles', data?.data?.role);
     }
   }, [data?.data, setValue]);
-
-  // useEffect(() => {
-  //   if (selectedImage && selectedImage.length > 0) {
-  //     const file = selectedImage[0];
-  //     setPreviewImage(URL.createObjectURL(file));
-  //   }
-  // }, [selectedImage]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     // console.log(data);
@@ -196,7 +176,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
                   MenuProps={MenuProps}
                 >
                   {Array.isArray(apiRoles?.data?.data) &&
-                    apiRoles?.data?.data.map((item: { id: number; name: string }) => (
+                    apiRoles?.data?.data.map((item) => (
                       <MenuItem
                         key={item.name}
                         value={item.name}

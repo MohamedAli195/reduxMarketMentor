@@ -23,6 +23,13 @@ interface IresPost {
   data: IUser;
 }
 
+interface IresOne {
+  code: number;
+  message: string;
+  status: boolean;
+  data: IUser;
+}
+
 export const customersApi = createApi({
   reducerPath: "customersApi",
   baseQuery: fetchBaseQuery({
@@ -51,6 +58,12 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
         return `/admin/customers?${params.toString()}`;
       },
       providesTags: ["Customers"],
+    }),
+    getCustomer: builder.query<IresOne, string | undefined>({
+      query: (id) => ({
+        url: `/admin/customers/${id}`,
+      }),
+      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
     
 
@@ -82,6 +95,7 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
 
 export const {
   useGetCustomersQuery,
+  useGetCustomerQuery,
   useCreateCustomerMutation,
   useDeleteCustomerMutation,
   useUpdateCustomerMutation,

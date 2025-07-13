@@ -1,11 +1,7 @@
-
 import { Box, Button, Stack, TextField } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-
-import { fetchOne } from 'functions';
+import { useGetLectureQuery } from 'app/features/Lectuers/Lectuers';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -34,30 +30,24 @@ function ViewLectuerForm() {
   const { t } = useTranslation();
   const { id } = useParams();
 
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: [`Lectuers-${id}`],
-    queryFn: () => fetchOne(id,'course-lectures'),
-  });
-// console.log(data?.data)
 
-const courseID = data?.data?.course?.id
+  const { data, error, isLoading, isError } = useGetLectureQuery(id);
 
-    useEffect(() => {
-      if (data?.data) {
-        setValue('title.ar', data?.data.title.ar);
-        setValue('title.en', data?.data.title.en);
-        setValue('title.fr', data?.data.title.fr);
-        setValue('description.ar', data?.data.description.ar);
-        setValue('description.en', data?.data.description.en);
-        setValue('description.fr', data?.data.description.fr);
-        setValue('video_url', data?.data.video_url);
-        setValue('duration', data?.data.duration);
+  useEffect(() => {
+    if (data?.data) {
+      setValue('title.ar', data?.data?.title.ar);
+      setValue('title.en', data?.data?.title.en);
+      setValue('title.fr', data?.data?.title.fr);
+      setValue('description.ar', data?.data?.description.ar);
+      setValue('description.en', data?.data?.description.en);
+      setValue('description.fr', data?.data?.description.fr);
+      setValue('video_url', data?.data?.video_url);
+      setValue('duration', data?.data?.duration);
+    }
+  }, [data?.data, setValue]);
 
-      }
-    }, [data?.data, setValue]);
-
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Error: {error.message}</p>;
+  if (isLoading) return <p>Loading...</p>;
+  // if (isError) return <p>Error: {error.message}</p>;
 
   return (
     <Box
@@ -66,8 +56,6 @@ const courseID = data?.data?.course?.id
       }}
       component="form"
     >
-
-
       <Stack spacing={3}>
         {/* Arabic Name */}
         <TextField

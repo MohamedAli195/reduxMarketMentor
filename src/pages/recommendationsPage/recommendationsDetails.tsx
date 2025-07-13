@@ -1,20 +1,16 @@
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { fetchOne } from 'functions';
 import ViewRecommendationsForm from 'components/Recommendations/viewRecomendationsForm';
+import { useGetRecommendationQuery } from 'app/features/Recommendations/RecommendationsSlice';
 
 function RecommendationsDetails() {
   const { id } = useParams();
   const { t } = useTranslation();
-  const { data, error, isLoading, isError } = useQuery({
-    queryKey: ['RecommendationsDetails', id],
-    queryFn: () => fetchOne(id,'recommendations'),
-  });
+   const { data, error, isLoading, isError }=useGetRecommendationQuery(id)
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  // if (isError) return <p>Error: {error.message}</p>;
 
   return (
     <>

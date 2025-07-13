@@ -198,6 +198,23 @@ export interface IPackageLectuerSelected {
   duration: string;
 }
 
+export interface ILectuer {
+  id?: number | string;
+  title: {
+    en: string;
+    ar: string;
+    fr: string;
+  };
+  description: {
+    en: string;
+    ar: string;
+    fr: string;
+  };
+
+  video_url: string;
+  duration: string;
+}
+
 export interface ICourseLectuer {
   id: number | string;
   nameAr: string;
@@ -241,7 +258,10 @@ export interface IOrder {
 export interface Ipermisson {
   id: number;
   name: string;
-  display_name: string;
+  display_name: {
+    en:string,
+    ar:string
+  };
 }
 
 export interface IUser {

@@ -1,14 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { ICategory, INotfications, Ipermisson } from 'interfaces';
+import { Ipermisson } from 'interfaces';
 import { number } from 'echarts';
 import { BASE_URL } from '../auth/authQuery';
 
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
-
-// }
 interface Ires {
   code: number;
   message: string;

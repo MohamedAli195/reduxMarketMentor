@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { ICategory, ICourseLectuer } from 'interfaces';
+import { ICategory, ICourseLectuer, ILectuer } from 'interfaces';
 import { IFormInputLectuers } from 'components/CourseLectuers/updateLectuerForm';
 import { BASE_URL } from '../auth/authQuery';
 
@@ -9,7 +9,6 @@ import { BASE_URL } from '../auth/authQuery';
 //   label: string;
 
 // }
-
 
 interface Ires {
   code: number;
@@ -25,6 +24,13 @@ interface IresPost {
   data: ICourseLectuer;
 }
 
+interface IresOne {
+  code: number;
+  message: string;
+  status: boolean;
+  data: ILectuer;
+}
+
 export const leactuersApi = createApi({
   reducerPath: 'leactuersApi',
   baseQuery: fetchBaseQuery({
@@ -35,7 +41,7 @@ export const leactuersApi = createApi({
         headers.set('Authorization', `Bearer ${token}`);
         // Do not manually set Content-Type for FormData
       }
-       headers.set("Accept", "application/json");
+      headers.set('Accept', 'application/json');
 
       return headers;
     },
@@ -62,6 +68,12 @@ export const leactuersApi = createApi({
         return `/admin/sections/${id}/lectures?${params.toString()}`;
       },
       providesTags: ['Lectuers'],
+    }),
+    getLecture: builder.query<IresOne, string | undefined>({
+      query: (id) => ({
+        url: `/admin/course-lectures/${id}`,
+      }),
+      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
 
     createLecture: builder.mutation<IresPost, { id: string | undefined; formdata: FormData }>({
@@ -95,6 +107,7 @@ export const leactuersApi = createApi({
 
 export const {
   useGetLecturesQuery,
+  useGetLectureQuery,
   useCreateLectureMutation,
   useDeleteLectureMutation,
   useUpdateLectureMutation,
