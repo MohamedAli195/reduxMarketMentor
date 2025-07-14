@@ -15,6 +15,13 @@ interface Ires {
   data: { data: ISection[] | undefined; total: number | undefined };
 }
 
+interface IresOnew {
+  code: number;
+  message: string;
+  status: boolean;
+  data:ISection 
+}
+
 interface IresPost {
   code: number;
   message: string;
@@ -44,7 +51,12 @@ export const sectionsApi = createApi({
       },
       providesTags: ['Sections'],
     }),
-
+    getSection: builder.query<IresOnew, string | undefined>({
+      query: (id) => {
+        return `/admin/courses/sections/details/${id}`;
+      },
+      providesTags: ['Sections'],
+    }),
     createSection: builder.mutation<IresPost, { id: string | undefined; data: ISection }>({
       query: ({ id, data }) => ({
         url: `/admin/courses/${id}/sections`,
@@ -74,6 +86,7 @@ export const sectionsApi = createApi({
 export const {
   useCreateSectionMutation,
   useGetSectionsByCourseIDQuery,
+  useGetSectionQuery,
   useDeleteSectionMutation,
   useUpdateSectionMutation,
 } = sectionsApi;
