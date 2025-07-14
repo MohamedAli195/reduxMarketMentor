@@ -15,7 +15,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import {  IRole } from 'interfaces';
+import { errorType, IRole } from 'interfaces';
 import { useUpdateRoleMutation } from 'app/features/Roles/roles';
 import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
 
@@ -68,7 +68,7 @@ function UpdatePermissionsForm({
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
-    const [updateRole,{isLoading}] =useUpdateRoleMutation()
+  const [updateRole, { isLoading }] = useUpdateRoleMutation();
   const {
     control,
     handleSubmit,
@@ -81,39 +81,41 @@ function UpdatePermissionsForm({
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [per, setPer] = useState(10);
-const id = tempPermission?.id;
+  const id = tempPermission?.id;
 
-const {
+  const {
     data: apiPermissions,
     error: errorPermissions,
     isLoading: isLoadingpermissions,
     isError: iserrorpermissions,
-  } = useGetPermissionsQuery()
-   console.log(apiPermissions);
+  } = useGetPermissionsQuery();
+  console.log(apiPermissions);
 
   useEffect(() => {
     if (tempPermission) {
       setValue('name', tempPermission?.name);
       setValue('display_name.en', tempPermission?.display_name?.en);
       setValue('display_name.ar', tempPermission?.display_name?.ar);
-      setValue(
-        'permissions',
-        tempPermission?.permissions.map((perm) => perm.name) || []
-      );
+      setValue('permissions', tempPermission?.permissions.map((perm) => perm.name) || []);
     }
   }, [tempPermission, setValue]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
+      const res = await updateRole({ id, data }).unwrap()
 
-      await  updateRole({ id, data })
-
-      // console.log(resonse);
-      toast.success(t('roles added successfully'));
+      if (res.code === 200) {
+        toast.success('roles updated successfully');
+      }
       handleClose();
-    } catch (err) {
-      // console.error(err);
-      toast.error(t('Failed to add roles, please check your input.'));
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to update roles, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
   return (

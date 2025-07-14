@@ -19,6 +19,7 @@ import { styled, useTheme, Theme } from '@mui/material/styles';
 import i18n from 'i18n';
 import { useCreateRoleMutation } from 'app/features/Roles/roles';
 import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
+import { errorType } from 'interfaces';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -63,7 +64,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [createRole,{isLoading:isLoadingCreate}] = useCreateRoleMutation()
+  const [createRole, { isLoading: isLoadingCreate }] = useCreateRoleMutation();
   const {
     control,
     handleSubmit,
@@ -76,24 +77,24 @@ function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
   const [sort, setSort] = useState('desc');
   const [per, setPer] = useState(10);
 
-  const { data: apiPermissions,
-    error,
-    isLoading,
-    isError} = useGetPermissionsQuery()
+  const { data: apiPermissions, error, isLoading, isError } = useGetPermissionsQuery();
   console.log(apiPermissions);
   const onSubmit: SubmitHandler<IFormInputRoles> = async (data) => {
     try {
+      const res = await createRole(data).unwrap();
 
-
-
-      const res = await createRole(data).unwrap()
-
-      
-      toast.success(t('roles added successfully'));
+      if (res.code === 200) {
+        toast.success('roles added successfully');
+      }
       handleClose();
-    } catch (err) {
-      
-      toast.error(t('Failed to add roles, please check your input.'));
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add roles, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 
@@ -168,17 +169,15 @@ function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
                   MenuProps={MenuProps}
                 >
                   {Array.isArray(apiPermissions?.data) &&
-                    apiPermissions.data.map(
-                      (item) => (
-                        <MenuItem
-                          key={item.name}
-                          value={item.name}
-                          style={getStyles(item.name, personName, theme)}
-                        >
-                          {i18n.language === 'ar' ? item.display_name.ar : item.display_name.en}
-                        </MenuItem>
-                      ),
-                    )}
+                    apiPermissions.data.map((item) => (
+                      <MenuItem
+                        key={item.name}
+                        value={item.name}
+                        style={getStyles(item.name, personName, theme)}
+                      >
+                        {i18n.language === 'ar' ? item.display_name.ar : item.display_name.en}
+                      </MenuItem>
+                    ))}
                 </Select>
               )}
             />

@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { useUpdateOrderStatusMutation } from 'app/features/Orders/ordersSlice';
 import axios from 'axios';
+import { errorType } from 'interfaces';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -22,7 +23,6 @@ interface IFormInput {
 function UpdateOrderForm({
   handleClose,
   initialData,
-
 }: {
   handleClose: () => void;
 
@@ -37,8 +37,8 @@ function UpdateOrderForm({
   const [status, setStats] = useState(initialData?.status);
   const url = import.meta.env.VITE_API_URL;
 
-  const [updateOrderStatus] = useUpdateOrderStatusMutation()
-  const id = initialData?.id
+  const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
+  const id = initialData?.id;
   useEffect(() => {
     // console.log({initialData})
     if (initialData) {
@@ -69,14 +69,19 @@ function UpdateOrderForm({
       //   { headers },
       // );
 
-      const response = await updateOrderStatus({id,formData})
-
-      // console.log(response.data);
-      toast.success('Order Status successfully');
+      const response = await updateOrderStatus({ id, formData }).unwrap()
+      if (response.code === 200) {
+        toast.success('Order Status successfully');
+      }
       handleClose();
-    } catch (err) {
-      // console.error('Error updating order:', err);
-      toast.error('Failed to update order, please check your input.');
+    } catch (error: unknown) {
+      const err = error as errorType;
+      console.log(err);
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to updated order status, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 
@@ -85,7 +90,7 @@ function UpdateOrderForm({
       <Box
         sx={{
           mt: { sm: 5, xs: 2.5 },
-          width:"500px"
+          width: '500px',
         }}
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -109,7 +114,7 @@ function UpdateOrderForm({
             }}
           >
             <Select
-            fullWidth
+              fullWidth
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={`${status}`}
@@ -140,6 +145,7 @@ function UpdateOrderForm({
           fullWidth
           type="submit"
           sx={{ mt: 3, fontSize: '18px' }}
+          disabled={isLoading}
         >
           {t('Update')}
         </Button>

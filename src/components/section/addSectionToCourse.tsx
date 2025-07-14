@@ -12,7 +12,7 @@ import { useCreateLectureMutation } from 'app/features/Lectuers/Lectuers';
 import { useCreateSectionMutation } from 'app/features/Sections/sectionsSlice';
 import axios from 'axios';
 import { t } from 'i18next';
-import { ISection } from 'interfaces';
+import { errorType, ISection } from 'interfaces';
 // import { fetchCategories } from 'pages/categories/categoriesFunct';
 // import { fetchPackages } from 'pages/packages/packagesFunct';
 import { useEffect, useState } from 'react';
@@ -21,10 +21,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import paths from 'routes/path';
 
-
-
-
-function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,handleClose: () => void; }) {
+function AddSectionToCourse({
+  handleClose,
+  vid,
+}: {
+  vid: string | undefined;
+  handleClose: () => void;
+}) {
   const {
     register,
     handleSubmit,
@@ -32,23 +35,27 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
     setValue,
     watch,
   } = useForm<ISection>();
-  const [createSection,{isLoading}] = useCreateSectionMutation()
-  const id = vid
+  const [createSection, { isLoading }] = useCreateSectionMutation();
+  const id = vid;
   const onSubmit: SubmitHandler<ISection> = async (data) => {
     // console.log(data);
     try {
+      //   formData.append('course_id', vid || ''); // Ensure course_id is included
 
+      const res = await createSection({ id, data }).unwrap();
 
-    //   formData.append('course_id', vid || ''); // Ensure course_id is included
+      if (res.code === 200) {
+        toast.success('Section added successfully');
+      }
+      handleClose();
+    } catch (error: unknown) {
+      const err = error as errorType;
 
-       await createSection({id,data}).unwrap()
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add section, please check your input.';
 
-      
-      toast.success('course lectuer added successfully');
-         handleClose();
-    } catch (err) {
-      // console.error('Error adding course lectuer:', err);
-      toast.error('Failed to add course lectuer, please check your input.');
+      toast.error(errorMessages);
     }
   };
 

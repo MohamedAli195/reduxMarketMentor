@@ -19,11 +19,16 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import paths from 'routes/path';
 import { IFormInputLectuers } from '../updateLectuerForm';
+import { errorType } from 'interfaces';
 
-
-
-function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,handleClose: () => void; }) {
-  const id = vid
+function AddCourseLectuerForm({
+  handleClose,
+  vid,
+}: {
+  vid: string | undefined;
+  handleClose: () => void;
+}) {
+  const id = vid;
   const {
     register,
     handleSubmit,
@@ -31,7 +36,7 @@ function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,ha
     setValue,
     watch,
   } = useForm<IFormInputLectuers>();
-  const [createLecture,{isLoading}] = useCreateLectureMutation()
+  const [createLecture, { isLoading }] = useCreateLectureMutation();
   const url = import.meta.env.VITE_API_URL;
   const onSubmit: SubmitHandler<IFormInputLectuers> = async (data) => {
     // console.log(data);
@@ -47,13 +52,22 @@ function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,ha
       formData.append('duration', data.duration);
       // formData.append('course_id', vid || ''); // Ensure course_id is included
 
-await createLecture({ id, formdata: formData }).unwrap();
+      const res = await createLecture({ id, formdata: formData }).unwrap();
       // console.log(response.data);
-      toast.success('course lectuer added successfully');
-         handleClose();
-    } catch (err) {
-      // console.error('Error adding course lectuer:', err);
-      toast.error('Failed to add course lectuer, please check your input.');
+
+      handleClose();
+      if (res.code === 200) {
+        toast.success('course lectuer added successfully');
+      }
+      handleClose();
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add course lectuer, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 
@@ -91,10 +105,10 @@ await createLecture({ id, formdata: formData }).unwrap();
             <TextField
               fullWidth
               variant="outlined"
-               label={t('FrancName')}
+              label={t('FrancName')}
               error={!!errors.title?.fr}
               helperText={errors.title?.fr?.message}
-              {...register('title.fr', { required: t("FrancNameReq") })}
+              {...register('title.fr', { required: t('FrancNameReq') })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
@@ -120,10 +134,10 @@ await createLecture({ id, formdata: formData }).unwrap();
             <TextField
               fullWidth
               variant="outlined"
-              label={t("FrancDesc")}
+              label={t('FrancDesc')}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
-              {...register('description.fr', { required: t("FrancDescReq")})}
+              {...register('description.fr', { required: t('FrancDescReq') })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>

@@ -9,10 +9,13 @@ import {
   Select,
 } from '@mui/material';
 import { useCreateLectureMutation } from 'app/features/Lectuers/Lectuers';
-import { useCreateSectionMutation, useUpdateSectionMutation } from 'app/features/Sections/sectionsSlice';
+import {
+  useCreateSectionMutation,
+  useUpdateSectionMutation,
+} from 'app/features/Sections/sectionsSlice';
 import axios from 'axios';
 import { t } from 'i18next';
-import { ISection } from 'interfaces';
+import { errorType, ISection } from 'interfaces';
 // import { fetchCategories } from 'pages/categories/categoriesFunct';
 // import { fetchPackages } from 'pages/packages/packagesFunct';
 import { useEffect, useState } from 'react';
@@ -33,34 +36,39 @@ function UpdateSectionToCourse({
     register,
     handleSubmit,
     formState: { errors },
-    setValue
-
+    setValue,
   } = useForm<ISection>();
-  const [updateSection,{isLoading}] = useUpdateSectionMutation();
+  const [updateSection, { isLoading }] = useUpdateSectionMutation();
 
-  const id = initialData?.id
-   useEffect(() => {
-  
-      // console.log(data)
-      if (initialData) {
-        setValue('name.ar', initialData?.name?.ar);
-        setValue('name.en', initialData?.name?.en);
-        setValue('name.fr', initialData?.name?.fr);
-        // setValue('course_id', initialData?.);
-      }
-    }, [initialData, setValue]);
+  const id = initialData?.id;
+  useEffect(() => {
+    // console.log(data)
+    if (initialData) {
+      setValue('name.ar', initialData?.name?.ar);
+      setValue('name.en', initialData?.name?.en);
+      setValue('name.fr', initialData?.name?.fr);
+      // setValue('course_id', initialData?.);
+    }
+  }, [initialData, setValue]);
   const onSubmit: SubmitHandler<ISection> = async (data) => {
     // console.log(data);
     try {
       //   formData.append('course_id', vid || ''); // Ensure course_id is included
 
-       await updateSection({ id, data }).unwrap();
+      const res = await updateSection({ id, data }).unwrap();
 
-      toast.success('course lectuer added successfully');
+      if (res.code === 200) {
+        toast.success('Section added successfully');
+      }
       handleClose();
-    } catch (err) {
-      // console.error('Error adding course lectuer:', err);
-      toast.error('Failed to add course lectuer, please check your input.');
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to update section, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
 

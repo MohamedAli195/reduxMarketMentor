@@ -90,7 +90,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
       const res = await createSubAdmin(data).unwrap();
      // console.log(res);
           if (res.code === 200) {
-            toast.success('Course added successfully');
+            toast.success('sub-admin added successfully');
           }
     
           handleClose();
@@ -99,7 +99,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
           console.log(err)
           const errorMessages = err?.data?.errors
             ? Object.values(err.data.errors).flat().join('\n')
-            : 'Failed to add roles, please check your input.';
+            : 'Failed to add sub-admin, please check your input.';
     
           toast.error(errorMessages);
         }

@@ -91,7 +91,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
     try {
       const res = await updateSubAdmin({ id, data }).unwrap();
       if (res.code === 200) {
-        toast.success('Course added successfully');
+        toast.success('sub-admin updated successfully');
       }
       handleClose();
     } catch (error: unknown) {
@@ -99,7 +99,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
       console.log(err);
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to updated roles, please check your input.';
+        : 'Failed to updated sub-admin, please check your input.';
 
       toast.error(errorMessages);
     }

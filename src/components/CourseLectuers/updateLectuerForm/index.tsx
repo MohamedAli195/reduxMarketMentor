@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useUpdateLectureMutation } from 'app/features/Lectuers/Lectuers';
-import { IPackageLectuerSelected } from 'interfaces';
+import { errorType, IPackageLectuerSelected } from 'interfaces';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
@@ -62,15 +62,21 @@ const [updateLecture,{isLoading}] = useUpdateLectureMutation()
       
 
 
-await updateLecture({id,data}).unwrap()
+const res = await updateLecture({id,data}).unwrap()
 
-      handleClose()
-      // console.log(response.data);
-      toast.success('course lectuer updated successfully');
-    } catch (err) {
-      console.error('Error adding course lectuer:', err);
-      toast.error('Failed to add course lectuer, please check your input.');
-    }
+    if (res.code === 200) {
+            toast.success('course lectuer updated successfully');
+          }
+          handleClose();
+    } catch (error: unknown) {
+          const err = error as errorType;
+    
+          const errorMessages = err?.data?.errors
+            ? Object.values(err.data.errors).flat().join('\n')
+            : 'Failed to update course lectuer, please check your input.';
+    
+          toast.error(errorMessages);
+        }
   };
 
   return (

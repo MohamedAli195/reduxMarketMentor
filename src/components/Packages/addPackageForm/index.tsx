@@ -30,9 +30,9 @@ interface IFormInput {
   price: string;
 }
 
-function AddPackageForm({ handleClose }: { handleClose: () => void;}) {
+function AddPackageForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
-const [createPackage ,{isLoading}] = useCreatePackageMutation()
+  const [createPackage, { isLoading }] = useCreatePackageMutation();
   const {
     register,
     handleSubmit,
@@ -51,8 +51,6 @@ const [createPackage ,{isLoading}] = useCreatePackageMutation()
       reader.readAsDataURL(file);
     }
   };
- 
-  
 
   const onSubmitPackage: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -66,26 +64,25 @@ const [createPackage ,{isLoading}] = useCreatePackageMutation()
 
       // Define headers with the token
 
-
-      const response = await createPackage(formData).unwrap()
-      if(response.code===200){
-toast.success('Package added successfully');
+      const response = await createPackage(formData).unwrap();
+      if (response.code === 200) {
+        toast.success('Package added successfully');
       }
-      
+
       handleClose();
     } catch (error: unknown) {
       const err = error as errorType;
 
       const errorMessages = err?.data?.errors
-        ? Object.values(err.data.errors).flat().join("\n")
-        : "Failed to add package, please check your input.";
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to add package, please check your input.';
 
       toast.error(errorMessages);
     }
   };
 
   return (
-  <Box
+    <Box
       sx={{
         mt: { sm: 5, xs: 2.5 },
       }}
@@ -102,9 +99,9 @@ toast.success('Package added successfully');
             label={t('ArabicName')}
             error={!!errors.name?.ar}
             helperText={errors.name?.ar?.message}
-            {...register('name.ar', { required: t('ArabicNameReq')})}
+            {...register('name.ar', { required: t('ArabicNameReq') })}
           />
-      
+
           <TextField
             fullWidth
             variant="outlined"
@@ -113,18 +110,18 @@ toast.success('Package added successfully');
             label={t('EnglishName')}
             error={!!errors.name?.en}
             helperText={errors.name?.en?.message}
-            {...register('name.en', { required: t('EnglishNameReq') } )}
+            {...register('name.en', { required: t('EnglishNameReq') })}
           />
-         
+
           <TextField
             fullWidth
             variant="outlined"
             id="name-fr"
             type="text"
-             label={t('FrancName')}
+            label={t('FrancName')}
             error={!!errors.name?.fr}
             helperText={errors.name?.fr?.message}
-            {...register('name.fr', { required:t("FrancNameReq")})}
+            {...register('name.fr', { required: t('FrancNameReq') })}
           />
         </Stack>
 
@@ -135,11 +132,11 @@ toast.success('Package added successfully');
           type="text"
           label={t('price')}
           error={!!errors.price}
-            helperText={errors.price?.message}
-          {...register('price', { required: "حقل السعر مطلوب" })}
+          helperText={errors.price?.message}
+          {...register('price', { required: 'حقل السعر مطلوب' })}
         />
-    
-        <Stack flexDirection={'row'} gap={2} alignItems={"center"}>
+
+        <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
           <Button
             component="label"
             role={undefined}
@@ -175,9 +172,7 @@ toast.success('Package added successfully');
             </Box>
           )}
         </Stack>
-        {errors.image && (
-          <p className="text-red-500 text-sm">{errors.image.message}</p>
-        )}
+        {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
       </Stack>
 
       <Button
