@@ -123,7 +123,7 @@ await createLecture({ id, formdata: formData }).unwrap();
               label={t("FrancDesc")}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
-              {...register('description.en', { required: t("FrancDescReq")})}
+              {...register('description.fr', { required: t("FrancDescReq")})}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>

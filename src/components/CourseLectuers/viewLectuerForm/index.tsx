@@ -111,7 +111,7 @@ console.log(data)
           label="franc desc"
           error={!!errors.description?.en}
           helperText={errors.description?.en?.message}
-          {...register('description.en', { required: 'franc desc required' })}
+          {...register('description.fr', { required: 'franc desc required' })}
         />
 
         {/* Other Fields */}
