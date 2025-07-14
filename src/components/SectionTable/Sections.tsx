@@ -105,7 +105,8 @@ function Sections({ isDashBoard }: IProps) {
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
-        deleteFunc={() => deleteSection(tempId)}
+        module={t('Section')}
+        deleteFunc={async() => await deleteSection(tempId)}
       />
 
       <Toaster position="bottom-center" reverseOrder={false} />

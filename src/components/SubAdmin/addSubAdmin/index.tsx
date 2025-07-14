@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Box, Button, Stack, TextField, Skeleton, Chip, FormControl, InputLabel, MenuItem, Select, OutlinedInput } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Skeleton,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  OutlinedInput,
+} from '@mui/material';
 import axios from 'axios';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -7,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useCreateSubAdminMutation } from 'app/features/subAdmins/subAdmins';
 import { useGetRolesQuery } from 'app/features/Roles/roles';
+import { errorType } from 'interfaces';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -22,7 +35,7 @@ const VisuallyHiddenInput = styled('input')({
 
 export interface IFormInputSubAdmin {
   name: string;
-  email:string
+  email: string;
   password: string;
   roles: string[];
 }
@@ -46,7 +59,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
+function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const {
@@ -63,27 +76,36 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
 
   const url = import.meta.env.VITE_API_URL;
 
-  const [createSubAdmin ,{error}] = useCreateSubAdminMutation()
+  const [createSubAdmin, { error, isLoading: isLoadingCreate }] = useCreateSubAdminMutation();
   // console.log(error)
-  const {data: apiRoles,
+  const {
+    data: apiRoles,
     error: errorRoles,
     isLoading,
-    isError} = useGetRolesQuery({ page, perPage, search ,sort_direction: sort })
-
-
+    isError,
+  } = useGetRolesQuery({ page, perPage, search, sort_direction: sort });
 
   const onSubmit: SubmitHandler<IFormInputSubAdmin> = async (data) => {
     try {
-      await createSubAdmin(data).unwrap()
-    } catch (err) {
-    //   console.error(err);
-      toast.error(t('Failed to add roles, please check your input.'));
-    }
+      const res = await createSubAdmin(data).unwrap();
+     // console.log(res);
+          if (res.code === 200) {
+            toast.success('Course added successfully');
+          }
+    
+          handleClose();
+    } catch (error: unknown) {
+          const err = error as errorType;
+          console.log(err)
+          const errorMessages = err?.data?.errors
+            ? Object.values(err.data.errors).flat().join('\n')
+            : 'Failed to add roles, please check your input.';
+    
+          toast.error(errorMessages);
+        }
   };
-  
 
   if (isLoading) {
-   
     return (
       <Box sx={{ width: '100%' }}>
         <Skeleton variant="rectangular" width="100%" height={40} />
@@ -135,51 +157,51 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
             helperText={errors.password?.message}
             {...control.register('password', { required: t('password') })}
           />
-        <FormControl sx={{ m: 1, width: '100%' }}>
-          <InputLabel id="permissions-label">{t('Permissions')}</InputLabel>
-          <Controller
-            name="roles"
-            control={control}
-            rules={{ required: t('roles') }}
-            render={({ field }) => (
-              <Select
-              sx={{ lineHeight:0}}
-                {...field}
-                multiple
-                value={field.value || []}
-                onChange={(event) => {
-                  const { target: { value } } = event;
-                  const newValue = typeof value === 'string' ? value.split(',') : value;
-                  setPersonName(newValue);
-                  field.onChange(newValue);
-                }}
-                input={<OutlinedInput id="roles" label="roles" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
+          <FormControl sx={{ m: 1, width: '100%' }}>
+            <InputLabel id="permissions-label">{t('Permissions')}</InputLabel>
+            <Controller
+              name="roles"
+              control={control}
+              rules={{ required: t('roles') }}
+              render={({ field }) => (
+                <Select
+                  sx={{ lineHeight: 0 }}
+                  {...field}
+                  multiple
+                  value={field.value || []}
+                  onChange={(event) => {
+                    const {
+                      target: { value },
+                    } = event;
+                    const newValue = typeof value === 'string' ? value.split(',') : value;
+                    setPersonName(newValue);
+                    field.onChange(newValue);
+                  }}
+                  input={<OutlinedInput id="role" label="role" />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {Array.isArray(apiRoles?.data?.data) &&
+                    apiRoles?.data?.data.map((item) => (
+                      <MenuItem
+                        key={item.name}
+                        value={item.name}
+                        style={getStyles(item.name, personName, theme)}
+                      >
+                        {item.name}
+                      </MenuItem>
                     ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                {Array.isArray(apiRoles?.data?.data) &&
-                  apiRoles?.data?.data.map((item) => (
-                    <MenuItem
-                      key={item.name}
-                      value={item.name}
-                      style={getStyles(item.name, personName, theme)}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            )}
-          />
-        </FormControl>
+                </Select>
+              )}
+            />
+          </FormControl>
         </Stack>
-
-
       </Stack>
 
       <Button
@@ -189,6 +211,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void; }) {
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoadingCreate}
       >
         {t('addPermissions')}
       </Button>

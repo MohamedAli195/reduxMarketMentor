@@ -1,15 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "app/store";
 import { IFormInputSubAdmin } from "components/SubAdmin/addSubAdmin";
-
 import { ICategory, ISubADmin } from "interfaces";
 import { BASE_URL } from "../auth/authQuery";
-
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
-  
-// }
 interface Ires {
   code: number;
   message: string;
@@ -86,11 +79,11 @@ const token = (getState() as RootState).auth?.authData.token ?? null;
       }),
       invalidatesTags: ["SubAdmin"],
     }),
-    updateSubAdmin: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
-      query: ({ id, formData }) => ({
+    updateSubAdmin: builder.mutation<IresPost, { id: number | undefined; data: IFormInputSubAdmin }>({
+      query: ({ id, data }) => ({
         url: `/admin/sub-admins/${id}/update`,
         method: "POST",
-        body: formData,
+        body: data,
       }),
       invalidatesTags: ["SubAdmin"],
     }),

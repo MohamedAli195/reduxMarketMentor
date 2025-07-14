@@ -68,7 +68,7 @@ function UpdatePermissionsForm({
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
-    const [updateRole] =useUpdateRoleMutation()
+    const [updateRole,{isLoading}] =useUpdateRoleMutation()
   const {
     control,
     handleSubmit,
@@ -211,6 +211,7 @@ const {
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
         {t('updatePermissions')}
       </Button>

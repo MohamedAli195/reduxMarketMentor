@@ -102,7 +102,8 @@ function LecturerTable({ isDashBoard }: IProps) {
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
-        deleteFunc={() => deleteLecture(tempId)}
+        module={t('Lectuer')}
+        deleteFunc={async() =>await deleteLecture(tempId)}
       />
 
       <Toaster position="bottom-center" reverseOrder={false} />

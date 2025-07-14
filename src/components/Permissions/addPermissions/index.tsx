@@ -63,7 +63,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [createRole] = useCreateRoleMutation()
+  const [createRole,{isLoading:isLoadingCreate}] = useCreateRoleMutation()
   const {
     control,
     handleSubmit,
@@ -193,6 +193,7 @@ function AddPermissionsForm({ handleClose }: { handleClose: () => void }) {
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoadingCreate}
       >
         {t('addPermissions')}
       </Button>

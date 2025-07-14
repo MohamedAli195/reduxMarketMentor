@@ -41,7 +41,7 @@ function AddCategoryForm({ handleClose }: { handleClose: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
-  const [createCategory] = useCreateCategoryMutation();
+  const [createCategory,{isLoading}] = useCreateCategoryMutation();
   const [preview, setPreview] = useState<string | null>(null);
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,6 +216,7 @@ function AddCategoryForm({ handleClose }: { handleClose: () => void }) {
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
         {t('AddCategory')}
       </Button>

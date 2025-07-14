@@ -31,7 +31,7 @@ function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,ha
     setValue,
     watch,
   } = useForm<IFormInputLectuers>();
-  const [createLecture] = useCreateLectureMutation()
+  const [createLecture,{isLoading}] = useCreateLectureMutation()
   const url = import.meta.env.VITE_API_URL;
   const onSubmit: SubmitHandler<IFormInputLectuers> = async (data) => {
     // console.log(data);
@@ -155,6 +155,7 @@ await createLecture({ id, formdata: formData }).unwrap();
             fullWidth
             type="submit"
             sx={{ mt: 3, fontSize: '18px' }}
+            disabled={isLoading}
           >
             {t('AddLecuter')}
           </Button>

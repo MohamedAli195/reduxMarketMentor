@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { Chip, FormControl, InputLabel, MenuItem, Select, OutlinedInput } from '@mui/material';
 import { useGetRolesQuery } from 'app/features/Roles/roles';
-import { useGetSubAdminQuery } from 'app/features/subAdmins/subAdmins';
+import { useGetSubAdminQuery, useUpdateSubAdminMutation } from 'app/features/subAdmins/subAdmins';
+import { errorType } from 'interfaces';
 // import { fetchPackage } from 'pages/packages/packagesFunct';
 
 const VisuallyHiddenInput = styled('input')({
@@ -22,7 +23,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-interface IFormInput {
+export interface IFormInputSubAdmin {
   name: string;
   email: string;
   password: string;
@@ -55,7 +56,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
     watch,
     control,
     formState: { errors },
-  } = useForm<IFormInput>();
+  } = useForm<IFormInputSubAdmin>();
 
   const theme = useTheme();
   const { t } = useTranslation();
@@ -64,7 +65,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
   const [sort, setSort] = useState('desc');
   const [perPage, setPer] = useState(10);
   const url = import.meta.env.VITE_API_URL;
-
+  const [updateSubAdmin,{isLoading:isLoadingUpdate}] = useUpdateSubAdminMutation();
   const {
     data: apiRoles,
     error: errorRoles,
@@ -74,7 +75,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
   console.log(apiRoles);
   const [personName, setPersonName] = useState<string[]>([]);
   const { data, error, isLoading, isError } = useGetSubAdminQuery(id);
-
+  // const id = data?.data?.id
   useEffect(() => {
     if (data) {
       setValue('name', data?.data?.name);
@@ -86,25 +87,21 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
     }
   }, [data?.data, setValue]);
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    // console.log(data);
+  const onSubmit: SubmitHandler<IFormInputSubAdmin> = async (data) => {
     try {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      };
-
-      const response = await axios.post(`${url}/admin/sub-admins/${id}/update`, data, { headers });
-
-      // console.log(response);
-
-      if (response.status === 200) {
-        toast.success(t('roles updated successfully'));
-        handleClose();
+      const res = await updateSubAdmin({ id, data }).unwrap();
+      if (res.code === 200) {
+        toast.success('Course added successfully');
       }
-    } catch (err) {
-      //   console.error(err);
-      toast.error(t('Failed to add roles, please check your input.'));
+      handleClose();
+    } catch (error: unknown) {
+      const err = error as errorType;
+      console.log(err);
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to updated roles, please check your input.';
+
+      toast.error(errorMessages);
     }
   };
   return (
@@ -199,8 +196,9 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoadingUpdate}
       >
-        {t('UpdateSubAdmin')}
+        {t('updateSubAdmin')}
       </Button>
     </Box>
   );

@@ -33,7 +33,7 @@ import { useTranslation } from 'react-i18next';
     const { t } = useTranslation();
     const url = import.meta.env.VITE_API_URL;
 
-    const [updateCustomer] = useUpdateCustomerMutation()
+    const [updateCustomer,{isLoading}] = useUpdateCustomerMutation()
     const id = initialData?.id
     useEffect(() => {
         // console.log({initialData})
@@ -62,7 +62,7 @@ import { useTranslation } from 'react-i18next';
 
   
         const response = await updateCustomer({id,formData}).unwrap()
-  
+  // console.log(response)
          if (response.code === 200) {
         toast.success('customer updated successfully');
       }
@@ -70,7 +70,7 @@ import { useTranslation } from 'react-i18next';
   
       } catch (error: unknown) {
             const err = error as errorType;
-      
+        // console.log(err)
             const errorMessages = err?.data?.errors
               ? Object.values(err.data.errors).flat().join('\n')
               : 'Failed to update Customer, please check your input.';
@@ -135,6 +135,7 @@ import { useTranslation } from 'react-i18next';
             fullWidth
             type="submit"
             sx={{ mt: 3, fontSize: '18px' }}
+            disabled={isLoading}
           >
             {t("updateCustomer")}
           </Button>

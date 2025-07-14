@@ -9,13 +9,13 @@ import SearchForm from 'components/Shared/searchForm';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import DeleteModal from 'components/deleteModal';
 import { checkPermissions } from 'functions';
-import AddCourseForm from 'components/Courses/AddCourseForm';
 import SelectPerPage from 'components/Shared/selectPerPAge';
 import SelectSort from 'components/Shared/selectSort';
 import CustomersTable from './CoursesTable';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 import { useDeleteCourseMutation, useGetCoursesQuery } from 'app/features/Courses/coursesSlice';
 import UpdateCourse from './Update';
+import AddCourseForm from 'components/Courses/AddCourseForm';
 
 // Fetch packages function
 interface IProps {
@@ -127,6 +127,7 @@ const permissions = profile?.data.permissions
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
+        module={t('Course')}
         deleteFunc={() => {
           deleteCourse(tempId);
         }}

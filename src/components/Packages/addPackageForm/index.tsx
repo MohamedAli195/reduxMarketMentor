@@ -32,7 +32,7 @@ interface IFormInput {
 
 function AddPackageForm({ handleClose }: { handleClose: () => void;}) {
   const { t } = useTranslation();
-const [createPackage] = useCreatePackageMutation()
+const [createPackage ,{isLoading}] = useCreatePackageMutation()
   const {
     register,
     handleSubmit,
@@ -187,8 +187,9 @@ toast.success('Package added successfully');
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
-        {t('UpdatePackage')}
+        {t('addPackage')}
       </Button>
     </Box>
   );

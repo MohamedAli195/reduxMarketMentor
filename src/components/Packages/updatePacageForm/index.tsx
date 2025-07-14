@@ -50,7 +50,7 @@ function UpdatePackageForm({
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
   // Fetch packages using React Query
-  const [updatePackage] = useUpdatePackageMutation();
+  const [updatePackage,{isLoading}] = useUpdatePackageMutation();
   const id = tempIdUpdate.id;
   const ImageFromApi = tempIdUpdate.image;
   // console.log(ImageFromApi);
@@ -217,6 +217,7 @@ function UpdatePackageForm({
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
         {t('UpdatePackage')}
       </Button>

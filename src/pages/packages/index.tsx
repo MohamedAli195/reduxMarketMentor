@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { IPackage2, IPackageSelected } from 'interfaces';
 import PaginationComponent from 'components/Shared/pagination';
 import SearchForm from 'components/Shared/searchForm';
-import { checkPermissions} from 'functions';
+import { checkPermissions } from 'functions';
 import PackagesTable from './PackagesTable';
 import SelectSort from 'components/Shared/selectSort';
 import SelectPerPage from 'components/Shared/selectPerPAge';
@@ -33,15 +33,19 @@ function PackagesPage({ isDashBoard }: IProps) {
   const [tempIdUpdate, setTempIdUpdate] = useState<IPackage2>();
   const { t } = useTranslation();
 
-  const { data: packagesFromRTK, isLoading:isLoadingRTK, } =useGetPackagesQuery({ page, perPage, search ,sort_direction: sort })
-    const {data:profile} = useGetProfileQuery()
-const permissions = profile?.data.permissions
+  const { data: packagesFromRTK, isLoading: isLoadingRTK } = useGetPackagesQuery({
+    page,
+    perPage,
+    search,
+    sort_direction: sort,
+  });
+  const { data: profile } = useGetProfileQuery();
+  const permissions = profile?.data.permissions;
 
   const packages = packagesFromRTK?.data?.data || [];
-  const totalItems = packagesFromRTK?.data?.total || 0
-// console.log(totalItems)
+  const totalItems = packagesFromRTK?.data?.total || 0;
+  // console.log(totalItems)
   // add modal
-
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -78,9 +82,7 @@ const permissions = profile?.data.permissions
             {t('packages')}
           </Typography>
 
-          {
-          checkPermissions(permissions, 'add-package') && 
-          (
+          {checkPermissions(permissions, 'add-package') && (
             <Button variant="contained" color="info" onClick={handleOpen}>
               {t('addPackage')}
             </Button>
@@ -119,10 +121,17 @@ const permissions = profile?.data.permissions
         </Stack>{' '}
       </Paper>
 
-
-{/* modals components collect all modal in one componnet */}
-<Modals tempId={tempId} handleClose={handleClose} handleCloseU={handleCloseU} handleClosed={handleClosed} open={open}  openU={openU} opend={opend} tempIdUpdate={tempIdUpdate as IPackage2}  />
-  
+      {/* modals components collect all modal in one componnet */}
+      <Modals
+        tempId={tempId}
+        handleClose={handleClose}
+        handleCloseU={handleCloseU}
+        handleClosed={handleClosed}
+        open={open}
+        openU={openU}
+        opend={opend}
+        tempIdUpdate={tempIdUpdate as IPackage2}
+      />
     </>
   );
 }

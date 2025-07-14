@@ -120,7 +120,7 @@ const permissions = data?.data.permissions
         <AddCategoryForm handleClose={handleClose} />
       </BasicModal>
 
-      <DeleteModal handleClosed={handleClosed}  opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCategory(tempId)}}/>
+      <DeleteModal handleClosed={handleClosed} module={t('Category')}  opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCategory(tempId)}}/>
       {/* update modal */}
       <BasicModal open={openU} handleClose={handleCloseU}>
         <h2>{t('updateCategory')}</h2>

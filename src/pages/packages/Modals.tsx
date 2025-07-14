@@ -6,39 +6,44 @@ import UpdatePackageForm from 'components/Packages/updatePacageForm';
 import BasicModal from 'components/Shared/modal/ShareModal';
 import { t } from 'i18next';
 import { IPackage, IPackage2, IPackageSelected } from 'interfaces';
-import { Toaster } from 'react-hot-toast';
-
+import toast, { Toaster } from 'react-hot-toast';
 
 interface IProps {
-    tempId:number
-    tempIdUpdate:IPackage2;
-    handleClose:()=>void;
-    handleClosed:()=>void;
-    handleCloseU:()=>void;
-    open:boolean;
-    openU:boolean;
-    opend:boolean;
-
+  tempId: number;
+  tempIdUpdate: IPackage2;
+  handleClose: () => void;
+  handleClosed: () => void;
+  handleCloseU: () => void;
+  open: boolean;
+  openU: boolean;
+  opend: boolean;
 }
-function Modals({tempId,tempIdUpdate,handleClose,handleClosed,handleCloseU,opend,openU,open}:IProps) {
- const [deletePackage] = useDeletePackageMutation()
-  
+function Modals({
+  tempId,
+  tempIdUpdate,
+  handleClose,
+  handleClosed,
+  handleCloseU,
+  opend,
+  openU,
+  open,
+}: IProps) {
+  const [deletePackage, { isSuccess , }] = useDeletePackageMutation();
   return (
     <>
-    {/* delete modal */}
+      {/* delete modal */}
       {/* add modal */}
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('addPackage')}</h2>
         <AddPackageForm handleClose={handleClose} />
       </BasicModal>
 
-
-  {/* delete modal */}
+      {/* delete modal */}
       <DeleteModal
         handleClosed={handleClosed}
         opend={opend}
-    
         tempId={tempId}
+        module={'Package'}
         deleteFunc={async () => {
           await deletePackage(tempId);
         }}
@@ -53,7 +58,7 @@ function Modals({tempId,tempIdUpdate,handleClose,handleClosed,handleCloseU,opend
       {/* toaster */}
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
-  )
+  );
 }
 
-export default Modals
+export default Modals;

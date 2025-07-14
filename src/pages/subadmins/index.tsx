@@ -73,7 +73,7 @@ const permissions = profile?.data?.permissions
   // const [selectedPackage, setSelectedPackage] = useState<null | ISubADmin>(null);
 
   const handleEditOpen = (subAdmin: ISubADmin) => {
-    setTempIdUpdate(subAdmin.id); // Set selected package data
+    setTempIdUpdate(subAdmin?.id); // Set selected package data
     handleOpenU(); // Open the update modal
   };
 
@@ -142,6 +142,7 @@ const permissions = profile?.data?.permissions
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
+        module={t('SubAdmin')}
         deleteFunc={async() => {
           deleteSubAdmin(tempId);
         }}
@@ -149,7 +150,7 @@ const permissions = profile?.data?.permissions
 
       {/* update modal */}
       <BasicModal open={openU} handleClose={handleCloseU}>
-        <h2>{t('editPackage')}</h2>
+        <h2>{t('editSubAdmin')}</h2>
         <UpdateSubAdminForm handleClose={handleCloseU} id={tempIdUpdate} />
       </BasicModal>
       <Toaster position="bottom-center" reverseOrder={false} />

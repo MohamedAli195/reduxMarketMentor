@@ -124,6 +124,7 @@ function PermissionsPage({ isDashBoard }: IProps) {
         handleClosed={handleClosed}
         opend={opend}
         tempId={tempId}
+        module={t('Permission')}
         deleteFunc={() => {
           deleteRole(tempId);
         }}

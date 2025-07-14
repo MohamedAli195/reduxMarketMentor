@@ -36,7 +36,7 @@ function UpdateSectionToCourse({
     setValue
 
   } = useForm<ISection>();
-  const [updateSection] = useUpdateSectionMutation();
+  const [updateSection,{isLoading}] = useUpdateSectionMutation();
 
   const id = initialData?.id
    useEffect(() => {
@@ -112,6 +112,7 @@ function UpdateSectionToCourse({
             fullWidth
             type="submit"
             sx={{ mt: 3, fontSize: '18px' }}
+            disabled={isLoading}
           >
             {t('UpdateSection')}
           </Button>

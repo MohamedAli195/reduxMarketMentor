@@ -52,7 +52,7 @@ function UpdateCategoryForm({
   } = useForm<IFormInput>();
   const { t } = useTranslation();
   const ImageFromApi = initialData?.image;
-  const [updateCategory] = useUpdateCategoryMutation();
+  const [updateCategory ,{isLoading}] = useUpdateCategoryMutation();
   const [preview, setPreview] = useState<string | undefined | null>(ImageFromApi);
   const id = initialData?.id;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,6 +236,7 @@ function UpdateCategoryForm({
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
         {t('updateCategory')}
       </Button>

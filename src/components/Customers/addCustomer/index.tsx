@@ -25,7 +25,7 @@ function AddCustomer({ handleClose }: { handleClose: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
-  const [createCustomer, { error }] = useCreateCustomerMutation();
+  const [createCustomer, { error ,isLoading}] = useCreateCustomerMutation();
   console.log(error);
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -118,6 +118,7 @@ function AddCustomer({ handleClose }: { handleClose: () => void }) {
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        disabled={isLoading}
       >
         {t('Addcustomers')}
       </Button>

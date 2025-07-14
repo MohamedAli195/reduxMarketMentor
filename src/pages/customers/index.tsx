@@ -132,7 +132,7 @@ function CustomersPage({isDashBoard}:IProps) {
 
 
           
-      <DeleteModal handleClosed={handleClosed}  opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCustomer(tempId)}}/>
+      <DeleteModal handleClosed={handleClosed} module={t('Customer')} opend={opend} tempId={tempId} deleteFunc={async()=>{await deleteCustomer(tempId)}}/>
 
 
       {/* update modal */}

@@ -37,7 +37,7 @@ function UpdateLectuerForm({
     watch,
   } = useForm<IFormInputLectuers>();
   const { t } = useTranslation();
-const [updateLecture] = useUpdateLectureMutation()
+const [updateLecture,{isLoading}] = useUpdateLectureMutation()
   const id = initialData?.id
 
   useEffect(() => {
@@ -171,8 +171,9 @@ await updateLecture({id,data}).unwrap()
           fullWidth
           type="submit"
           sx={{ mt: 3, fontSize: '18px' }}
+          disabled={isLoading}
         >
-          {t('UpdatePackage')}
+          {t('UpdateLectuer')}
         </Button>
       </Box>
       <Toaster position="bottom-center" reverseOrder={false} />

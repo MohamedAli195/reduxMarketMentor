@@ -41,7 +41,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
     formState: { errors },
   } = useForm<IFormInputCourses>();
   const [preview, setPreview] = useState<string | null>(null);
-  const [createCourse] = useCreateCourseMutation();
+  const [createCourse ,{isLoading}] = useCreateCourseMutation();
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -61,13 +61,13 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       formData.append('name[ar]', data.name.ar);
       formData.append('name[fr]', data.name.fr);
       formData.append('image', data.image[0]);
-      formData.append('price', data.price);
+      if (data.price) {formData.append('price', data.price)}
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
       formData.append('course_level', data.course_level);
       formData.append('course_lang', data.course_lang);
-      formData.append('price_after_discount', data.priceAfterDiscount);
-      formData.append('package_id', data.package_id.toString());
+      if(data.priceAfterDiscount) {formData.append('price_after_discount', data.priceAfterDiscount)}
+      if(data.package_id) {formData.append('package_id', data.package_id.toString())}
       formData.append('category_id', data.category_id.toString());
       formData.append('is_free', String(isFree));
       formData.append('total_hours', String(data.total_hours));
@@ -76,7 +76,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       formData.append('description[fr]', data.description.ar);
 
       const res = await createCourse(formData).unwrap();
-      console.log(res);
+      // console.log(res);
       if (res.code === 200) {
         toast.success('Course added successfully');
       }
@@ -84,7 +84,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       handleClose();
     } catch (error: unknown) {
       const err = error as errorType;
-
+      console.log(err)
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
         : 'Failed to add course, please check your input.';
@@ -382,6 +382,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
           fullWidth
           type="submit"
           sx={{ mt: 3, fontSize: '18px' }}
+          disabled={isLoading}
         >
           {t('AddCourse')}
         </Button>

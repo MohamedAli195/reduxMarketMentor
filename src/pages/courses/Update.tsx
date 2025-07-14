@@ -77,11 +77,11 @@ interface IFormInputCourses {
 }
 interface IProps {
   course: ICourse | undefined;
-  handleCloseUp:()=>void
+  handleCloseUp: () => void;
 }
-function UpdateCourse({ course ,handleCloseUp }: IProps) {
+function UpdateCourse({ course, handleCloseUp }: IProps) {
   const [isFree, setIsFree] = useState<'0' | '1' | undefined>(course?.is_free);
-
+console.log(isFree)
   const [catState, setCatState] = useState(course?.category.id);
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
@@ -104,7 +104,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
   const { data: categories } = useGetCategoriesQuery({});
 
   const { data: packages } = useGetPackagesQuery({});
-  const [updateCourse] = useUpdateCourseMutation();
+  const [updateCourse, { isLoading }] = useUpdateCourseMutation();
   const [previewImage, setPreviewImage] = useState<string | null>(
     typeof course?.image === 'string' ? course?.image : null,
   );
@@ -123,7 +123,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
       reader.readAsDataURL(file);
     }
   };
- 
+
   useEffect(() => {
     if (course) {
       setValue('name.en', course.name.en);
@@ -197,15 +197,14 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
       //   formData,
       //   { headers },
       // );
-     const res = await updateCourse({ id, formData }).unwrap()
-  //  console.log(res);
+      const res = await updateCourse({ id, formData }).unwrap();
+      //  console.log(res);
       if (res.code === 200) {
         toast.success('Course updated successfully');
       }
 
       handleCloseUp();
-      
-    }catch (error: unknown) {
+    } catch (error: unknown) {
       const err = error as errorType;
 
       const errorMessages = err?.data?.errors
@@ -246,7 +245,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               label={t('FrancName')}
               error={!!errors.name?.fr}
               helperText={errors.name?.fr?.message}
-              {...register('name.fr', { required: t("FrancNameReq") })}
+              {...register('name.fr', { required: t('FrancNameReq') })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
@@ -276,17 +275,15 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               fullWidth
               key={'description.fr'}
               variant="outlined"
-              label={t("FrancDesc")}
+              label={t('FrancDesc')}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
               {...register('description.en', {
-                required:t("FrancDescReq"),
+                required: t('FrancDescReq'),
               })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
-
-
             <Controller
               name="course_lang"
               control={control}
@@ -324,7 +321,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               control={control}
               render={({ field, fieldState }) => (
                 <TextField
-                fullWidth
+                  fullWidth
                   select
                   id="category"
                   variant="outlined"
@@ -351,7 +348,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               )}
             />
             {/* Image Upload */}
-             <Button
+            <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -363,7 +360,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               <VisuallyHiddenInput
                 type="file"
                 {...register('image', {
-                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                  required: previewImage ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
                 })}
                 multiple
                 onChange={handleFileChange}
@@ -397,8 +394,6 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
                 {...register('price')}
               />
             )}
-
-            
 
             <Controller
               name="package"
@@ -454,7 +449,6 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
           </Stack>
 
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
-            
             <Controller
               name="course_level"
               control={control}
@@ -525,11 +519,11 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
               fullWidth
               type="number"
               variant="outlined"
-              label={t("totalHours")}
+              label={t('totalHours')}
               error={!!errors.total_hours}
               helperText={errors.total_hours?.message}
               {...register('total_hours', {
-                required: t("totalHoursReq"),
+                required: t('totalHoursReq'),
                 valueAsNumber: true,
                 min: {
                   value: 1,
@@ -546,6 +540,7 @@ function UpdateCourse({ course ,handleCloseUp }: IProps) {
           fullWidth
           type="submit"
           sx={{ mt: 3, fontSize: '18px' }}
+          disabled={isLoading}
         >
           {t('updateCourse')}
         </Button>

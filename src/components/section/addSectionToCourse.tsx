@@ -32,7 +32,7 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
     setValue,
     watch,
   } = useForm<ISection>();
-  const [createSection] = useCreateSectionMutation()
+  const [createSection,{isLoading}] = useCreateSectionMutation()
   const id = vid
   const onSubmit: SubmitHandler<ISection> = async (data) => {
     // console.log(data);
@@ -100,6 +100,7 @@ function AddSectionToCourse({ handleClose ,vid }: {vid: string | undefined ,hand
             fullWidth
             type="submit"
             sx={{ mt: 3, fontSize: '18px' }}
+            disabled={isLoading}
           >
             {t('AddSection')}
           </Button>
