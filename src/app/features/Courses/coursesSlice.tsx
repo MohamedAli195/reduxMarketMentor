@@ -91,6 +91,14 @@ headers.set("Accept", "application/json");
       }),
       invalidatesTags: ['Courses'],
     }),
+    updateStateCourse: builder.mutation<IresPost, {id:number | undefined,status:string}>({
+      query: ({ id, status }) => ({
+        url: `/admin/courses/${id}/change-status`,
+        method: 'POST',
+        body: {status:status},
+      }),
+      invalidatesTags: ['Courses'],
+    }),
   }),
 });
 
@@ -100,4 +108,5 @@ export const {
   useCreateCourseMutation,
   useDeleteCourseMutation,
   useUpdateCourseMutation,
+  useUpdateStateCourseMutation,
 } = coursesApi;

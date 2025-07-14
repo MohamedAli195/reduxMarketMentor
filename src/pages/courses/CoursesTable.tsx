@@ -10,6 +10,7 @@ import SwitchStatus from 'components/Shared/switch';
 import { checkPermissions, parsedData } from 'functions';
 import { ICourse, IFormInputCourses } from 'interfaces';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+import { useUpdateStateCourseMutation } from 'app/features/Courses/coursesSlice';
 
 interface IProps {
   handleEditOpen: (val: ICourse) => void;
@@ -20,10 +21,23 @@ interface IProps {
 }
 
 const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBoard }: IProps) => {
+  console.log(data)
   const navigate = useNavigate();
   const isArabic = i18n.language === 'ar';
-    const {data:profile} = useGetProfileQuery()
-const permissions = profile?.data.permissions
+  const { data: profile } = useGetProfileQuery();
+  const permissions = profile?.data.permissions;
+
+  const [updateStateCourse] = useUpdateStateCourseMutation();
+
+  const handleUpdateState = ({
+    id,
+    newStatus,
+  }: {
+    id: number;
+    newStatus: 'inactive' | 'active';
+  }) => {
+    updateStateCourse({ id, status: newStatus }); // هذه الدالة تتوافق مع شكل expected payload
+  };
   const columns: GridColDef[] = isDashBoard
     ? [
         { field: 'id', headerName: 'ID', width: 30, headerAlign: isArabic ? 'right' : 'left' },
@@ -57,7 +71,7 @@ const permissions = profile?.data.permissions
           headerAlign: isArabic ? 'right' : 'left',
           headerName: isArabic ? 'الاسم' : 'Name',
           flex: 2,
-          
+
           renderCell: (params) => (isArabic ? params.row.name.ar : params.row.name.en),
         },
         {
@@ -96,7 +110,12 @@ const permissions = profile?.data.permissions
           field: 'status',
           headerName: isArabic ? 'الحالة' : 'Status',
           renderCell: (params) => (
-            <SwitchStatus id={params.row.id} url="courses" apiStatus={params.row.status} />
+            <SwitchStatus
+              id={params.row.id}
+              url="courses"
+              apiStatus={params.row.status}
+              updateState={handleUpdateState}
+            />
           ),
         },
         {

@@ -11,6 +11,7 @@ import { IPackage, IPackage2, IPackageSelected, ITempPermissions } from 'interfa
 import { checkPermissions, parsedData } from 'functions';
 import SwitchStatus from 'components/Shared/switch';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
+import { useUpdateStatePackageMutation } from 'app/features/packages/packages';
 interface IProps {
   handleEditOpen: (val: IPackage2) => void;
   handleOpend: () => void;
@@ -20,7 +21,17 @@ interface IProps {
 function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
   const { data: profile } = useGetProfileQuery();
   const permissions = profile?.data.permissions;
+  const [updateStatePackage] = useUpdateStatePackageMutation();
 
+  const handleUpdateState = ({
+    id,
+    newStatus,
+  }: {
+    id: number;
+    newStatus: 'inactive' | 'active';
+  }) => {
+    updateStatePackage({ id, status: newStatus }); // هذه الدالة تتوافق مع شكل expected payload
+  };
   const navigate = useNavigate();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
@@ -51,7 +62,12 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
       headerName: i18n.language === 'ar' ? 'الحالة' : 'status',
       width: 130,
       renderCell: (params) => (
-        <SwitchStatus id={params.row.id} url={'packages'} apiStatus={params.row.status} />
+        <SwitchStatus
+          id={params.row.id}
+          url={'packages'}
+          updateState={handleUpdateState}
+          apiStatus={params.row.status}
+        />
       ),
     },
     {
@@ -83,14 +99,12 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
               <Eye />
             </Button>
           )}
-          {
-             checkPermissions(permissions,'edit-package') &&
-            (            <Button variant="contained" color="info" onClick={() => handleEditOpen(params.row)}>
+          {checkPermissions(permissions, 'edit-package') && (
+            <Button variant="contained" color="info" onClick={() => handleEditOpen(params.row)}>
               {/* {t('edit')} */}
               <Pencil />
-            </Button>)
-
-          }
+            </Button>
+          )}
         </Stack>
       ),
     },

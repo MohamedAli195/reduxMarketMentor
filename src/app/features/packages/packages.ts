@@ -91,6 +91,14 @@ export const packagesApi = createApi({
       }),
       invalidatesTags: ['Packages'],
     }),
+    updateStatePackage: builder.mutation<IresPost, {id:number | undefined,status:string}>({
+      query: ({ id, status }) => ({
+        url: `/admin/packages/${id}/change-status`,
+        method: 'POST',
+        body: {status:status},
+      }),
+      invalidatesTags: ['Packages'],
+    }),
   }),
 });
 
@@ -100,4 +108,5 @@ export const {
   useCreatePackageMutation,
   useDeletePackageMutation,
   useUpdatePackageMutation,
+  useUpdateStatePackageMutation
 } = packagesApi;
