@@ -51,7 +51,7 @@ interface IFormInputCourses {
   category_id: number | string;
   package_id: number | string;
   priceAfterDiscount: string;
-  is_free: '0' | '1' | undefined;
+  is_free: boolean | undefined;
   total_hours: number;
   package: {
     id: number | undefined;
@@ -80,8 +80,7 @@ interface IProps {
   handleCloseUp: () => void;
 }
 function UpdateCourse({ course, handleCloseUp }: IProps) {
-  const [isFree, setIsFree] = useState<'0' | '1' | undefined>(course?.is_free);
-console.log(isFree)
+  const [isFree, setIsFree] = useState<boolean | undefined>(course?.is_free);
   const [catState, setCatState] = useState(course?.category.id);
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
@@ -180,11 +179,12 @@ console.log(isFree)
         formData.append('image', data.image[0]);
       }
       formData.append('price', data.price);
+      formData.append('total_hours', data.total_hours.toString());
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
       if (coursLevelState) formData.append('course_level', coursLevelState);
       if (coursLangState) formData.append('course_lang', coursLangState);
-      formData.append('price_after_discount', data.priceAfterDiscount);
+      if(data.priceAfterDiscount) formData.append('price_after_discount', data.priceAfterDiscount);
       if (pacState) formData.append('package_id', pacState.toString());
       if (catState) formData.append('category_id', catState.toString());
       formData.append('description[en]', data.description.en);
@@ -206,7 +206,7 @@ console.log(isFree)
       handleCloseUp();
     } catch (error: unknown) {
       const err = error as errorType;
-
+      console.log(err)
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
         : 'Failed to add course, please check your input.';
@@ -384,7 +384,7 @@ console.log(isFree)
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
             {/* Other Inputs */}
-            {isFree == '0' && (
+            {isFree == false && (
               <TextField
                 fullWidth
                 variant="outlined"
@@ -481,7 +481,7 @@ console.log(isFree)
                 </TextField>
               )}
             />
-            {isFree == '0' && (
+            {isFree == false && (
               <TextField
                 fullWidth
                 variant="outlined"
@@ -504,7 +504,7 @@ console.log(isFree)
               value={isFree}
               onChange={(e) => {
                 const value = e.target.value;
-                setIsFree(value as '0' | '1');
+                setIsFree(Boolean(value));
               }}
               sx={{
                 '.MuiOutlinedInput-root': {
@@ -512,8 +512,8 @@ console.log(isFree)
                 },
               }}
             >
-              <MenuItem value="1">{t('free')}</MenuItem>
-              <MenuItem value="0">{t('notFree')}</MenuItem>
+              <MenuItem value="true">{t('free')}</MenuItem>
+              <MenuItem value="false">{t('notFree')}</MenuItem>
             </TextField>
             <TextField
               fullWidth

@@ -32,7 +32,7 @@ function ViewLectuerForm() {
 
 
   const { data, error, isLoading, isError } = useGetLectureQuery(id);
-
+console.log(data)
   useEffect(() => {
     if (data?.data) {
       setValue('title.ar', data?.data?.title.ar);

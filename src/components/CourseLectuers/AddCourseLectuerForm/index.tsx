@@ -42,7 +42,7 @@ function AddCourseLectuerForm({ handleClose ,vid }: {vid: string | undefined ,ha
       formData.append('title[fr]', data.title.fr);
       formData.append('description[en]', data.description?.en);
       formData.append('description[ar]', data.description?.ar);
-      formData.append('description[fr]', data.description?.ar);
+      formData.append('description[fr]', data.description?.fr);
       formData.append('video_url', data.video_url);
       formData.append('duration', data.duration);
       // formData.append('course_id', vid || ''); // Ensure course_id is included

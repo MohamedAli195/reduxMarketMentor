@@ -29,7 +29,7 @@ export interface IPackageSelected {
 
 export interface IPackage {
   id: number;
-  name: { en: string; ar: string; fr:string };
+  name: { en: string; ar: string; fr: string };
   price: string;
   image: string | null | FileList;
   status: string | null;
@@ -92,29 +92,6 @@ export interface ICourseSelect {
   };
 }
 export interface ICourse {
-  // id: number;
-  // name: { en: string; ar: string };
-  // price: string;
-  // image: string;
-  // status: string | null;
-  // category: {
-  //   id: number;
-  //   name: {
-  //     ar: string;
-  //     en: string;
-  //   };
-  // };
-  // package: {
-  //   id: number;
-  //   name: {
-  //     ar: string;
-  //     en: string;
-  //   };
-  // };
-  // description: {
-  //   en: string;
-  //   ar: string;
-  // };
   name: {
     en: string;
     ar: string;
@@ -129,7 +106,7 @@ export interface ICourse {
   course_lang: string;
   priceAfterDiscount: string;
   package_id: number | string;
-  is_free:'0' | '1' | undefined;
+  is_free: boolean | undefined;
   total_hours: number;
   description: {
     en: string;
@@ -169,8 +146,8 @@ export interface IFormInputCourses {
   priceAfterDiscount: string;
   package_id: number | string;
   category_id: number | string;
-  is_free:"0" |"1";
-  total_hours:number;
+  is_free: boolean;
+  total_hours: number;
   description: {
     en: string;
     ar: string;
@@ -259,8 +236,8 @@ export interface Ipermisson {
   id: number;
   name: string;
   display_name: {
-    en:string,
-    ar:string
+    en: string;
+    ar: string;
   };
 }
 
@@ -286,22 +263,22 @@ export interface INotfications {
   };
 }
 export interface IRole {
-  id?:number
-  name:string;
-  display_name:{
-      ar: string;
-      en: string;
-  }
-  permissions:Ipermisson[]
+  id?: number;
+  name: string;
+  display_name: {
+    ar: string;
+    en: string;
+  };
+  permissions: Ipermisson[];
 }
 
 export interface ISection {
-  id?:number
-    name:{
-        ar:string;
-        en:string;
-        fr:string;
-    }
+  id?: number;
+  name: {
+    ar: string;
+    en: string;
+    fr: string;
+  };
 }
 
 export interface errorType {
