@@ -68,11 +68,11 @@ export const recommendationsApi = createApi({
       }),
       // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
-    createRecommendation: builder.mutation<IresPost, IFormInputRecommendations>({
-      query: (data) => ({
+    createRecommendation: builder.mutation<IresPost, {value : string[]}>({
+      query: (value) => ({
         url: `/admin/recommendations `,
         method: 'POST',
-        body: data,
+        body: value,
       }),
       invalidatesTags: ['Recommendations'], // ✅ Invalidate tag to refetch list
     }),

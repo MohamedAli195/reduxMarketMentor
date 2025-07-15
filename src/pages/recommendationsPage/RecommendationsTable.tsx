@@ -17,13 +17,13 @@ interface IProps {
   data: IREc[];
 }
 function RecommendationsTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
-  // console.log(data);
+  console.log(data);
   const navigate = useNavigate();
   const [updateRecommendationStatus, { error }] = useUpdateRecommendationStatusMutation();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
-    { field: 'name', headerName: i18n.language === 'ar' ? 'الاسم' : 'Name', flex: 0.5 },
-    { field: 'value', headerName: i18n.language === 'ar' ? 'القيمة' : 'email', flex: 1 },
+    { field: 'value', headerName: i18n.language === 'ar' ? 'القيمة' : 'value', flex: 1 },
+
     {
       field: 'status',
       headerName: i18n.language === 'ar' ? 'الحالة' : 'status',

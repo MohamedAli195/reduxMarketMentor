@@ -1,9 +1,22 @@
-import { Box, Button, Stack, TextField, Skeleton, Chip, FormControl, InputLabel, MenuItem, Select, OutlinedInput } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Skeleton,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  OutlinedInput,
+} from '@mui/material';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useCreateRecommendationMutation } from 'app/features/Recommendations/RecommendationsSlice';
+import { useState } from 'react';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -19,7 +32,7 @@ const VisuallyHiddenInput = styled('input')({
 
 export interface IFormInputRecommendations {
   name: string;
-  value:string
+  value: string;
 }
 
 const ITEM_HEIGHT = 48;
@@ -41,31 +54,35 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function AddRecommendationsForm({ handleClose }: { handleClose: () => void;  }) {
+function AddRecommendationsForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
-  const theme = useTheme();
+  const [rec, setRec] = useState<string[]>(['', '', '', '', '']);
+  console.log(rec)
   const {
+    register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInputRecommendations>();
   const url = import.meta.env.VITE_API_URL;
-//   console.log(apiRoles.data.data)
+  //   console.log(apiRoles.data.data)
 
-const [createRecommendation] = useCreateRecommendationMutation()
-  const onSubmit: SubmitHandler<IFormInputRecommendations> = async (data) => {
+  const [createRecommendation,{isLoading}] = useCreateRecommendationMutation();
+  const onSubmit = async () => {
     try {
-      await createRecommendation(data)
+
+      const formData = new FormData();
+      // formData.append('value', JSON.stringify(rec));
+     const res = await createRecommendation({value:rec}).unwrap()
+  
+    console.log(res)
       toast.success(t('recommendations added successfully'));
       handleClose();
-
     } catch (err) {
-    //   console.error(err);
+        console.error(err);
       toast.error(t('Failed to add roles, please check your input.'));
     }
   };
-  
-
 
   return (
     <Box
@@ -76,31 +93,24 @@ const [createRecommendation] = useCreateRecommendationMutation()
       onSubmit={handleSubmit(onSubmit)}
     >
       <Stack spacing={3}>
-        <Stack flexDirection="column" gap={2}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="name"
-            type="text"
-            label={t('name')}
-            error={!!errors.name}
-            helperText={errors?.name?.message}
-            {...control.register('name', { required: t('name') })}
-          />
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="value"
-            type="text"
-            label={t('value')}
-            error={!!errors.value}
-            helperText={errors?.value?.message}
-            {...control.register('value', { required: t('email') })}
-          />
-
-        </Stack>
-
-
+        <Box>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <TextField
+              key={index}
+              fullWidth
+              variant="outlined"
+              label={`Value ${index + 1}`}
+              margin="normal"
+              onChange={(e) => {
+                setRec((prev) => {
+                  const newRec = [...prev];
+                  newRec[index] = e.target.value;
+                  return newRec;
+                });
+              }}
+            />
+          ))}
+        </Box>
       </Stack>
 
       <Button
@@ -110,6 +120,8 @@ const [createRecommendation] = useCreateRecommendationMutation()
         fullWidth
         type="submit"
         sx={{ mt: 3, fontSize: '18px' }}
+        onClick={onSubmit}
+        disabled={isLoading}
       >
         {t('add-Recommendations')}
       </Button>
