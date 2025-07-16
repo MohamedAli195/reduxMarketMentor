@@ -133,7 +133,7 @@ function AddPackageForm({ handleClose }: { handleClose: () => void }) {
           label={t('price')}
           error={!!errors.price}
           helperText={errors.price?.message}
-          {...register('price', { required: 'حقل السعر مطلوب' })}
+          {...register('price', { required: t('priceReq2')  })}
         />
 
         <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
@@ -145,7 +145,7 @@ function AddPackageForm({ handleClose }: { handleClose: () => void }) {
             startIcon={<CloudUpload />}
             sx={{ height: '100%' }}
           >
-            Upload Image
+            <span style={{display:'inline-block',marginLeft:10,marginRight:10,}}>{t('UploadImage')}</span> 
             <VisuallyHiddenInput
               type="file"
               {...register('image', {
@@ -153,6 +153,7 @@ function AddPackageForm({ handleClose }: { handleClose: () => void }) {
               })}
               multiple
               onChange={handleFileChange}
+              sx={{marginLeft:2,marginRight:2,}}
             />
           </Button>
 
@@ -172,7 +173,6 @@ function AddPackageForm({ handleClose }: { handleClose: () => void }) {
             </Box>
           )}
         </Stack>
-        {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
       </Stack>
 
       <Button

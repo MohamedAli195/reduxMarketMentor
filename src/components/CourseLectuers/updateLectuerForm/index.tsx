@@ -92,6 +92,7 @@ const res = await updateLecture({id,data}).unwrap()
         onSubmit={handleSubmit(onSubmit)}
       >
         <Stack spacing={3}>
+          <Stack display={'flex'} flexDirection={'row'}>
           {/* Arabic Name */}
           <TextField
             fullWidth
@@ -120,7 +121,8 @@ const res = await updateLecture({id,data}).unwrap()
             helperText={errors.title?.fr?.message}
             {...register('title.fr', { required: 'franc name is required' })}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           {/* description Name */}
           <TextField
             fullWidth
@@ -148,7 +150,8 @@ const res = await updateLecture({id,data}).unwrap()
             helperText={errors.description?.en?.message}
             {...register('description.en', { required: 'franc desc required' })}
           />
-
+</Stack>
+<Stack display={'flex'} flexDirection={'row'}>
           {/* Other Fields */}
           <TextField
             fullWidth
@@ -170,6 +173,7 @@ const res = await updateLecture({id,data}).unwrap()
             })}
           />
         </Stack>
+        </Stack>
         <Button
           color="primary"
           variant="contained"
@@ -179,7 +183,7 @@ const res = await updateLecture({id,data}).unwrap()
           sx={{ mt: 3, fontSize: '18px' }}
           disabled={isLoading}
         >
-          {t('UpdateLectuer')}
+          {t('UpdateLecter')}
         </Button>
       </Box>
       <Toaster position="bottom-center" reverseOrder={false} />

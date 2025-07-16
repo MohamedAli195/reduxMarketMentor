@@ -88,9 +88,6 @@ function LecturerTable({ isDashBoard }: IProps) {
       </Paper>
 
       <BasicModal open={openU} handleClose={handleCloseU}>
-        <Typography variant="h6" mb={2}>
-          {t('updateCategory')}
-        </Typography>
         <UpdateLectuerForm
           handleClose={handleCloseU}
           initialData={selectedCategory}

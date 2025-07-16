@@ -50,7 +50,7 @@ function UpdatePackageForm({
   const { t } = useTranslation();
   const url = import.meta.env.VITE_API_URL;
   // Fetch packages using React Query
-  const [updatePackage,{isLoading}] = useUpdatePackageMutation();
+  const [updatePackage, { isLoading }] = useUpdatePackageMutation();
   const id = tempIdUpdate.id;
   const ImageFromApi = tempIdUpdate.image;
   // console.log(ImageFromApi);
@@ -125,40 +125,40 @@ function UpdatePackageForm({
       onSubmit={handleSubmit(onSubmit)}
     >
       <Stack spacing={3}>
-       <Stack flexDirection={'row'} gap={2}>
-                 <TextField
-                   fullWidth
-                   variant="outlined"
-                   id="name-ar"
-                   type="text"
-                   label={t('ArabicName')}
-                   error={!!errors.name?.ar}
-                   helperText={errors.name?.ar?.message}
-                   {...register('name.ar', { required: t('ArabicNameReq')})}
-                 />
-             
-                 <TextField
-                   fullWidth
-                   variant="outlined"
-                   id="name-en"
-                   type="text"
-                   label={t('EnglishName')}
-                   error={!!errors.name?.en}
-                   helperText={errors.name?.en?.message}
-                   {...register('name.en', { required: t('EnglishNameReq') } )}
-                 />
-                
-                 <TextField
-                   fullWidth
-                   variant="outlined"
-                   id="name-fr"
-                   type="text"
-                    label={t('FrancName')}
-                   error={!!errors.name?.fr}
-                   helperText={errors.name?.fr?.message}
-                   {...register('name.fr', { required:t("FrancNameReq")})}
-                 />
-               </Stack>
+        <Stack flexDirection={'row'} gap={2}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="name-ar"
+            type="text"
+            label={t('ArabicName')}
+            error={!!errors.name?.ar}
+            helperText={errors.name?.ar?.message}
+            {...register('name.ar', { required: t('ArabicNameReq') })}
+          />
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="name-en"
+            type="text"
+            label={t('EnglishName')}
+            error={!!errors.name?.en}
+            helperText={errors.name?.en?.message}
+            {...register('name.en', { required: t('EnglishNameReq') })}
+          />
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="name-fr"
+            type="text"
+            label={t('FrancName')}
+            error={!!errors.name?.fr}
+            helperText={errors.name?.fr?.message}
+            {...register('name.fr', { required: t('FrancNameReq') })}
+          />
+        </Stack>
 
         <TextField
           fullWidth
@@ -168,7 +168,7 @@ function UpdatePackageForm({
           label={t('price')}
           error={!!errors.price}
           helperText={errors.price?.message}
-          {...register('price', { required: 'حقل السعر مطلوب' })}
+          {...register('price', { required: t('priceReq2')  })}
         />
 
         <Stack flexDirection={'row'} gap={2} alignItems={'center'}>
@@ -180,14 +180,17 @@ function UpdatePackageForm({
             startIcon={<CloudUpload />}
             sx={{ height: '100%' }}
           >
-            Upload Image
+            <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
+              {t('UploadImage')}
+            </span>
             <VisuallyHiddenInput
               type="file"
               {...register('image', {
-                required: preview ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
               })}
               multiple
               onChange={handleFileChange}
+              sx={{ marginLeft: 2, marginRight: 2 }}
             />
           </Button>
 
@@ -207,7 +210,6 @@ function UpdatePackageForm({
             </Box>
           )}
         </Stack>
-        {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
       </Stack>
 
       <Button

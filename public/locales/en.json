@@ -109,5 +109,11 @@
       "FrancNameReq":"Franc Name is required",
       "FrancDescReq":"Franc Description is required",
       "EnglishNameReq":"English name is required",
- "ImageRequired":"image is required"
+ "ImageRequired":"image is required",
+ "UploadImage":"Upload Image",
+ "addSubAdmin":"add Sub Admin",
+ "NameReq":"name is required",
+ "emailReq":"email is required",
+ "passwordReq":"password is required",
+ "editSubAdmin":"Update Sub Admin"
   }

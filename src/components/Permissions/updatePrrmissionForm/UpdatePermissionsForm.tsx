@@ -18,6 +18,7 @@ import { styled, useTheme, Theme } from '@mui/material/styles';
 import { errorType, IRole } from 'interfaces';
 import { useUpdateRoleMutation } from 'app/features/Roles/roles';
 import { useGetPermissionsQuery } from 'app/features/permissions/permissions';
+import i18n from 'i18n';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -77,19 +78,14 @@ function UpdatePermissionsForm({
   } = useForm<IFormInput>();
 
   const [personName, setPersonName] = useState<string[]>([]);
+  console.log(personName)
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('desc');
   const [per, setPer] = useState(10);
   const id = tempPermission?.id;
 
-  const {
-    data: apiPermissions,
-    error: errorPermissions,
-    isLoading: isLoadingpermissions,
-    isError: iserrorpermissions,
-  } = useGetPermissionsQuery();
-  console.log(apiPermissions);
+  const { data: apiPermissions } = useGetPermissionsQuery();
 
   useEffect(() => {
     if (tempPermission) {
@@ -102,7 +98,7 @@ function UpdatePermissionsForm({
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      const res = await updateRole({ id, data }).unwrap()
+      const res = await updateRole({ id, data }).unwrap();
 
       if (res.code === 200) {
         toast.success('roles updated successfully');
@@ -190,13 +186,13 @@ function UpdatePermissionsForm({
                   MenuProps={MenuProps}
                 >
                   {Array.isArray(apiPermissions?.data) &&
-                    apiPermissions.data.map((item: { id: number; name: string }) => (
+                    apiPermissions.data.map((item) => (
                       <MenuItem
                         key={item.id} // Use id as key
                         value={item.name} // Store only name as value
                         style={getStyles(item.name, personName, theme)}
                       >
-                        {item.name}
+                        {i18n.language === 'ar' ? item.display_name.ar : item.display_name.en}
                       </MenuItem>
                     ))}
                 </Select>

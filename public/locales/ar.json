@@ -106,7 +106,13 @@
 "totalHoursReq":"عدد الساعات مطلوب",
       "FrancNameReq":"الاسم بالفرنسى مطلوب",
       "FrancDescReq":"الوصف بالفرنسى مطلوب",
-      "ImageRequired":"الصورة مطلوبة"
+      "ImageRequired":"الصورة مطلوبة",
+      "UploadImage":"رفع صورة",
+      "addSubAdmin":"اضافة مدير فرعى",
+      "NameReq":"الاسم حقل اساسى",
+      "emailReq":"الايميل حقل اساسى ",
+      "passwordReq":"الباسورد حقل اساسى ",
+      "editSubAdmin":"تحديث المدير الفرعى"
 
       
   }

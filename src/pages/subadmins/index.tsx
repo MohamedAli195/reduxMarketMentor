@@ -134,7 +134,7 @@ const permissions = profile?.data?.permissions
 
       {/* add modal */}
       <BasicModal open={open} handleClose={handleClose}>
-        <h2>{t('addPermissions')}</h2>
+        <h2>{t('addSubAdmin')}</h2>
         <AddSubAdminForm handleClose={handleClose} />
       </BasicModal>
 

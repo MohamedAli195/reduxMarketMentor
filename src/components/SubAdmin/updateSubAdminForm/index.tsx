@@ -115,25 +115,25 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
       <Stack spacing={3}>
         <Stack flexDirection="column" gap={2}>
           <TextField
-            fullWidth
-            variant="outlined"
-            id="name"
-            type="text"
-            label={t('name')}
-            error={!!errors.name}
-            helperText={errors?.name?.message}
-            {...control.register('name', { required: t('name') })}
-          />
-          <TextField
-            fullWidth
-            variant="outlined"
-            id="email"
-            type="text"
-            label={t('email')}
-            error={!!errors.email}
-            helperText={errors?.email?.message}
-            {...control.register('email', { required: t('email') })}
-          />
+                      fullWidth
+                      variant="outlined"
+                      id="name"
+                      type="text"
+                      label={t('name')}
+                      error={!!errors.name}
+                      helperText={errors?.name?.message}
+                      {...control.register('name', { required: t('NameReq') })}
+                    />
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      id="email"
+                      type="text"
+                      label={t('email')}
+                      error={!!errors.email}
+                      helperText={errors?.email?.message}
+                      {...control.register('email', { required: t('emailReq') })}
+                    />
           <TextField
             fullWidth
             variant="outlined"
@@ -198,7 +198,7 @@ function UpdateSubAdminForm({ handleClose, id }: { handleClose: () => void; id: 
         sx={{ mt: 3, fontSize: '18px' }}
         disabled={isLoadingUpdate}
       >
-        {t('updateSubAdmin')}
+        {t('editSubAdmin')}
       </Button>
     </Box>
   );

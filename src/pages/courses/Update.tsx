@@ -9,6 +9,7 @@ import { useUpdateCourseMutation } from 'app/features/Courses/coursesSlice';
 import { errorType, ICourse } from 'interfaces';
 import { useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
 import { useGetPackagesQuery } from 'app/features/packages/packages';
+import i18n from 'i18n';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -184,7 +185,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
       formData.append('course_duration', data.course_duration);
       if (coursLevelState) formData.append('course_level', coursLevelState);
       if (coursLangState) formData.append('course_lang', coursLangState);
-      if(data.priceAfterDiscount) formData.append('price_after_discount', data.priceAfterDiscount);
+      if (data.priceAfterDiscount) formData.append('price_after_discount', data.priceAfterDiscount);
       if (pacState) formData.append('package_id', pacState.toString());
       if (catState) formData.append('category_id', catState.toString());
       formData.append('description[en]', data.description.en);
@@ -206,7 +207,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
       handleCloseUp();
     } catch (error: unknown) {
       const err = error as errorType;
-      console.log(err)
+      console.log(err);
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
         : 'Failed to add course, please check your input.';
@@ -341,7 +342,8 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 >
                   {categories?.data?.data?.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>
-                      {cat.name.en}
+                      {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
+                
                     </MenuItem>
                   ))}
                 </TextField>
@@ -353,22 +355,25 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               role={undefined}
               variant="outlined"
               tabIndex={-1}
-              sx={{ mt: 2, maxHeight: '200px', lineHeight: 1 }}
               startIcon={<CloudUpload />}
+              sx={{ height: '100%' }}
             >
-              Upload Image
+              <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
+                {t('UploadImage')}
+              </span>
               <VisuallyHiddenInput
                 type="file"
                 {...register('image', {
-                  required: previewImage ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
                 })}
                 multiple
                 onChange={handleFileChange}
+                sx={{ marginLeft: 2, marginRight: 2 }}
               />
             </Button>
 
             {errors.image && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
                 {errors.image.message}
               </Typography>
             )}
@@ -420,7 +425,9 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 >
                   {packages?.data?.data?.map((pkg) => (
                     <MenuItem key={pkg.id} value={pkg.id}>
-                      {pkg.name.en}
+                    
+                                        {i18n.language === 'ar' ? pkg.name.ar : pkg.name.en}
+
                     </MenuItem>
                   ))}
                 </TextField>

@@ -13,6 +13,7 @@ import { CloudUpload } from 'lucide-react';
 import { useCreateCourseMutation } from 'app/features/Courses/coursesSlice';
 import { useGetCategoriesQuery } from 'app/features/Categories/CategoriesSlice';
 import { useGetPackagesQuery } from 'app/features/packages/packages';
+import i18n from 'i18n';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -41,7 +42,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
     formState: { errors },
   } = useForm<IFormInputCourses>();
   const [preview, setPreview] = useState<string | null>(null);
-  const [createCourse ,{isLoading}] = useCreateCourseMutation();
+  const [createCourse, { isLoading }] = useCreateCourseMutation();
   const url = import.meta.env.VITE_API_URL;
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -61,13 +62,19 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       formData.append('name[ar]', data.name.ar);
       formData.append('name[fr]', data.name.fr);
       formData.append('image', data.image[0]);
-      if (data.price) {formData.append('price', data.price)}
+      if (data.price) {
+        formData.append('price', data.price);
+      }
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
       formData.append('course_level', data.course_level);
       formData.append('course_lang', data.course_lang);
-      if(data.priceAfterDiscount) {formData.append('price_after_discount', data.priceAfterDiscount)}
-      if(data.package_id) {formData.append('package_id', data.package_id.toString())}
+      if (data.priceAfterDiscount) {
+        formData.append('price_after_discount', data.priceAfterDiscount);
+      }
+      if (data.package_id) {
+        formData.append('package_id', data.package_id.toString());
+      }
       formData.append('category_id', data.category_id.toString());
       formData.append('is_free', String(isFree));
       formData.append('total_hours', String(data.total_hours));
@@ -84,7 +91,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
       handleClose();
     } catch (error: unknown) {
       const err = error as errorType;
-      console.log(err)
+      console.log(err);
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
         : 'Failed to add course, please check your input.';
@@ -125,10 +132,10 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
             <TextField
               fullWidth
               variant="outlined"
-              label={t("FrancName")}
+              label={t('FrancName')}
               error={!!errors.name?.fr}
               helperText={errors.name?.fr?.message}
-              {...register('name.fr', { required: t("FrancNameReq") })}
+              {...register('name.fr', { required: t('FrancNameReq') })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'}>
@@ -158,11 +165,11 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               fullWidth
               key={'description.fr'}
               variant="outlined"
-              label={t("FrancDesc")}
+              label={t('FrancDesc')}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
               {...register('description.en', {
-                required: t("FrancDescReq"),
+                required: t('FrancDescReq'),
               })}
             />
           </Stack>
@@ -206,13 +213,13 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
             >
               {categories?.data?.data?.map((cat) => (
                 <MenuItem key={cat.id} value={cat.id}>
-                  {cat.name.en}
+                  {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
                 </MenuItem>
               ))}
             </TextField>
 
             {/* Image Upload */}
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -229,10 +236,31 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 multiple
                 onChange={handleFileChange}
               />
+            </Button> */}
+            <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              startIcon={<CloudUpload />}
+              sx={{ height: '100%' }}
+            >
+              <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
+                {t('UploadImage')}
+              </span>
+              <VisuallyHiddenInput
+                type="file"
+                {...register('image', {
+                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                })}
+                multiple
+                onChange={handleFileChange}
+                sx={{ marginLeft: 2, marginRight: 2 }}
+              />
             </Button>
 
             {errors.image && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
                 {errors.image.message}
               </Typography>
             )}
@@ -275,7 +303,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
             >
               {packages?.data?.data?.map((pkg) => (
                 <MenuItem key={pkg.id} value={pkg.id}>
-                  {pkg.name.en}
+                  {i18n.language === 'ar' ? pkg.name.ar : pkg.name.en}
                 </MenuItem>
               ))}
             </TextField>
@@ -360,11 +388,11 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               fullWidth
               type="number"
               variant="outlined"
-              label={t("totalHours")}
+              label={t('totalHours')}
               error={!!errors.total_hours}
               helperText={errors.total_hours?.message}
               {...register('total_hours', {
-                required: t("totalHoursReq"),
+                required: t('totalHoursReq'),
                 valueAsNumber: true,
                 min: {
                   value: 1,

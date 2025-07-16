@@ -135,7 +135,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
             label={t('name')}
             error={!!errors.name}
             helperText={errors?.name?.message}
-            {...control.register('name', { required: t('name') })}
+            {...control.register('name', { required: t('NameReq') })}
           />
           <TextField
             fullWidth
@@ -145,7 +145,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
             label={t('email')}
             error={!!errors.email}
             helperText={errors?.email?.message}
-            {...control.register('email', { required: t('email') })}
+            {...control.register('email', { required: t('emailReq') })}
           />
           <TextField
             fullWidth
@@ -155,7 +155,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
             label={t('password')}
             error={!!errors.password}
             helperText={errors.password?.message}
-            {...control.register('password', { required: t('password') })}
+            {...control.register('password', { required: t('passwordReq') })}
           />
           <FormControl sx={{ m: 1, width: '100%' }}>
             <InputLabel id="permissions-label">{t('Permissions')}</InputLabel>
@@ -213,7 +213,7 @@ function AddSubAdminForm({ handleClose }: { handleClose: () => void }) {
         sx={{ mt: 3, fontSize: '18px' }}
         disabled={isLoadingCreate}
       >
-        {t('addPermissions')}
+        {t('addSubAdmin')}
       </Button>
     </Box>
   );
