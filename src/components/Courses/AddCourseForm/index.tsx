@@ -110,7 +110,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
         component="form"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Stack spacing={3}>
+        <Stack>
           <Stack display={'flex'} flexDirection={'row'}>
             {/* Name Fields */}
             <TextField
@@ -173,7 +173,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               })}
             />
           </Stack>
-          <Stack display={'flex'} flexDirection={'row'} gap={3}>
+          <Stack display={'flex'} flexDirection={'row'} gap={1}>
             <TextField
               select
               key={'CourseLanguage'}
@@ -187,7 +187,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 '.MuiOutlinedInput-root': {
                   lineHeight: 0, // Match default height for MUI TextField
                 },
-                width: '25%',
+                width: '20%',
               }}
             >
               {['arabic', 'english'].map((lang) => (
@@ -208,7 +208,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
                 '.MuiOutlinedInput-root': {
                   lineHeight: 0,
                 },
-                width: '25%',
+                width: '20%',
               }}
             >
               {categories?.data?.data?.map((cat) => (
@@ -243,7 +243,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUpload />}
-              sx={{ height: '100%' }}
+              sx={{ height: '100%',marginTop:3 }}
             >
               <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
                 {t('UploadImage')}
@@ -265,7 +265,7 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               </Typography>
             )}
             {preview && (
-              <Box sx={{ mt: 2, maxHeight: '200px' }}>
+              <Box sx={{ mt: 2, maxHeight: '85px',overflow:'hidden' }}>
                 <img
                   src={preview}
                   alt={t('Preview')}

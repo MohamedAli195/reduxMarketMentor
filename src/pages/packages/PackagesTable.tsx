@@ -60,7 +60,7 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
     {
       field: 'status',
       headerName: i18n.language === 'ar' ? 'الحالة' : 'status',
-      width: 130,
+      width: 100,
       renderCell: (params) => (
         <SwitchStatus
           id={params.row.id}
@@ -73,7 +73,7 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
     {
       field: 'actions',
       headerName: i18n.language === 'ar' ? 'العمليات' : 'actions',
-      flex: 1,
+      flex: 1.5,
       renderCell: (params) => (
         <Stack direction="row" gap={1}>
           {checkPermissions(permissions, 'delete-package') && (

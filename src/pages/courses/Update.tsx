@@ -221,7 +221,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
   return (
     <>
       <Box sx={{}} component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
+        <Stack>
           <Stack display={'flex'} flexDirection={'row'}>
             {/* Name Fields */}
             <TextField
@@ -285,78 +285,76 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
-            <Controller
-              name="course_lang"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  select
-                  fullWidth
-                  id="CourseLanguage"
-                  variant="outlined"
-                  label={t('CoursLang')}
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
-                  value={coursLangState}
-                  onChange={(e) => {
-                    setCoursLangState(e.target.value);
-                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
-                  }}
-                  sx={{
-                    '.MuiOutlinedInput-root': {
-                      lineHeight: 0,
-                    },
-                  }}
-                >
-                  {['arabic', 'english'].map((lang) => (
-                    <MenuItem key={lang} value={lang}>
-                      {lang}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+            <TextField
+              select
+              key={'CourseLanguage'}
+              id="Course Language"
+              variant="outlined"
+              label={t('CourseLanguage')}
+              error={!!errors.course_lang}
+              helperText={errors.course_lang?.message}
+              {...register('course_lang')}
+              sx={{
+                '.MuiOutlinedInput-root': {
+                  lineHeight: 0, // Match default height for MUI TextField
+                },
+                width: '20%',
+              }}
+            >
+              {['arabic', 'english'].map((lang) => (
+                <MenuItem key={lang} value={lang}>
+                  {lang}
+                </MenuItem>
+              ))}
+            </TextField>
             {/* Category */}
-            <Controller
-              name="category"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  fullWidth
-                  select
-                  id="category"
-                  variant="outlined"
-                  label={t('Category')}
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
-                  value={catState}
-                  onChange={(e) => {
-                    setCatState(+e.target.value);
-                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
-                  }}
-                  sx={{
-                    '.MuiOutlinedInput-root': {
-                      lineHeight: 0,
-                    },
-                  }}
-                >
-                  {categories?.data?.data?.map((cat) => (
-                    <MenuItem key={cat.id} value={cat.id}>
-                      {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
-                
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+            <TextField
+              select
+              variant="outlined"
+              label={t('Category')}
+              error={!!errors.category_id}
+              helperText={errors.category_id?.message}
+              {...register('category_id', { required: t('CategoryReq') })}
+              sx={{
+                '.MuiOutlinedInput-root': {
+                  lineHeight: 0,
+                },
+                width: '20%',
+              }}
+            >
+              {categories?.data?.data?.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
+                </MenuItem>
+              ))}
+            </TextField>
+
             {/* Image Upload */}
+            {/* <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              sx={{ mt: 2, maxHeight: '200px', lineHeight: 1 }}
+              startIcon={<CloudUpload />}
+            >
+              Upload Image
+              <VisuallyHiddenInput
+                type="file"
+                {...register('image', {
+                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                })}
+                multiple
+                onChange={handleFileChange}
+              />
+            </Button> */}
             <Button
               component="label"
               role={undefined}
               variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUpload />}
-              sx={{ height: '100%' }}
+              sx={{ height: '100%',marginTop:3 }}
             >
               <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
                 {t('UploadImage')}
@@ -378,7 +376,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               </Typography>
             )}
             {previewImage && (
-              <Box sx={{ mt: 2, maxHeight: '200px' }}>
+              <Box sx={{ mt: 2, maxHeight: '85px',overflow:'hidden' }}>
                 <img
                   src={previewImage}
                   alt={t('Preview')}

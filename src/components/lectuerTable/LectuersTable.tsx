@@ -34,7 +34,7 @@ function LectuerTables({data,handleEditOpen,setTempId,handleOpend}: IProps) {
 
       flex: 1,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" gap={1}>
           <Button
             variant="contained"
             color="error"

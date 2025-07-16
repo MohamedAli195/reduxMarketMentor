@@ -57,7 +57,7 @@ const permissions = data?.data.permissions
       headerName: i18n.language === 'ar' ? 'العمليات' : 'Actions',
       flex: 1,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" gap={1}>
           {checkPermissions(permissions, 'delete-category') && (
             <Button
               variant="contained"
