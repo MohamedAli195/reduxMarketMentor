@@ -6,7 +6,7 @@ import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
 import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
 import Sections from 'components/SectionTable/Sections';
-import AddSectionToCourse from 'components/section/AddSectionToCourse';
+import AddSectionToCourse from 'components/section/addSectionToCourse';
 
 function CourseDetails() {
   const { id } = useParams();
@@ -49,7 +49,7 @@ function CourseDetails() {
       <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('AddSection')}</h2>
 
-        <AddSectionToCourse vid={id} handleClose={handleClose} />
+        <AddSectionToCourse  vid={id} handleClose={handleClose} />
       </BasicModal>
     </>
   );
