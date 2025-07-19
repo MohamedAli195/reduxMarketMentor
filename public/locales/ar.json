@@ -112,7 +112,8 @@
       "NameReq":"الاسم حقل اساسى",
       "emailReq":"الايميل حقل اساسى ",
       "passwordReq":"الباسورد حقل اساسى ",
-      "editSubAdmin":"تحديث المدير الفرعى"
-
+      "editSubAdmin":"تحديث المدير الفرعى",
+     "TotalPaidCourses":"الكورسات المدفوعة",
+     "TotalFreeCourses":"الكورسات المجانية"
       
   }

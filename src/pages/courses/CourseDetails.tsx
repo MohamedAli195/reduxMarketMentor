@@ -6,7 +6,7 @@ import BasicModal from 'components/Shared/modal/ShareModal';
 import { useState } from 'react';
 import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
 import Sections from 'components/SectionTable/Sections';
-import AddSectionToCourse from 'components/section/AddSectionToCourse';
+import AddSectionToCourse from 'components/section/addSectionToCourse';
 
 
 function CourseDetails() {

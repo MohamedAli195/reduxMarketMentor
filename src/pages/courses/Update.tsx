@@ -82,14 +82,13 @@ interface IProps {
 }
 function UpdateCourse({ course, handleCloseUp }: IProps) {
   const [isFree, setIsFree] = useState<boolean | undefined>(course?.is_free);
-  const [catState, setCatState] = useState(course?.category.id);
+  const [catState, setCatState] = useState(course?.category?.id);
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
   const [pacState, setpacState] = useState(course?.package?.id);
-  // console.log(pacState);
+
   const id = course?.id;
-  // console.log(catState);
-  // console.log(catState);
+
   // const [fileName, setFileName] = useState<string | null>(null); // State to store the selected file name
 
   const {
@@ -279,13 +278,13 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               label={t('FrancDesc')}
               error={!!errors.description?.en}
               helperText={errors.description?.en?.message}
-              {...register('description.en', {
+              {...register('description.fr', {
                 required: t('FrancDescReq'),
               })}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
-            <TextField
+            {/* <TextField
               select
               key={'CourseLanguage'}
               id="Course Language"
@@ -306,28 +305,77 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                   {lang}
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField> */}
+
+
+                <Controller
+              name="course_lang"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  select
+                  fullWidth
+                  id="course_lang"
+                  variant="outlined"
+                  label={t('course lang')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={coursLangState}
+                  onChange={(e) => {
+                    setCoursLangState(e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {['arabic', 'english'].map((lang) => (
+                    <MenuItem key={lang} value={lang}>
+                    
+                                        {i18n.language === 'ar' ? lang : lang}
+
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
             {/* Category */}
-            <TextField
-              select
-              variant="outlined"
-              label={t('Category')}
-              error={!!errors.category_id}
-              helperText={errors.category_id?.message}
-              {...register('category_id', { required: t('CategoryReq') })}
-              sx={{
-                '.MuiOutlinedInput-root': {
-                  lineHeight: 0,
-                },
-                width: '20%',
-              }}
-            >
-              {categories?.data?.data?.map((cat) => (
-                <MenuItem key={cat.id} value={cat.id}>
-                  {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
-                </MenuItem>
-              ))}
-            </TextField>
+
+              <Controller
+              name="package"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  select
+                  fullWidth
+                  id="category"
+                  variant="outlined"
+                  label={t('category')}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  value={catState}
+                  onChange={(e) => {
+                    setCatState(+e.target.value);
+                    field.onChange(e); // لازم تفضل تمرر القيمة للـ react-hook-form
+                  }}
+                  sx={{
+                    '.MuiOutlinedInput-root': {
+                      lineHeight: 0,
+                    },
+                  }}
+                >
+                  {categories?.data?.data?.map((cat) => (
+                    <MenuItem key={cat.id} value={cat.id}>
+                    
+                                        {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
+
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* Image Upload */}
             {/* <Button
@@ -362,7 +410,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               <VisuallyHiddenInput
                 type="file"
                 {...register('image', {
-                  required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                  required: previewImage ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
                 })}
                 multiple
                 onChange={handleFileChange}

@@ -142,16 +142,26 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
             {/* Description Fields */}
             <TextField
               fullWidth
+              multiline
               variant="outlined"
               label={t('descAr')}
+              
               error={!!errors.description?.ar}
               helperText={errors.description?.ar?.message}
               {...register('description.ar', {
                 required: t('descArReq'),
-              })}
+              }
+            
+            )}
+               sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
             />
             <TextField
               fullWidth
+              multiline
               key={'description.en'}
               variant="outlined"
               label={t('descEn')}
@@ -160,9 +170,15 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               {...register('description.en', {
                 required: t('descEnReq'),
               })}
+                 sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
             />
             <TextField
               fullWidth
+              multiline
               key={'description.fr'}
               variant="outlined"
               label={t('FrancDesc')}
@@ -171,6 +187,11 @@ function AddCourseForm({ handleClose }: { handleClose: () => void }) {
               {...register('description.en', {
                 required: t('FrancDescReq'),
               })}
+                 sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}  
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
