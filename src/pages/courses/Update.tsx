@@ -178,13 +178,24 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0]);
       }
+     if(isFree) {
+      formData.append('price', "0");
+
+     } else {
       formData.append('price', data.price);
+
+     }
       formData.append('total_hours', data.total_hours.toString());
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
       if (coursLevelState) formData.append('course_level', coursLevelState);
       if (coursLangState) formData.append('course_lang', coursLangState);
-      if (data.priceAfterDiscount) formData.append('price_after_discount', data.priceAfterDiscount);
+
+      if (data.priceAfterDiscount && !isFree ) {
+        formData.append('price_after_discount', data.priceAfterDiscount);
+      }else {
+        formData.append('price_after_discount', "0");
+      }
       if (pacState) formData.append('package_id', pacState.toString());
       if (catState) formData.append('category_id', catState.toString());
       formData.append('description[en]', data.description.en);
@@ -252,6 +263,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
             {/* Description Fields */}
             <TextField
               fullWidth
+              multiline
               variant="outlined"
               label={t('descAr')}
               error={!!errors.description?.ar}
@@ -259,9 +271,15 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.ar', {
                 required: t('descArReq'),
               })}
+                sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
             />
             <TextField
               fullWidth
+              multiline
               key={'description.en'}
               variant="outlined"
               label={t('descEn')}
@@ -270,9 +288,15 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.en', {
                 required: t('descEnReq'),
               })}
+                sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
             />
             <TextField
               fullWidth
+              multiline
               key={'description.fr'}
               variant="outlined"
               label={t('FrancDesc')}
@@ -281,6 +305,11 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.fr', {
                 required: t('FrancDescReq'),
               })}
+                sx={{
+              '& .MuiInputBase-input': {
+                lineHeight: '1.2', // Adjust line height
+              },
+            }}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
@@ -307,8 +336,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               ))}
             </TextField> */}
 
-
-                <Controller
+            <Controller
               name="course_lang"
               control={control}
               render={({ field, fieldState }) => (
@@ -333,9 +361,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 >
                   {['arabic', 'english'].map((lang) => (
                     <MenuItem key={lang} value={lang}>
-                    
-                                        {i18n.language === 'ar' ? lang : lang}
-
+                      {i18n.language === 'ar' ? lang : lang}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -343,7 +369,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
             />
             {/* Category */}
 
-              <Controller
+            <Controller
               name="package"
               control={control}
               render={({ field, fieldState }) => (
@@ -368,9 +394,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 >
                   {categories?.data?.data?.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>
-                    
-                                        {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
-
+                      {i18n.language === 'ar' ? cat.name.ar : cat.name.en}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -402,7 +426,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUpload />}
-              sx={{ height: '100%',marginTop:3 }}
+              sx={{ height: '100%', marginTop: 3 }}
             >
               <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
                 {t('UploadImage')}
@@ -424,7 +448,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               </Typography>
             )}
             {previewImage && (
-              <Box sx={{ mt: 2, maxHeight: '85px',overflow:'hidden' }}>
+              <Box sx={{ mt: 2, maxHeight: '85px', overflow: 'hidden' }}>
                 <img
                   src={previewImage}
                   alt={t('Preview')}
@@ -471,9 +495,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 >
                   {packages?.data?.data?.map((pkg) => (
                     <MenuItem key={pkg.id} value={pkg.id}>
-                    
-                                        {i18n.language === 'ar' ? pkg.name.ar : pkg.name.en}
-
+                      {i18n.language === 'ar' ? pkg.name.ar : pkg.name.en}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -556,8 +578,8 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               helperText={errors.is_free?.message}
               value={isFree}
               onChange={(e) => {
-                const value = e.target.value;
-                setIsFree(Boolean(value));
+                const value = e.target.value === 'true';
+                setIsFree(value);
               }}
               sx={{
                 '.MuiOutlinedInput-root': {

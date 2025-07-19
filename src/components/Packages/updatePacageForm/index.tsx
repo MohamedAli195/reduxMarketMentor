@@ -186,7 +186,7 @@ function UpdatePackageForm({
             <VisuallyHiddenInput
               type="file"
               {...register('image', {
-                required: t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
+                  required: preview ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
               })}
               multiple
               onChange={handleFileChange}
