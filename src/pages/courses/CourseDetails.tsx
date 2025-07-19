@@ -8,7 +8,6 @@ import { useGetCourseQuery } from 'app/features/Courses/coursesSlice';
 import Sections from 'components/SectionTable/Sections';
 import AddSectionToCourse from 'components/section/AddSectionToCourse';
 
-
 function CourseDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,9 +16,9 @@ function CourseDetails() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const {data ,isLoading,isError ,error} = useGetCourseQuery(id)
-const course = data?.data
-// console.log(course)
+  const { data, isLoading, isError, error } = useGetCourseQuery(id);
+  const course = data?.data;
+  // console.log(course)
   if (isLoading) return <p>Loading...</p>;
   // if (isError) return <p>Error: {error}</p>;
 
@@ -41,14 +40,13 @@ const course = data?.data
       </Box> */}
 
       <Box>
-        <Button variant="contained" color="info" onClick={handleOpen} sx={{marginY:4 }}>
+        <Button variant="contained" color="info" onClick={handleOpen} sx={{ marginY: 4 }}>
           {t('AddCourseSection')}
         </Button>
         <Sections isDashBoard={false} />
       </Box>
 
-
-        <BasicModal open={open} handleClose={handleClose}>
+      <BasicModal open={open} handleClose={handleClose}>
         <h2>{t('AddSection')}</h2>
 
         <AddSectionToCourse vid={id} handleClose={handleClose} />

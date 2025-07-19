@@ -106,7 +106,7 @@ export interface ICourse {
   course_lang: string;
   priceAfterDiscount: string;
   package_id: number | string;
-  is_free: boolean | undefined;
+  is_free: '0' | '1' | undefined;
   total_hours: number;
   description: {
     en: string;

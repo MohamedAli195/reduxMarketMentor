@@ -52,7 +52,7 @@ interface IFormInputCourses {
   category_id: number | string;
   package_id: number | string;
   priceAfterDiscount: string;
-  is_free: boolean | undefined;
+  is_free: '0' | '1' | undefined;
   total_hours: number;
   package: {
     id: number | undefined;
@@ -81,7 +81,8 @@ interface IProps {
   handleCloseUp: () => void;
 }
 function UpdateCourse({ course, handleCloseUp }: IProps) {
-  const [isFree, setIsFree] = useState<boolean | undefined>(course?.is_free);
+  // const [isFree, setIsFree] = useState<string>();
+  const [isFree, setIsFree] = useState<'0' | '1'>(course?.is_free ? '1' : '0');
   const [catState, setCatState] = useState(course?.category?.id);
   const [coursLangState, setCoursLangState] = useState(course?.course_lang);
   const [coursLevelState, setcoursLevelState] = useState(course?.course_level);
@@ -178,23 +179,21 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0]);
       }
-     if(isFree) {
-      formData.append('price', "0");
-
-     } else {
-      formData.append('price', data.price);
-
-     }
+      if (isFree === '1') {
+        formData.append('price', '0');
+      } else {
+        formData.append('price', data.price);
+      }
       formData.append('total_hours', data.total_hours.toString());
       formData.append('main_video', data.main_video);
       formData.append('course_duration', data.course_duration);
       if (coursLevelState) formData.append('course_level', coursLevelState);
       if (coursLangState) formData.append('course_lang', coursLangState);
 
-      if (data.priceAfterDiscount && !isFree ) {
+      if (isFree === '1') {
+        formData.append('price_after_discount', '0');
+      } else {
         formData.append('price_after_discount', data.priceAfterDiscount);
-      }else {
-        formData.append('price_after_discount', "0");
       }
       if (pacState) formData.append('package_id', pacState.toString());
       if (catState) formData.append('category_id', catState.toString());
@@ -271,11 +270,11 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.ar', {
                 required: t('descArReq'),
               })}
-                sx={{
-              '& .MuiInputBase-input': {
-                lineHeight: '1.2', // Adjust line height
-              },
-            }}
+              sx={{
+                '& .MuiInputBase-input': {
+                  lineHeight: '1.2', // Adjust line height
+                },
+              }}
             />
             <TextField
               fullWidth
@@ -288,11 +287,11 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.en', {
                 required: t('descEnReq'),
               })}
-                sx={{
-              '& .MuiInputBase-input': {
-                lineHeight: '1.2', // Adjust line height
-              },
-            }}
+              sx={{
+                '& .MuiInputBase-input': {
+                  lineHeight: '1.2', // Adjust line height
+                },
+              }}
             />
             <TextField
               fullWidth
@@ -305,11 +304,11 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               {...register('description.fr', {
                 required: t('FrancDescReq'),
               })}
-                sx={{
-              '& .MuiInputBase-input': {
-                lineHeight: '1.2', // Adjust line height
-              },
-            }}
+              sx={{
+                '& .MuiInputBase-input': {
+                  lineHeight: '1.2', // Adjust line height
+                },
+              }}
             />
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
@@ -459,7 +458,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
           </Stack>
           <Stack display={'flex'} flexDirection={'row'} gap={1}>
             {/* Other Inputs */}
-            {isFree == false && (
+            {isFree == '0' && (
               <TextField
                 fullWidth
                 variant="outlined"
@@ -556,7 +555,7 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
                 </TextField>
               )}
             />
-            {isFree == false && (
+            {isFree == '0' && (
               <TextField
                 fullWidth
                 variant="outlined"
@@ -578,18 +577,19 @@ function UpdateCourse({ course, handleCloseUp }: IProps) {
               helperText={errors.is_free?.message}
               value={isFree}
               onChange={(e) => {
-                const value = e.target.value === 'true';
+                const value = e.target.value as '0' | '1';
                 setIsFree(value);
               }}
               sx={{
                 '.MuiOutlinedInput-root': {
-                  lineHeight: 0, // Match default height for MUI TextField
+                  lineHeight: 0,
                 },
               }}
             >
-              <MenuItem value="true">{t('free')}</MenuItem>
-              <MenuItem value="false">{t('notFree')}</MenuItem>
+              <MenuItem value="1">{t('free')}</MenuItem>
+              <MenuItem value="0">{t('notFree')}</MenuItem>
             </TextField>
+
             <TextField
               fullWidth
               type="number"
