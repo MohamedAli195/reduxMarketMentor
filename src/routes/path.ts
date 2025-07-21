@@ -20,6 +20,8 @@ const paths = {
   courses: `${rootPaths.pagesRoot}courses`,
   sections: `${rootPaths.pagesRoot}sections`,
   brokers: `${rootPaths.pagesRoot}brokers`,
+  agenda: `${rootPaths.pagesRoot}agenda`,
+  analytics: `${rootPaths.pagesRoot}analytics`,
   permissions: `${rootPaths.pagesRoot}permissions`,
   recommendations: `${rootPaths.pagesRoot}recommendations`,
   subAdmins: `${rootPaths.pagesRoot}sub-admins`,

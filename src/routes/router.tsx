@@ -10,6 +10,10 @@ import { store } from 'app/store';
 import Section from 'pages/section';
 import BrokerPage from 'pages/brokers';
 import BrokerDetails from 'pages/brokers/BrokerDetails';
+import AgendaPage from 'pages/agenda';
+import AgendaDetails from 'pages/agenda/AgendaDetails';
+import AnalyticsPage from 'pages/analytics';
+import AnalyticsDetails from 'pages/analytics/AnalyticsDetails';
 
 const App = lazy(() => import('App'));
 const MainLayout = lazy(() => import('layouts/main-layout'));
@@ -171,8 +175,51 @@ export const routes = [
                 </ProtectedRoute>
               </Suspense>
             ),
+          }
+          ,{
+            path: paths.agenda,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                {' '}
+                <ProtectedRoute redirect={paths.login}>
+                  <AgendaPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: `${paths.agenda}/:id`, // Fixed typo
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <AgendaDetails />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: paths.analytics,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                {' '}
+                <ProtectedRoute redirect={paths.login}>
+                  <AnalyticsPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: `${paths.analytics}/:id`, // Fixed typo
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <AnalyticsDetails />
+                </ProtectedRoute>
+              </Suspense>
+            ),
           },
 
+          
           {
             path: `${paths.subAdmins}/:id`, // Fixed typo
             element: (

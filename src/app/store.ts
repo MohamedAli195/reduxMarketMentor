@@ -26,6 +26,8 @@ import { rolesApi } from "./features/Roles/roles";
 import { permissionsApi } from "./features/permissions/permissions";
 import { sectionsApi } from "./features/Sections/sectionsSlice";
 import { brokerApi } from "./features/brokers/brokers";
+import { agendaApi } from "./features/agenda/AgendaSlice";
+import { analyticsApi } from "./features/analytics/analyticsSlice";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -59,6 +61,8 @@ export const store = configureStore({
      [permissionsApi.reducerPath]: permissionsApi.reducer,
      [sectionsApi.reducerPath]: sectionsApi.reducer,
       [brokerApi.reducerPath]: brokerApi.reducer,
+      [agendaApi.reducerPath]: agendaApi.reducer,
+      [analyticsApi.reducerPath]: analyticsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -81,7 +85,9 @@ export const store = configureStore({
       rolesApi.middleware,
       permissionsApi.middleware,
       sectionsApi.middleware,
-      brokerApi.middleware
+      brokerApi.middleware,
+      agendaApi.middleware,
+      analyticsApi.middleware
 
     ),
 });

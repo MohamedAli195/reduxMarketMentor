@@ -16,6 +16,23 @@ export interface ICategory {
   image: string | undefined | null;
 }
 
+export interface IAgenda {
+  id?: number;
+  title: { en: string; ar: string; fr: string };
+  start_date: string
+  end_date:string
+  meeting_url:string
+  notes:string
+  
+}
+
+export interface IAnalytics {
+  id?: number;
+  title: { en: string; ar: string; fr: string };
+  iframe_link:string
+}
+
+
 //package done
 
 export interface IPackageSelected {

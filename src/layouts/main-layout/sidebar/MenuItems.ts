@@ -102,6 +102,20 @@ const generateMenuItems = (): IMenuitems[] => [
     href: paths.brokers,
     available: true,
   },
+    {
+    id: uniqueId(),
+    title: i18next.t("agenda"),
+    icon: CustomersIcon,
+    href: paths.agenda,
+    available: true,
+  },
+   {
+    id: uniqueId(),
+    title: i18next.t("analytics"),
+    icon: CustomersIcon,
+    href: paths.analytics,
+    available: true,
+  },
   
 ];
 
