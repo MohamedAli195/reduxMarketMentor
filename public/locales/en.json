@@ -117,5 +117,9 @@
 "passwordReq":"password is required",
 "editSubAdmin":"Update Sub Admin",
 "TotalPaidCourses":"Total Paid Courses",
-"TotalFreeCourses":"Total Free Courses"
+"TotalFreeCourses":"Total Free Courses",
+"brokers":"Brokers",
+"addBrokers":"Add Brokers",
+"BrokerPage":"Broker Page",
+"UpdateBrokers":"Update Brokers"
 }

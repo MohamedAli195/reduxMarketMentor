@@ -25,6 +25,7 @@ import { notificationsApi } from "./features/Notifications/notifications";
 import { rolesApi } from "./features/Roles/roles";
 import { permissionsApi } from "./features/permissions/permissions";
 import { sectionsApi } from "./features/Sections/sectionsSlice";
+import { brokerApi } from "./features/brokers/brokers";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -57,6 +58,7 @@ export const store = configureStore({
     [rolesApi.reducerPath]: rolesApi.reducer,
      [permissionsApi.reducerPath]: permissionsApi.reducer,
      [sectionsApi.reducerPath]: sectionsApi.reducer,
+      [brokerApi.reducerPath]: brokerApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -78,7 +80,8 @@ export const store = configureStore({
       notificationsApi.middleware,
       rolesApi.middleware,
       permissionsApi.middleware,
-      sectionsApi.middleware
+      sectionsApi.middleware,
+      brokerApi.middleware
 
     ),
 });

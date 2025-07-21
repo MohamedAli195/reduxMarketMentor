@@ -19,6 +19,7 @@ const paths = {
   reports: `${rootPaths.pagesRoot}reports`,
   courses: `${rootPaths.pagesRoot}courses`,
   sections: `${rootPaths.pagesRoot}sections`,
+  brokers: `${rootPaths.pagesRoot}brokers`,
   permissions: `${rootPaths.pagesRoot}permissions`,
   recommendations: `${rootPaths.pagesRoot}recommendations`,
   subAdmins: `${rootPaths.pagesRoot}sub-admins`,

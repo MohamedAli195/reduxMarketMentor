@@ -8,9 +8,10 @@ import i18n from 'i18n';
 import paths from 'routes/path';
 import SwitchStatus from 'components/Shared/switch';
 import { checkPermissions, parsedData } from 'functions';
-import { ICourse, IFormInputCourses } from 'interfaces';
+import { errorType, ICourse, IFormInputCourses } from 'interfaces';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 import { useUpdateStateCourseMutation } from 'app/features/Courses/coursesSlice';
+import toast from 'react-hot-toast';
 
 interface IProps {
   handleEditOpen: (val: ICourse) => void;
@@ -29,15 +30,29 @@ const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBo
 
   const [updateStateCourse] = useUpdateStateCourseMutation();
 
-  const handleUpdateState = ({
+  const handleUpdateState = async ({
     id,
     newStatus,
   }: {
     id: number;
     newStatus: 'inactive' | 'active';
   }) => {
-    updateStateCourse({ id, status: newStatus }); // هذه الدالة تتوافق مع شكل expected payload
-  };
+    
+try {
+   const res = await updateStateCourse({ id, status: newStatus }).unwrap(); 
+   console.log(res)
+      if (res.code === 200) {
+        toast.success(' course status updated successfully');
+      }
+    } catch (error: unknown) {
+      const err = error as errorType;
+
+      const errorMessages = err?.data?.errors
+        ? Object.values(err.data.errors).flat().join('\n')
+        : 'Failed to update course status, please check your input.';
+
+      toast.error(errorMessages);
+    }  };
   const columns: GridColDef[] = isDashBoard
     ? [
         { field: 'id', headerName: 'ID', width: 30, headerAlign: isArabic ? 'right' : 'left' },

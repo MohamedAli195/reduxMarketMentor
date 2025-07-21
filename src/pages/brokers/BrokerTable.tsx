@@ -7,58 +7,33 @@ import { Navigate, useNavigate } from 'react-router-dom';
 // import { ICompany } from 'interfaces';
 import paths from 'routes/path';
 import { DataGrid, GridColDef, GridRowClassNameParams } from '@mui/x-data-grid';
-import { errorType, IPackage, IPackage2, IPackageSelected, ITempPermissions } from 'interfaces';
+import { IBroker, IPackage, IPackage2, IPackageSelected, ITempPermissions } from 'interfaces';
 import { checkPermissions, parsedData } from 'functions';
 import SwitchStatus from 'components/Shared/switch';
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 import { useUpdateStatePackageMutation } from 'app/features/packages/packages';
-import toast from 'react-hot-toast';
+import { useUpdateBrokerMutation } from 'app/features/brokers/brokers';
 interface IProps {
-  handleEditOpen: (val: IPackage2) => void;
+  handleEditOpen: (val: IBroker) => void;
   handleOpend: () => void;
   setTempId: (val: number) => void;
-  data: IPackage[];
+  data: IBroker[];
 }
-function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
+function BrokersTable({ data, handleEditOpen, setTempId, handleOpend }: IProps) {
   const { data: profile } = useGetProfileQuery();
   const permissions = profile?.data.permissions;
-  const [updateStatePackage] = useUpdateStatePackageMutation();
 
-  const handleUpdateState = async({
-    id,
-    newStatus,
-  }: {
-    id: number;
-    newStatus: 'inactive' | 'active';
-  }) => {
-    
-    try {
-   const res = await updateStatePackage({ id, status: newStatus }).unwrap() 
-      if (res.code === 200) {
-        toast.success(' package status updated successfully');
-      }
-    } catch (error: unknown) {
-      const err = error as errorType;
-
-      const errorMessages = err?.data?.errors
-        ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to update package status, please check your input.';
-
-      toast.error(errorMessages);
-    }
-  
-  };
   const navigate = useNavigate();
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID' },
-    {
-      field: 'name',
-      headerName: i18n.language === 'ar' ? 'الاسم' : 'name',
-      flex: 1,
-      renderCell: (params) => (i18n.language === 'ar' ? params.row.name.ar : params.row.name.en),
-    },
+    // {
+    //   field: 'Link',
+    //   headerName: i18n.language === 'ar' ? 'الرابط' : 'Link',
+    //   flex: 1,
+    //   renderCell: (params) => (i18n.language === 'ar' ? params.row.name.ar : params.row.name.en),
+    // },
+    { field: 'link', headerName: i18n.language === 'ar' ? 'الرابط' : 'link', flex: 1.5,},
 
-    { field: 'price', headerName: i18n.language === 'ar' ? 'السعر' : 'price' },
     {
       field: 'image',
       headerName: i18n.language === 'ar' ? 'الصورة' : 'image',
@@ -72,19 +47,6 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
             No Image
           </Typography>
         ),
-    },
-    {
-      field: 'status',
-      headerName: i18n.language === 'ar' ? 'الحالة' : 'status',
-      width: 100,
-      renderCell: (params) => (
-        <SwitchStatus
-          id={params.row.id}
-          url={'packages'}
-          updateState={handleUpdateState}
-          apiStatus={params.row.status}
-        />
-      ),
     },
     {
       field: 'actions',
@@ -109,7 +71,7 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate(`${paths.packages}/${params.row.id}`)}
+              onClick={() => navigate(`${paths.brokers}/${params.row.id}`)}
             >
               {/* {t('view')} */}
               <Eye />
@@ -128,7 +90,7 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
 
   const rows =
     data?.length > 0
-      ? data?.map((pack: IPackage) => ({
+      ? data?.map((pack: IBroker) => ({
           ...pack,
         }))
       : [];
@@ -149,4 +111,4 @@ function PackagesTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
   );
 }
 
-export default PackagesTable;
+export default BrokersTable;

@@ -8,6 +8,8 @@ import ProtectedRoute from 'components/protectedRoute/ProtectedRoute';
 import SkeletonTables from 'components/Shared/skelton';
 import { store } from 'app/store';
 import Section from 'pages/section';
+import BrokerPage from 'pages/brokers';
+import BrokerDetails from 'pages/brokers/BrokerDetails';
 
 const App = lazy(() => import('App'));
 const MainLayout = lazy(() => import('layouts/main-layout'));
@@ -145,6 +147,27 @@ export const routes = [
                 {' '}
                 <ProtectedRoute redirect={paths.login}>
                   <SubAdminsPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: paths.brokers,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                {' '}
+                <ProtectedRoute redirect={paths.login}>
+                  <BrokerPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: `${paths.brokers}/:id`, // Fixed typo
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <BrokerDetails />
                 </ProtectedRoute>
               </Suspense>
             ),

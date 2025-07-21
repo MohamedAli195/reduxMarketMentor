@@ -114,6 +114,10 @@
       "passwordReq":"الباسورد حقل اساسى ",
       "editSubAdmin":"تحديث المدير الفرعى",
      "TotalPaidCourses":"الكورسات المدفوعة",
-     "TotalFreeCourses":"الكورسات المجانية"
+     "TotalFreeCourses":"الكورسات المجانية",
+     "brokers":"الوسطاء",
+"addBrokers":"اضافة وسيط",
+"BrokerPage":"صفحة الوسطاء",
+"UpdateBrokers":"تحديث الوسطاء"
       
   }

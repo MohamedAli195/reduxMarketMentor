@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { useCreateRecommendationMutation } from 'app/features/Recommendations/RecommendationsSlice';
 import { useState } from 'react';
+import { errorType } from 'interfaces';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -56,7 +57,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 function AddRecommendationsForm({ handleClose }: { handleClose: () => void }) {
   const { t } = useTranslation();
-  const [rec, setRec] = useState<string[]>(['', '', '', '', '']);
+  const [rec, setRec] = useState<string[]>([]);
   console.log(rec)
   const {
     register,
@@ -70,18 +71,24 @@ function AddRecommendationsForm({ handleClose }: { handleClose: () => void }) {
   const [createRecommendation,{isLoading}] = useCreateRecommendationMutation();
   const onSubmit = async () => {
     try {
-
-      const formData = new FormData();
+      const Filterd = rec.filter(item => item !== '');
       // formData.append('value', JSON.stringify(rec));
-     const res = await createRecommendation({value:rec}).unwrap()
+     const res = await createRecommendation({value:Filterd}).unwrap()
   
-    console.log(res)
+     if (res.code === 200) {
       toast.success(t('recommendations added successfully'));
-      handleClose();
-    } catch (err) {
-        console.error(err);
-      toast.error(t('Failed to add roles, please check your input.'));
-    }
+           }
+     
+           handleClose();
+    } catch (error: unknown) {
+          const err = error as errorType;
+    
+          const errorMessages = err?.data?.errors
+            ? Object.values(err.data.errors).flat().join('\n')
+            : 'Failed to add recommendations, please check your input.';
+    
+          toast.error(errorMessages);
+        }
   };
 
   return (
@@ -92,15 +99,14 @@ function AddRecommendationsForm({ handleClose }: { handleClose: () => void }) {
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <Stack spacing={3}>
+      <Stack flexDirection={"row"} gap={1} >
         <Box>
           {[0, 1, 2, 3, 4].map((index) => (
             <TextField
               key={index}
-              fullWidth
               variant="outlined"
               label={`Value ${index + 1}`}
-              margin="normal"
+              
               onChange={(e) => {
                 setRec((prev) => {
                   const newRec = [...prev];

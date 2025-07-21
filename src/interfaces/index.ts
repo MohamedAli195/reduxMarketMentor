@@ -34,6 +34,11 @@ export interface IPackage {
   image: string | null | FileList;
   status: string | null;
 }
+export interface IBroker {
+  id?: number;
+  image: string
+  link: string;
+}
 export interface IPackage2 {
   id: number;
   name: { en: string; ar: string; fr: string };
