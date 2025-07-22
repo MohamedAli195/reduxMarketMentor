@@ -121,5 +121,14 @@
 "brokers":"Brokers",
 "addBrokers":"Add Brokers",
 "BrokerPage":"Broker Page",
-"UpdateBrokers":"Update Brokers"
+"UpdateBrokers":"Update Brokers",
+"agenda":"agenda",
+"AddAgenda":"Add Agenda",
+"updateAgenda":"Update Agenda",
+"analytics":"Analytics",
+"AddAnalytics":"Add Analytics",
+"updateAnalytics":"Update Analytics",
+"startMenu":"start Menu",
+"AddStartMenu":"Add Start Menu",
+"updateStartMenu":"Update Start Menu"
 }

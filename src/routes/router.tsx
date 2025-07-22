@@ -14,6 +14,7 @@ import AgendaPage from 'pages/agenda';
 import AgendaDetails from 'pages/agenda/AgendaDetails';
 import AnalyticsPage from 'pages/analytics';
 import AnalyticsDetails from 'pages/analytics/AnalyticsDetails';
+import StartMenuPage from 'pages/StartMenu';
 
 const App = lazy(() => import('App'));
 const MainLayout = lazy(() => import('layouts/main-layout'));
@@ -210,6 +211,27 @@ export const routes = [
           },
           {
             path: `${paths.analytics}/:id`, // Fixed typo
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <AnalyticsDetails />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+           {
+            path: paths.startMenu,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                {' '}
+                <ProtectedRoute redirect={paths.login}>
+                  <StartMenuPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: `${paths.startMenu}/:id`, // Fixed typo
             element: (
               <Suspense fallback={<PageLoader />}>
                 <ProtectedRoute redirect={paths.login}>

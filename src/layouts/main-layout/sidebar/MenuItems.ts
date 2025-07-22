@@ -97,7 +97,7 @@ const generateMenuItems = (): IMenuitems[] => [
   },
   {
     id: uniqueId(),
-    title: i18next.t("Brokers"),
+    title: i18next.t("brokers"),
     icon: CustomersIcon,
     href: paths.brokers,
     available: true,
@@ -114,6 +114,13 @@ const generateMenuItems = (): IMenuitems[] => [
     title: i18next.t("analytics"),
     icon: CustomersIcon,
     href: paths.analytics,
+    available: true,
+  },
+   {
+    id: uniqueId(),
+    title: i18next.t("startMenu"),
+    icon: CustomersIcon,
+    href: paths.startMenu,
     available: true,
   },
   

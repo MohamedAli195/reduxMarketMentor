@@ -28,6 +28,7 @@ import { sectionsApi } from "./features/Sections/sectionsSlice";
 import { brokerApi } from "./features/brokers/brokers";
 import { agendaApi } from "./features/agenda/AgendaSlice";
 import { analyticsApi } from "./features/analytics/analyticsSlice";
+import { startMenuApi } from "./features/StartMenu/StartMenuSlice";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -63,6 +64,7 @@ export const store = configureStore({
       [brokerApi.reducerPath]: brokerApi.reducer,
       [agendaApi.reducerPath]: agendaApi.reducer,
       [analyticsApi.reducerPath]: analyticsApi.reducer,
+      [startMenuApi.reducerPath]: startMenuApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -87,7 +89,8 @@ export const store = configureStore({
       sectionsApi.middleware,
       brokerApi.middleware,
       agendaApi.middleware,
-      analyticsApi.middleware
+      analyticsApi.middleware,
+      startMenuApi.middleware,
 
     ),
 });

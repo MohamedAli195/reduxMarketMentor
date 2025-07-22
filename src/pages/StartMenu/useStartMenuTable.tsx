@@ -5,19 +5,17 @@ import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import i18n from 'i18n';
 import paths from 'routes/path';
-import { IAgenda, ICategory } from 'interfaces';
+import { IAgenda, IAnalytics, ICategory, IStartMenu } from 'interfaces';
 import { checkPermissions, parsedData } from 'functions';
-import imgNotFound from './../../../public/images/No_Image_Available.jpg';
-import { useSelector } from 'react-redux';
-import { RootState } from 'app/store';
+
 import { useGetProfileQuery } from 'app/features/profileSlice/profileSlice';
 
 interface IProps {
-  handleEditOpen: (val: IAgenda) => void;
+  handleEditOpen: (val: IStartMenu) => void;
   handleOpend: () => void;
   setTempId: (val: number) => void;
 }
-const useAgendaTable = ({ handleEditOpen, setTempId, handleOpend }: IProps) => {
+const useStartMenuTable = ({ handleEditOpen, setTempId, handleOpend }: IProps) => {
   const navigate = useNavigate();
   // const permissions = useSelector(((state:RootState)=>state.auth.authData.user?.permissions))
   const { data, error } = useGetProfileQuery();
@@ -28,17 +26,14 @@ const useAgendaTable = ({ handleEditOpen, setTempId, handleOpend }: IProps) => {
     {
       field: 'name',
       headerName: i18n.language === 'ar' ? 'الاسم' : 'Name',
-      flex: 1,
+      flex: 0.5,
       renderCell: (params) => (
         <Typography>
           {i18n.language === 'ar' ? params.row.title.ar : params.row.title.en}
         </Typography>
       ),
     },
-    { field: 'start_date', headerName: i18n.language === 'ar' ? 'تاريخ البدء' : 'start_date' },
-    { field: 'end_date', headerName: i18n.language === 'ar' ? 'تاريخ النهاية' : 'end_date' },
-    // { field: 'meeting_url', headerName: i18n.language === 'ar' ? 'رابط الاجتماع' : 'meeting_url' },
-    // { field: 'notes', headerName: i18n.language === 'ar' ? 'ملاحظات' : 'notes' },
+    { field: 'video_link', headerName: i18n.language === 'ar' ? 'video_link' : 'video_link' , flex: 2,},
     {
       field: 'actions',
       headerName: i18n.language === 'ar' ? 'العمليات' : 'Actions',
@@ -62,7 +57,7 @@ const useAgendaTable = ({ handleEditOpen, setTempId, handleOpend }: IProps) => {
             <Button
               variant="contained"
               color="info"
-              onClick={() => navigate(`${paths.agenda}/${params.row.id}`)}
+              onClick={() => navigate(`${paths.startMenu}/${params.row.id}`)}
             >
               <Eye />
             </Button>
@@ -80,4 +75,4 @@ const useAgendaTable = ({ handleEditOpen, setTempId, handleOpend }: IProps) => {
   return { navigate, columns };
 };
 
-export default useAgendaTable;
+export default useStartMenuTable;

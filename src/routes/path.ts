@@ -22,6 +22,7 @@ const paths = {
   brokers: `${rootPaths.pagesRoot}brokers`,
   agenda: `${rootPaths.pagesRoot}agenda`,
   analytics: `${rootPaths.pagesRoot}analytics`,
+  startMenu: `${rootPaths.pagesRoot}startMenu`,
   permissions: `${rootPaths.pagesRoot}permissions`,
   recommendations: `${rootPaths.pagesRoot}recommendations`,
   subAdmins: `${rootPaths.pagesRoot}sub-admins`,

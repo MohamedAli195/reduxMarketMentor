@@ -118,6 +118,14 @@
      "brokers":"الوسطاء",
 "addBrokers":"اضافة وسيط",
 "BrokerPage":"صفحة الوسطاء",
-"UpdateBrokers":"تحديث الوسطاء"
-      
+"UpdateBrokers":"تحديث الوسطاء",
+"agenda":"أجندة",
+"AddAgenda":"اضافة أجندة",
+"updateAgenda":"تحديث أجندة",
+"analytics":"التحليلات",
+"AddAnalytics":"اضافة تحليل",
+"updateAnalytics":"تحديث  تحليل",
+"startMenu":"قائمة أبدأ",
+"AddStartMenu":"اضافة قائمة أبدأ",
+"updateStartMenu":"تحديث قائمة أبدأ"   
   }

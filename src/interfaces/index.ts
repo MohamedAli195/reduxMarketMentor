@@ -31,6 +31,11 @@ export interface IAnalytics {
   title: { en: string; ar: string; fr: string };
   iframe_link:string
 }
+export interface IStartMenu {
+  id?: number;
+  title: { en: string; ar: string; fr: string };
+  video_link:string
+}
 
 
 //package done
