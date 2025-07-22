@@ -75,7 +75,7 @@ function UpdateAnalyticsForm({
       const response = await updateAnalytic({ id, formData }).unwrap();
 
       if (response.code === 200) {
-        toast.success('Agenda updated successfully');
+        toast.success('Analytics updated successfully');
       }
       handleClose();
     } catch (error: unknown) {
@@ -83,7 +83,7 @@ function UpdateAnalyticsForm({
 
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to add Agenda, please check your input.';
+        : 'Failed to add Analytics, please check your input.';
 
       toast.error(errorMessages);
     }

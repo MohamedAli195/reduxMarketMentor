@@ -76,7 +76,7 @@ function UpdateStartMenuForm({
       const response = await updateStartMenu({ id, formData }).unwrap();
 
       if (response.code === 200) {
-        toast.success('Agenda updated successfully');
+        toast.success('Start Menu updated successfully');
       }
       handleClose();
     } catch (error: unknown) {
@@ -84,7 +84,7 @@ function UpdateStartMenuForm({
 
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to add Agenda, please check your input.';
+        : 'Failed to add Start Menu, please check your input.';
 
       toast.error(errorMessages);
     }

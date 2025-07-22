@@ -55,7 +55,7 @@ function AddAnalyticsForm({ handleClose }: { handleClose: () => void }) {
 
       const response = await createAnalytic(formData).unwrap();
       if (response.code === 200) {
-        toast.success('Category added successfully');
+        toast.success('Analytics added successfully');
       }
       handleClose();
     } catch (error: unknown) {
@@ -63,7 +63,7 @@ function AddAnalyticsForm({ handleClose }: { handleClose: () => void }) {
 
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to add category, please check your input.';
+        : 'Failed to add Analytics, please check your input.';
 
       toast.error(errorMessages);
     }

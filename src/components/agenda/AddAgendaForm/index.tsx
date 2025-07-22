@@ -70,7 +70,7 @@ function AddAgendaForm({ handleClose }: { handleClose: () => void }) {
 
       const response = await createAgenda(formData).unwrap();
       if (response.code === 200) {
-        toast.success('Category added successfully');
+        toast.success('Agenda added successfully');
       }
       handleClose();
     } catch (error: unknown) {
@@ -78,7 +78,7 @@ function AddAgendaForm({ handleClose }: { handleClose: () => void }) {
 
       const errorMessages = err?.data?.errors
         ? Object.values(err.data.errors).flat().join('\n')
-        : 'Failed to add category, please check your input.';
+        : 'Failed to add Agenda, please check your input.';
 
       toast.error(errorMessages);
     }
