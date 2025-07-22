@@ -112,6 +112,12 @@ function CustomersTable({ data, handleEditOpen, setTempId, handleOpend, isDashBo
         '& .MuiDataGrid-cellContent': {
           overflow: 'visible',
         },
+            '& .MuiDataGrid-cell:hover': {
+      textDecoration: 'none',
+      color: 'inherit',
+      backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+      cursor: 'default',          // إلغاء ظهور شكل اللينك إذا كان يظهر
+    },
       }}
       autoHeight
       getRowHeight={() => (!isDashBoard ? 200 : 'auto')}

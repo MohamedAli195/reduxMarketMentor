@@ -23,7 +23,16 @@ const {columns,navigate} = useStartMenuTable({handleEditOpen, setTempId, handleO
     <DataGrid
       rows={data || []}
       columns={columns}
-      sx={{ border: 0 }}
+      
+       sx={{
+    border: 0,
+    '& .MuiDataGrid-cell:hover': {
+      textDecoration: 'none',
+      color: 'inherit',
+      backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+      cursor: 'default',          // إلغاء ظهور شكل اللينك إذا كان يظهر
+    },
+  }}
       autoHeight
       getRowHeight={() => 200}
       getRowClassName={(params: GridRowClassNameParams) =>
@@ -32,6 +41,7 @@ const {columns,navigate} = useStartMenuTable({handleEditOpen, setTempId, handleO
       disableRowSelectionOnClick
       disableMultipleRowSelection
       hideFooterPagination
+
     />
   );
 }

@@ -122,6 +122,12 @@ field: 'actions',
         '& .MuiDataGrid-cellContent': {
           overflow: 'visible',
         },
+         '& .MuiDataGrid-cell:hover': {
+      textDecoration: 'none',
+      color: 'inherit',
+      backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+      cursor: 'default',          // إلغاء ظهور شكل اللينك إذا كان يظهر
+    },
       }}
       autoHeight
       getRowHeight={() => 200} // fixed height for each row

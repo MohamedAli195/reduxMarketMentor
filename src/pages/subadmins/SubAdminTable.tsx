@@ -21,8 +21,18 @@ function SubAdminTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: i18n.language === 'ar' ? 'الاسم' : 'Name', flex: 0.7, minWidth: 120 },
-    { field: 'email', headerName: i18n.language === 'ar' ? 'الايميل' : 'Email', flex: 1.2, minWidth: 180 },
+    {
+      field: 'name',
+      headerName: i18n.language === 'ar' ? 'الاسم' : 'Name',
+      flex: 0.7,
+      minWidth: 120,
+    },
+    {
+      field: 'email',
+      headerName: i18n.language === 'ar' ? 'الايميل' : 'Email',
+      flex: 1.2,
+      minWidth: 180,
+    },
     {
       field: 'roles',
       headerName: i18n.language === 'ar' ? 'الصلاحيات' : 'Roles',
@@ -68,23 +78,23 @@ function SubAdminTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
       ),
     },
     {
-    field: 'actions',
-          headerName: isArabic ? 'العمليات' : 'Actions',
-          flex: 1.7,
-          sortable: false,
-          filterable: false,
-          minWidth: 200,
+      field: 'actions',
+      headerName: isArabic ? 'العمليات' : 'Actions',
+      flex: 1.7,
+      sortable: false,
+      filterable: false,
+      minWidth: 200,
       renderCell: (params) => (
-          <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
-                >
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
           <Button
             variant="contained"
             color="error"
@@ -106,10 +116,15 @@ function SubAdminTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
             <Eye size={16} />
           </Button>
 
-          <Button variant="contained" color="info" size="small" onClick={() => handleEditOpen(params.row)}>
+          <Button
+            variant="contained"
+            color="info"
+            size="small"
+            onClick={() => handleEditOpen(params.row)}
+          >
             <Pencil size={16} />
           </Button>
-     </Box>
+        </Box>
       ),
     },
   ];
@@ -129,6 +144,12 @@ function SubAdminTable({ data, handleEditOpen, setTempId, handleOpend }: IProps)
         },
         '& .MuiDataGrid-cellContent': {
           overflow: 'visible',
+        },
+        '& .MuiDataGrid-cell:hover': {
+          textDecoration: 'none',
+          color: 'inherit',
+          backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+          cursor: 'default', // إلغاء ظهور شكل اللينك إذا كان يظهر
         },
       }}
       autoHeight

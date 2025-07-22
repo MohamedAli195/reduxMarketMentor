@@ -22,7 +22,7 @@ interface IProps {
 }
 
 const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBoard }: IProps) => {
-  console.log(data)
+  console.log(data);
   const navigate = useNavigate();
   const isArabic = i18n.language === 'ar';
   const { data: profile } = useGetProfileQuery();
@@ -37,10 +37,9 @@ const CustomersTable = ({ data, handleEditOpen, handleOpend, setTempId, isDashBo
     id: number;
     newStatus: 'inactive' | 'active';
   }) => {
-    
-try {
-   const res = await updateStateCourse({ id, status: newStatus }).unwrap(); 
-   console.log(res)
+    try {
+      const res = await updateStateCourse({ id, status: newStatus }).unwrap();
+      console.log(res);
       if (res.code === 200) {
         toast.success(' course status updated successfully');
       }
@@ -52,7 +51,8 @@ try {
         : 'Failed to update course status, please check your input.';
 
       toast.error(errorMessages);
-    }  };
+    }
+  };
   const columns: GridColDef[] = isDashBoard
     ? [
         { field: 'id', headerName: 'ID', width: 30, headerAlign: isArabic ? 'right' : 'left' },
@@ -211,6 +211,12 @@ try {
             wordWrap: 'break-word',
             whiteSpace: 'normal',
             lineHeight: 1.5,
+          },
+          '& .MuiDataGrid-cell:hover': {
+            textDecoration: 'none',
+            color: 'inherit',
+            backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+            cursor: 'default', // إلغاء ظهور شكل اللينك إذا كان يظهر
           },
         }}
       />

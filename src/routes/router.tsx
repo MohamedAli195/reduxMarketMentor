@@ -6,16 +6,15 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import paths, { rootPaths } from './path';
 import ProtectedRoute from 'components/protectedRoute/ProtectedRoute';
 import SkeletonTables from 'components/Shared/skelton';
-import { store } from 'app/store';
-import Section from 'pages/section';
-import BrokerPage from 'pages/brokers';
-import BrokerDetails from 'pages/brokers/BrokerDetails';
-import AgendaPage from 'pages/agenda';
-import AgendaDetails from 'pages/agenda/AgendaDetails';
-import AnalyticsPage from 'pages/analytics';
-import AnalyticsDetails from 'pages/analytics/AnalyticsDetails';
-import StartMenuPage from 'pages/StartMenu';
-
+const Section = lazy(() => import('pages/section'));
+const StartMenuDetails = lazy(() => import('pages/StartMenu/StartMenuDetails'));
+const BrokerPage = lazy(() => import('pages/brokers'));
+const BrokerDetails = lazy(() => import('pages/brokers/BrokerDetails'));
+const AgendaPage = lazy(() => import('pages/agenda'));
+const AgendaDetails = lazy(() => import('pages/agenda/AgendaDetails'));
+const AnalyticsPage = lazy(() => import('pages/analytics'));
+const AnalyticsDetails = lazy(() => import('pages/analytics/AnalyticsDetails'));
+const StartMenuPage = lazy(() => import('pages/StartMenu'));
 const App = lazy(() => import('App'));
 const MainLayout = lazy(() => import('layouts/main-layout'));
 const Dashboard = lazy(() => import('pages/dashboard/index'));
@@ -42,8 +41,6 @@ const SignUpPage = lazy(() => import('pages/authentication/register'));
 const ForgotPasswordPage = lazy(() => import('pages/authentication/forgot-password'));
 const PasswordResetPage = lazy(() => import('pages/authentication/reset-password'));
 const NotFoundPage = lazy(() => import('pages/not-found'));
-const token = store.getState().auth.authData.token;
-// console.log("isLoggedIn",isLoggedIn)
 export const routes = [
   {
     element: (
@@ -235,7 +232,7 @@ export const routes = [
             element: (
               <Suspense fallback={<PageLoader />}>
                 <ProtectedRoute redirect={paths.login}>
-                  <AnalyticsDetails />
+                  <StartMenuDetails />
                 </ProtectedRoute>
               </Suspense>
             ),

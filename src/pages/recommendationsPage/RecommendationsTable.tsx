@@ -81,8 +81,15 @@ function RecommendationsTable({ data, handleEditOpen, setTempId, handleOpend }: 
     <DataGrid
       rows={rows}
       columns={columns}
-      sx={{ border: 0 }}
-      autoHeight
+  sx={{
+    border: 0,
+    '& .MuiDataGrid-cell:hover': {
+      textDecoration: 'none',
+      color: 'inherit',
+      backgroundColor: 'inherit', // إلغاء تغيير الخلفية عند الـ hover (اختياري)
+      cursor: 'default',          // إلغاء ظهور شكل اللينك إذا كان يظهر
+    },
+  }}      autoHeight
       getRowHeight={() => 200} // Set each row's height to 200px
       getRowClassName={(params: GridRowClassNameParams) =>
         params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
