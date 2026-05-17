@@ -53,11 +53,11 @@ const dispatch = useDispatch();
   const coupons: ICoupon[] = data?.data?.data ?? [];
   const total = data?.data?.total ?? 0;
   const lastPage = data?.data?.lastPage ?? 1;
-    useEffect(() => {
-  if (error?.status_code === 401) {
-    handleLogout(dispatch);
-  }
-}, [error]);
+//     useEffect(() => {
+//   if (error?.status_code === 401) {
+//     handleLogout(dispatch);
+//   }
+// }, [error]);
   return (
     <>
       <Stack

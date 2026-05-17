@@ -116,6 +116,13 @@ const generateMenuItems = (): IMenuitems[] => [
     href: paths.analytics,
     available: true,
   },
+  {
+    id: uniqueId(),
+    title: i18next.t("coupons"),
+    icon: CustomersIcon,
+    href: paths.coupons,
+    available: true,
+  },
    {
     id: uniqueId(),
     title: i18next.t("startMenu"),
