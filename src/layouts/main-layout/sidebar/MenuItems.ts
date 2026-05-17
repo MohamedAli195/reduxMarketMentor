@@ -123,6 +123,13 @@ const generateMenuItems = (): IMenuitems[] => [
     href: paths.coupons,
     available: true,
   },
+  {
+    id: uniqueId(),
+    title: i18next.t("webinar"),
+    icon: CustomersIcon,
+    href: paths.webinar,
+    available: true,
+  },
    {
     id: uniqueId(),
     title: i18next.t("startMenu"),

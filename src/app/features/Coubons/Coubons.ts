@@ -1,8 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "app/features/auth/authQuery";
-import { RootState } from "app/store";
-
-import i18n from "i18next";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { BASE_URL } from 'app/features/auth/authQuery';
+import { handleLogout } from 'app/services/handleLogout';
+import { RootState } from 'app/store';
+// import { logout } from "app/features/auth/authSlice";
+import i18n from 'i18next';
 
 /** 🔹 Types */
 
@@ -16,7 +17,6 @@ export interface ICouponCreatedBy {
   permissions?: { id: number; name: string; display_name: string }[];
 }
 
-
 export interface ICoupon {
   id: number;
   code: string;
@@ -29,15 +29,6 @@ export interface ICoupon {
   end_date: string;
   createdBy: ICouponCreatedBy;
 }
-// export interface ICoupon {
-//   id: number;
-//   value: string;
-//   min_order_total: number;
-//   usage_limit: number;
-//   status: string;
-//   start_date: string;
-//   end_date: string;
-// }
 
 interface IRes {
   code: number;
@@ -57,45 +48,63 @@ interface IResPost {
   data: ICoupon;
 }
 
+/** 🔹 Base Query */
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: BASE_URL,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth?.authData.token ?? null;
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    headers.set('Accept', 'application/json');
+    headers.set('lang', i18n.language);
+
+    return headers;
+  },
+});
+
+/** 🔥 Auth wrapper (GLOBAL 401 HANDLER) */
+const baseQueryWithAuth = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  api: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extraOptions: any,
+) => {
+  const result = await rawBaseQuery(args, api, extraOptions);
+
+  if (result?.error?.status === 401) {
+  handleLogout(api.dispatch);
+  // window.location.href = "/login";
+}
+
+  return result;
+};
+
 /** 🔹 API */
-
 export const couponsApi = createApi({
-  reducerPath: "couponsApi",
+  reducerPath: 'couponsApi',
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
+  baseQuery: baseQueryWithAuth,
 
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-
-      headers.set("Accept", "application/json");
-      headers.set("lang", i18n.language);
-
-      return headers;
-    },
-  }),
-
-  tagTypes: ["Coupons"],
+  tagTypes: ['Coupons'],
 
   endpoints: (builder) => ({
     /** 🔹 GET Coupons */
-    getCoupons: builder.query<
-      IRes,
-      { page: number; perPage: number }
-    >({
+    getCoupons: builder.query<IRes, { page: number; perPage: number }>({
       query: ({ page = 1, perPage = 10 }) => {
         const params = new URLSearchParams();
 
-        params.append("page", page.toString());
-        params.append("per_page", perPage.toString());
+        params.append('page', page.toString());
+        params.append('per_page', perPage.toString());
 
         return `/admin/coupons?${params.toString()}`;
       },
 
-      providesTags: ["Coupons"],
+      providesTags: ['Coupons'],
     }),
 
     /** 🔹 CREATE Coupon */
@@ -112,24 +121,21 @@ export const couponsApi = createApi({
     >({
       query: (body) => ({
         url: `/admin/coupons`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
 
-      invalidatesTags: ["Coupons"],
+      invalidatesTags: ['Coupons'],
     }),
 
     /** 🔹 DELETE Coupon */
-    deleteCoupon: builder.mutation<
-      IResPost,
-      number
-    >({
+    deleteCoupon: builder.mutation<IResPost, number>({
       query: (id) => ({
         url: `/admin/coupons/${id}/destroy`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
 
-      invalidatesTags: ["Coupons"],
+      invalidatesTags: ['Coupons'],
     }),
 
     /** 🔹 UPDATE Coupon */
@@ -149,17 +155,16 @@ export const couponsApi = createApi({
     >({
       query: ({ id, body }) => ({
         url: `/admin/coupons/${id}/update`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
 
-      invalidatesTags: ["Coupons"],
+      invalidatesTags: ['Coupons'],
     }),
   }),
 });
 
 /** 🔹 Hooks */
-
 export const {
   useGetCouponsQuery,
   useLazyGetCouponsQuery,
