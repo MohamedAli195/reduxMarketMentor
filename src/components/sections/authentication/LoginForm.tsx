@@ -47,78 +47,7 @@ const dispatch = useDispatch()
 
   
   const [login, { isLoading }] = useLoginMutation();
-  // const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `${url}/admin/login`,
-  //       data
-  //     ).then((response)=>{
-  //       if (response.data.token) {
-
-  //         console.log(response)
-          
-  //         localStorage.setItem('token', response.data.token);
-  //         toast.success('Sign-in successful, redirecting to dashboard...');
-  //         dispatch(userDataLogin(response.data.token))
-  
-  //           navigate('/',{ replace: true, state: { from: 'previous-page' ,userData:response.data.data } });
-      
-  //       }
-  //       else {
-  //         setError('Login was successful, but no token was returned.');
-  //       }
-  //     }).catch((err)=>{
-  //       setError(err.response ? err.response.data.message : 'An error occurred');
-  //     })
-  
-  //     // console.log('Token:', response.data.token); // Check if token exists
-  
-
-  
-  //   } catch (err) {
-
-  //     console.log(err)
-  //     setError(err.response ? err.response.data.message : 'An error occurred');
-  //     // console.log(err.response || err); // Logs the actual error for debugging
-  //   }
-  // };
-  
-  // const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.post(`${url}/admin/login`, data);
-      
-
-      
-      
-  //     if (response.data.token) {
-
-  //       // console.log(response.data.data.permissions)
-  //       localStorage.setItem('token', response.data.token);
-  //       toast.success('Sign-in successful, redirecting to dashboard...');
-  //       dispatch(userDataLogin(response.data.token));
-  //       localStorage.setItem('permissions', JSON.stringify(response.data.data.permissions));
-
-  //       // setTimeout(()=>{
-  //       //   // navigate('/', { replace: true, state: { from: pathname, userData: response.data.data } });
-
-
-  //       // },5000)
-
-  //       setTimeout(() => {
-  //         location.replace("/");
-  //       }, 2000);
-  //     } else {
-  //       setError('Login was successful, but no token was returned.');
-  //     }
-  //   } catch (err) {
-  //     const errorMessage = err.response?.data?.message || 'An error occurred. Please try again.';
-  //     setError(errorMessage);
-  //     toast.error(errorMessage);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+ 
   const onSubmit = async (formData: IFormInput) => {
     try {
       const response = await login(formData).unwrap();

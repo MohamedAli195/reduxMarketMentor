@@ -77,28 +77,6 @@ function ViewBrokersForm({ initialData }: { initialData?: null | IBroker } ) {
             label={t('link')}
             {...register('link', { required: t('link') })}
           />
-          <Button
-            component="label"
-            role={undefined}
-            variant="outlined"
-            tabIndex={-1}
-            startIcon={<CloudUpload />}
-            sx={{ height: '100%' }}
-          >
-            <span style={{ display: 'inline-block', marginLeft: 10, marginRight: 10 }}>
-              {t('UploadImage')}
-            </span>
-            <VisuallyHiddenInput
-              type="file"
-              {...register('image', {
-                required: preview ? '' : t('ImageRequired'), // أو اكتبها نصًا زي "الصورة مطلوبة"
-              })}
-              multiple
-              onChange={handleFileChange}
-              sx={{ marginLeft: 2, marginRight: 2 }}
-            />
-          </Button>
-
           {preview && (
             <Box sx={{ mt: 2 }}>
               <img

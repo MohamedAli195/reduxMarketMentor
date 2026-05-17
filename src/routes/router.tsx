@@ -7,6 +7,7 @@ import paths, { rootPaths } from './path';
 import ProtectedRoute from 'components/protectedRoute/ProtectedRoute';
 import SkeletonTables from 'components/Shared/skelton';
 const Section = lazy(() => import('pages/section'));
+const WebinarPage = lazy(() => import('webinar'));
 const StartMenuDetails = lazy(() => import('pages/StartMenu/StartMenuDetails'));
 const BrokerPage = lazy(() => import('pages/brokers'));
 const BrokerDetails = lazy(() => import('pages/brokers/BrokerDetails'));
@@ -36,6 +37,9 @@ const ViewCustomer = lazy(() => import('components/Customers/ViewCustomer'));
 const RecommendationsDetails = lazy(
   () => import('pages/recommendationsPage/recommendationsDetails'),
 );
+const CouponsPage = lazy(() => import('pages/coupons'));
+
+// const WebinarPage = lazy(() => import('pages/webinar'));
 const LoginPage = lazy(() => import('pages/authentication/login'));
 const SignUpPage = lazy(() => import('pages/authentication/register'));
 const ForgotPasswordPage = lazy(() => import('pages/authentication/forgot-password'));
@@ -116,6 +120,16 @@ export const routes = [
                 {' '}
                 <ProtectedRoute redirect={paths.login}>
                   <CoursesPage isDashBoard={false} />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: paths.webinar,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <WebinarPage isDashBoard={false} />
                 </ProtectedRoute>
               </Suspense>
             ),
@@ -250,6 +264,16 @@ export const routes = [
             ),
           },
           {
+            path: paths.coupons,
+            element: (
+              <Suspense fallback={<SkeletonTables />}>
+                <ProtectedRoute redirect={paths.login}>
+                  <CouponsPage />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
             path: paths.inbox,
             element: (
               <Suspense fallback={<PageLoader />}>
@@ -353,6 +377,7 @@ export const routes = [
               </Suspense>
             ),
           },
+          
         ],
       },
       {

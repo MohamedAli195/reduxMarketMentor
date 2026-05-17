@@ -25,3 +25,4 @@ export const checkPermissions = (permissions: Ipermisson[] | undefined, one: str
 
   }
 };
+

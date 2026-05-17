@@ -29,6 +29,8 @@ import { brokerApi } from "./features/brokers/brokers";
 import { agendaApi } from "./features/agenda/AgendaSlice";
 import { analyticsApi } from "./features/analytics/analyticsSlice";
 import { startMenuApi } from "./features/StartMenu/StartMenuSlice";
+import { webinarRegistersApi } from "./webinar/webinar";
+import { couponsApi } from "./features/Coubons/Coubons";
 // import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 
@@ -65,6 +67,8 @@ export const store = configureStore({
       [agendaApi.reducerPath]: agendaApi.reducer,
       [analyticsApi.reducerPath]: analyticsApi.reducer,
       [startMenuApi.reducerPath]: startMenuApi.reducer,
+      [webinarRegistersApi.reducerPath]: webinarRegistersApi.reducer,
+      [couponsApi.reducerPath]: couponsApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) =>
@@ -91,6 +95,8 @@ export const store = configureStore({
       agendaApi.middleware,
       analyticsApi.middleware,
       startMenuApi.middleware,
+      webinarRegistersApi.middleware,
+      couponsApi.middleware,
 
     ),
 });
