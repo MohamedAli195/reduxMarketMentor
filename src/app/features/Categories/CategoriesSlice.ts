@@ -1,15 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../../store';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { ICategory } from 'interfaces';
-import { BASE_URL } from '../auth/authQuery';
+import { baseQueryWithAuth } from 'app/api/baseQueryWithAuth';
 
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
-
-// }
-
-// triggers the proxy
+/** 🔹 Types */
 
 interface Ires {
   code: number;
@@ -32,21 +25,14 @@ interface IresOne {
   data: ICategory;
 }
 
+/** 🔹 API */
 export const categoriesApi = createApi({
   reducerPath: 'categoriesApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-        // Do not manually set Content-Type for FormData
-      }
-      headers.set('Accept', 'application/json');
-      return headers;
-    },
-  }),
-  tagTypes: ['Categories'], // ✅ Define tag type
+
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ['Categories'],
+
   endpoints: (builder) => ({
     getCategories: builder.query<
       Ires,
@@ -54,53 +40,66 @@ export const categoriesApi = createApi({
     >({
       query: ({ search = '', page = 1, perPage, sort_direction = 'desc' }) => {
         const params = new URLSearchParams();
+
         params.append('page', page.toString());
+
         if (perPage) {
-          params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
+          params.append('per_page', perPage.toString());
         }
 
-        params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
-        if (search) params.append('search', search);
+        params.append('sort_direction', sort_direction);
+
+        if (search) {
+          params.append('search', search);
+        }
 
         return `/admin/categories?${params.toString()}`;
       },
+
       providesTags: ['Categories'],
     }),
 
-    
     getCategory: builder.query<IresOne, string | undefined>({
       query: (id) => ({
         url: `/admin/categories/${id}`,
       }),
-      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
 
     createCategory: builder.mutation<IresPost, FormData>({
-      query: (FormData) => ({
-        url: `/admin/categories `,
+      query: (formData) => ({
+        url: `/admin/categories`,
         method: 'POST',
-        body: FormData,
+        body: formData,
       }),
-      invalidatesTags: ['Categories'], // ✅ Invalidate tag to refetch list
+
+      invalidatesTags: ['Categories'],
     }),
+
     deleteCategory: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
         url: `/admin/categories/${id}/destroy`,
         method: 'DELETE',
       }),
+
       invalidatesTags: ['Categories'],
     }),
-    updateCategory: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
+
+    updateCategory: builder.mutation<
+      IresPost,
+      { id: number | undefined; formData: FormData }
+    >({
       query: ({ id, formData }) => ({
         url: `/admin/categories/${id}/update`,
         method: 'POST',
         body: formData,
       }),
+
       invalidatesTags: ['Categories'],
     }),
   }),
 });
 
+/** 🔹 Hooks */
 export const {
   useGetCategoriesQuery,
   useGetCategoryQuery,

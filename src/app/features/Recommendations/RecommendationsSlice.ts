@@ -1,14 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../../store';
-import { ICategory, IREc } from 'interfaces';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { IREc } from 'interfaces';
 import { IFormInputRecommendations } from 'components/Recommendations/addRecommendations';
-import { BASE_URL } from '../auth/authQuery';
+import { baseQueryWithAuth } from 'app/api/baseQueryWithAuth';
 
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
+/** 🔹 Types */
 
-// }
 interface Ires {
   code: number;
   message: string;
@@ -22,6 +18,7 @@ interface IresPost {
   status: boolean;
   data: IREc;
 }
+
 interface IresOne {
   code: number;
   message: string;
@@ -29,22 +26,14 @@ interface IresOne {
   data: IREc;
 }
 
-
+/** 🔹 API */
 export const recommendationsApi = createApi({
   reducerPath: 'recommendationsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-        // Do not manually set Content-Type for FormData
-      }
-      headers.set('Accept', 'application/json');
-      return headers;
-    },
-  }),
-  tagTypes: ['Recommendations'], // ✅ Define tag type
+
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ['Recommendations'],
+
   endpoints: (builder) => ({
     getRecommendations: builder.query<
       Ires,
@@ -52,13 +41,18 @@ export const recommendationsApi = createApi({
     >({
       query: ({ search = '', page = 1, perPage = 1, sort_direction = 'desc' }) => {
         const params = new URLSearchParams();
+
         params.append('page', page.toString());
-        params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
-        params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
-        if (search) params.append('search', search);
+        params.append('per_page', perPage.toString());
+        params.append('sort_direction', sort_direction);
+
+        if (search) {
+          params.append('search', search);
+        }
 
         return `/admin/recommendations?${params.toString()}`;
       },
+
       providesTags: ['Recommendations'],
     }),
 
@@ -66,23 +60,27 @@ export const recommendationsApi = createApi({
       query: (id) => ({
         url: `/admin/recommendations/${id}`,
       }),
-      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
-    createRecommendation: builder.mutation<IresPost, {value : string[]}>({
+
+    createRecommendation: builder.mutation<IresPost, { value: string[] }>({
       query: (value) => ({
-        url: `/admin/recommendations `,
+        url: `/admin/recommendations`,
         method: 'POST',
         body: value,
       }),
-      invalidatesTags: ['Recommendations'], // ✅ Invalidate tag to refetch list
+
+      invalidatesTags: ['Recommendations'],
     }),
+
     deleteRecommendation: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
         url: `/admin/recommendations/${id}/destroy`,
         method: 'DELETE',
       }),
+
       invalidatesTags: ['Recommendations'],
     }),
+
     updateRecommendation: builder.mutation<
       IresPost,
       { id: number | undefined; data: IFormInputRecommendations }
@@ -92,8 +90,10 @@ export const recommendationsApi = createApi({
         method: 'POST',
         body: data,
       }),
+
       invalidatesTags: ['Recommendations'],
     }),
+
     updateRecommendationStatus: builder.mutation<
       IresPost,
       { id: number | undefined; newStatus: 'inactive' | 'active' }
@@ -103,11 +103,13 @@ export const recommendationsApi = createApi({
         method: 'POST',
         body: newStatus,
       }),
+
       invalidatesTags: ['Recommendations'],
     }),
   }),
 });
 
+/** 🔹 Hooks */
 export const {
   useGetRecommendationsQuery,
   useGetRecommendationQuery,

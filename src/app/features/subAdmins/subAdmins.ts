@@ -1,15 +1,20 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { RootState } from "app/store";
 import { IFormInputSubAdmin } from "components/SubAdmin/addSubAdmin";
-import { ICategory, ISubADmin } from "interfaces";
+import { ISubADmin } from "interfaces";
 import { BASE_URL } from "../auth/authQuery";
+import { baseQueryWithAuth } from "app/api/baseQueryWithAuth";
+
+/** 🔹 Types */
+
 interface Ires {
   code: number;
   message: string;
   status: boolean;
-    data:  {data:ISubADmin[] | undefined 
-        total: number | undefined 
-     }
+  data: {
+    data: ISubADmin[] | undefined;
+    total: number | undefined;
+  };
 }
 
 interface IresPost {
@@ -18,6 +23,7 @@ interface IresPost {
   status: boolean;
   data: ISubADmin;
 }
+
 interface IresOne {
   code: number;
   message: string;
@@ -25,71 +31,75 @@ interface IresOne {
   data: ISubADmin;
 }
 
-
+/** 🔹 API */
 export const subAdminApi = createApi({
   reducerPath: "subAdminApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-const token = (getState() as RootState).auth?.authData.token ?? null;    
-          if (token) {
-            headers.set("Authorization", `Bearer ${token}`);
-            // Do not manually set Content-Type for FormData
-          }
-    headers.set("Accept", "application/json");
-          return headers;
-        }
-  }),
-  tagTypes: ["SubAdmin"], // ✅ Define tag type
+
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ["SubAdmin"],
+
   endpoints: (builder) => ({
-    getSubAdmins: builder.query<Ires, { search?: string; page: number; perPage: number,sort_direction:string }>({
-      query: ({ search = '', page = 1, perPage = 1 ,sort_direction='desc' }) => {
+    getSubAdmins: builder.query<
+      Ires,
+      { search?: string; page: number; perPage: number; sort_direction: string }
+    >({
+      query: ({ search = '', page = 1, perPage = 1, sort_direction = 'desc' }) => {
         const params = new URLSearchParams();
-        params.append('page', page.toString());
-        params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
-        params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
-        if (search) params.append('search', search);
-    
+
+        params.append("page", page.toString());
+        params.append("per_page", perPage.toString());
+        params.append("sort_direction", sort_direction);
+
+        if (search) {
+          params.append("search", search);
+        }
+
         return `/admin/sub-admins?${params.toString()}`;
       },
+
       providesTags: ["SubAdmin"],
     }),
 
-
     getSubAdmin: builder.query<IresOne, number>({
-      query: (id) => ({
-        url: `/admin/sub-admins/${id}`,
-      }),
-      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
+      query: (id) => `/admin/sub-admins/${id}`,
     }),
-    
 
     createSubAdmin: builder.mutation<IresPost, IFormInputSubAdmin>({
       query: (data) => ({
-        url: `/admin/sub-admins `,
+        url: `/admin/sub-admins`,
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["SubAdmin"], // ✅ Invalidate tag to refetch list
+
+      invalidatesTags: ["SubAdmin"],
     }),
+
     deleteSubAdmin: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
         url: `/admin/sub-admins/${id}/destroy`,
         method: "DELETE",
       }),
+
       invalidatesTags: ["SubAdmin"],
     }),
-    updateSubAdmin: builder.mutation<IresPost, { id: number | undefined; data: IFormInputSubAdmin }>({
+
+    updateSubAdmin: builder.mutation<
+      IresPost,
+      { id: number | undefined; data: IFormInputSubAdmin }
+    >({
       query: ({ id, data }) => ({
         url: `/admin/sub-admins/${id}/update`,
         method: "POST",
         body: data,
       }),
+
       invalidatesTags: ["SubAdmin"],
     }),
   }),
 });
 
+/** 🔹 Hooks */
 export const {
   useGetSubAdminsQuery,
   useGetSubAdminQuery,

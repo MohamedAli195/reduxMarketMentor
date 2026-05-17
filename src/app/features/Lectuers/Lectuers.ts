@@ -1,14 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../../store';
-import { ICategory, ICourseLectuer, ILectuer } from 'interfaces';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { ICourseLectuer, ILectuer } from 'interfaces';
 import { IFormInputLectuers } from 'components/CourseLectuers/updateLectuerForm';
-import { BASE_URL } from '../auth/authQuery';
+import { baseQueryWithAuth } from 'app/api/baseQueryWithAuth';
 
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
-
-// }
+/** 🔹 Types */
 
 interface Ires {
   code: number;
@@ -31,22 +26,14 @@ interface IresOne {
   data: ILectuer;
 }
 
+/** 🔹 API */
 export const leactuersApi = createApi({
   reducerPath: 'leactuersApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-        // Do not manually set Content-Type for FormData
-      }
-      headers.set('Accept', 'application/json');
 
-      return headers;
-    },
-  }),
-  tagTypes: ['Lectuers'], // ✅ Define tag type
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ['Lectuers'],
+
   endpoints: (builder) => ({
     getLectures: builder.query<
       Ires,
@@ -60,37 +47,49 @@ export const leactuersApi = createApi({
     >({
       query: ({ id, search = '', page = 1, perPage = 1, sort_direction = 'desc' }) => {
         const params = new URLSearchParams();
+
         params.append('page', page.toString());
-        params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
-        params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
-        if (search) params.append('search', search);
+        params.append('per_page', perPage.toString());
+        params.append('sort_direction', sort_direction);
+
+        if (search) {
+          params.append('search', search);
+        }
 
         return `/admin/sections/${id}/lectures?${params.toString()}`;
       },
+
       providesTags: ['Lectuers'],
     }),
+
     getLecture: builder.query<IresOne, string | undefined>({
       query: (id) => ({
         url: `/admin/course-lectures/${id}`,
       }),
-      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
     }),
 
-    createLecture: builder.mutation<IresPost, { id: string | undefined; formdata: FormData }>({
+    createLecture: builder.mutation<
+      IresPost,
+      { id: string | undefined; formdata: FormData }
+    >({
       query: ({ id, formdata }) => ({
         url: `/admin/sections/${id}/lectures`,
         method: 'POST',
         body: formdata,
       }),
-      invalidatesTags: ['Lectuers'], // ✅ Invalidate tag to refetch list
+
+      invalidatesTags: ['Lectuers'],
     }),
+
     deleteLecture: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
         url: `/admin/course-lectures/${id}/destroy`,
         method: 'DELETE',
       }),
+
       invalidatesTags: ['Lectuers'],
     }),
+
     updateLecture: builder.mutation<
       IresPost,
       { id: string | number | undefined; data: IFormInputLectuers }
@@ -100,11 +99,13 @@ export const leactuersApi = createApi({
         method: 'POST',
         body: data,
       }),
+
       invalidatesTags: ['Lectuers'],
     }),
   }),
 });
 
+/** 🔹 Hooks */
 export const {
   useGetLecturesQuery,
   useGetLectureQuery,

@@ -1,15 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../../store';
-import { IAgenda, IAnalytics, ICategory, IStartMenu } from 'interfaces';
-import { BASE_URL } from '../auth/authQuery';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { IStartMenu } from 'interfaces';
+import { baseQueryWithAuth } from 'app/api/baseQueryWithAuth';
 
-// export interface ISize {
-//   id?: number | undefined;
-//   label: string;
-
-// }
-
-// triggers the proxy
+/** 🔹 Types */
 
 interface Ires {
   code: number;
@@ -32,21 +25,14 @@ interface IresOne {
   data: IStartMenu;
 }
 
+/** 🔹 API */
 export const startMenuApi = createApi({
   reducerPath: 'startMenuApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-        // Do not manually set Content-Type for FormData
-      }
-      headers.set('Accept', 'application/json');
-      return headers;
-    },
-  }),
-  tagTypes: ['StartMenu'], // ✅ Define tag type
+
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ['StartMenu'],
+
   endpoints: (builder) => ({
     getStartMenus: builder.query<
       Ires,
@@ -54,52 +40,64 @@ export const startMenuApi = createApi({
     >({
       query: ({ search = '', page = 1, perPage, sort_direction = 'desc' }) => {
         const params = new URLSearchParams();
+
         params.append('page', page.toString());
+
         if (perPage) {
-          params.append('per_page', perPage.toString()); // تأكد من أن API يتطلب "per_page"
+          params.append('per_page', perPage.toString());
         }
 
-        params.append('sort_direction', sort_direction.toString()); // تأكد من أن API يتطلب "per_page"
-        if (search) params.append('search', search);
+        params.append('sort_direction', sort_direction);
+
+        if (search) {
+          params.append('search', search);
+        }
 
         return `/admin/start-menu?${params.toString()}`;
       },
+
       providesTags: ['StartMenu'],
     }),
 
     getStartMenu: builder.query<IresOne, string | undefined>({
-      query: (id) => ({
-        url: `/admin/start-menu/${id}`,
-      }),
-      // invalidatesTags: ['Packages'], // ✅ Invalidate tag to refetch list
+      query: (id) => `/admin/start-menu/${id}`,
     }),
 
     createStartMenu: builder.mutation<IresPost, FormData>({
-      query: (FormData) => ({
+      query: (formData) => ({
         url: `/admin/start-menu`,
         method: 'POST',
-        body: FormData,
+        body: formData,
       }),
-      invalidatesTags: ['StartMenu'], // ✅ Invalidate tag to refetch list
+
+      invalidatesTags: ['StartMenu'],
     }),
+
     deleteStartMenu: builder.mutation<IresPost, number | undefined>({
       query: (id) => ({
         url: `/admin/start-menu/${id}/destroy`,
         method: 'DELETE',
       }),
+
       invalidatesTags: ['StartMenu'],
     }),
-    updateStartMenu: builder.mutation<IresPost, { id: number | undefined; formData: FormData }>({
+
+    updateStartMenu: builder.mutation<
+      IresPost,
+      { id: number | undefined; formData: FormData }
+    >({
       query: ({ id, formData }) => ({
         url: `/admin/start-menu/${id}/update`,
         method: 'POST',
         body: formData,
       }),
+
       invalidatesTags: ['StartMenu'],
     }),
   }),
 });
 
+/** 🔹 Hooks */
 export const {
   useGetStartMenusQuery,
   useGetStartMenuQuery,

@@ -1,8 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../../store';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { Ipermisson } from 'interfaces';
-import { number } from 'echarts';
-import { BASE_URL } from '../auth/authQuery';
+import { baseQueryWithAuth } from 'app/api/baseQueryWithAuth';
+
+/** 🔹 Types */
 
 interface Ires {
   code: number;
@@ -11,39 +11,23 @@ interface Ires {
   data: Ipermisson[] | undefined;
 }
 
-
-
+/** 🔹 API */
 export const permissionsApi = createApi({
   reducerPath: 'permissionsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.authData.token ?? null;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-        // Do not manually set Content-Type for FormData
-      }
-headers.set("Accept", "application/json");
-      return headers;
-    },
-  }),
-  tagTypes: ['Permissions'], // ✅ Define tag type
+
+  baseQuery: baseQueryWithAuth, // ✅ الحل هنا
+
+  tagTypes: ['Permissions'],
+
   endpoints: (builder) => ({
     getPermissions: builder.query<Ires, void>({
-      query: () => {
-        return `/admin/roles/permissions`;
-      },
+      query: () => `/admin/roles/permissions`,
       providesTags: ['Permissions'],
     }),
-
-
-
-
   }),
 });
 
+/** 🔹 Hooks */
 export const {
-
- useGetPermissionsQuery,
-
+  useGetPermissionsQuery,
 } = permissionsApi;
