@@ -78,7 +78,7 @@ const dispatch = useDispatch()
   };
 
   
-// console.log("reder/rerender")
+console.log("reder/rerender")
   return (
     <>
       <Box

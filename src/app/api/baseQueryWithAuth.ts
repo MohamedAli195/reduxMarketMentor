@@ -32,7 +32,7 @@ export const baseQueryWithAuth = async (
 
   if (result?.error?.status === 401) {
     handleLogout(api.dispatch); // ✅ الصح
-    window.location.href = paths.login; // ✅ الصح
+    // window.location.href = paths.login; // ✅ الصح
   }
 
   return result;
